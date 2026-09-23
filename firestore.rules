@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 主持人：用 Google 登入，且 uid 列在 game/config.hosts 裡
+    function signedIn() { return request.auth != null; }
+    function notAnonymous() { return signedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous'; }
+    function isHost() {
+      return notAnonymous()
+        && exists(/databases/$(database)/documents/game/config)
+        && request.auth.uid in get(/databases/$(database)/documents/game/config).data.hosts;
+    }
+
+    // 遊戲狀態：所有登入者（含匿名玩家）可讀，只有主持人可寫
+    match /game/state {
+      allow read: if signedIn();
+      allow write: if isHost();
+    }
+
+    // 主持人名單：第一個用 Google 登入的人可以建立（成為主持人），之後只有主持人能改
+    match /game/config {
+      allow read: if signedIn();
+      allow create: if notAnonymous() && request.resource.data.hosts == [request.auth.uid];
+      allow update, delete: if isHost();
+    }
+
+    // 玩家選組：每個人只能寫自己的那一筆，大家都能讀（用來算各組人數）
+    match /players/{uid} {
+      allow read: if signedIn();
+      allow write: if signedIn() && (request.auth.uid == uid || isHost());
+    }
+  }
+}

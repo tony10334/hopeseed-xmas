@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<title>小花</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
+<style id="css">
+/* ============================================================
+   《小花》 — 夜海與沙灘
+   bg = sea foam / night sea, surf = wet sand paper, teal = shallow water,
+   coral = the red paint flower on the shell, sand = cardboard & tickets,
+   deep = face-down card backs. Everything rounded like sea-worn pebbles.
+   ============================================================ */
+:root{
+  --bg:#e3ede9; --surf:#f8faf8; --surf-2:#ecf2ef; --surf-3:#dfe9e5;
+  --ink:#13323b; --ink-2:#3e5962; --muted:#71878d;
+  --line:#cbdad5; --line-2:#dde7e3;
+  --teal:#1f8b90; --teal-2:#176f74; --teal-soft:#d3ebe9; --teal-ink:#0f5a5e;
+  --deep:#123f4d; --deep-2:#1b5263; --deep-ink:#c5e3e7;
+  --coral:#e2564c; --coral-soft:#fbe2df;
+  --sand:#ead9b4; --sand-2:#d8bf8b; --sand-ink:#73561f; --moon:#f6f0dd;
+  --green:#3d8f5d; --green-soft:#d9eedf;
+  --shadow:0 8px 24px -14px rgba(19,50,59,.35),0 1px 2px rgba(19,50,59,.06);
+  --r:20px; --r-sm:12px; --pill:999px;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Noto Sans CJK TC",system-ui,sans-serif;
+  --round:"Huninn","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --hand:"LXGW WenKai TC","BiauKai","DFKai-SB","Kaiti TC","Noto Serif TC",serif;
+  --flower:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23e2564c'%3E%3Ccircle cx='12' cy='6' r='4.2'/%3E%3Ccircle cx='17.7' cy='10.1' r='4.2'/%3E%3Ccircle cx='15.5' cy='16.9' r='4.2'/%3E%3Ccircle cx='8.5' cy='16.9' r='4.2'/%3E%3Ccircle cx='6.3' cy='10.1' r='4.2'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23f6f0dd'/%3E%3C/svg%3E");
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#06161d; --surf:#10262e; --surf-2:#163139; --surf-3:#1c3a43;
+    --ink:#e6f0ee; --ink-2:#b7cbc9; --muted:#7f979b;
+    --line:#244650; --line-2:#1c3a43;
+    --teal:#4cc1c6; --teal-2:#7ad4d8; --teal-soft:#123c43; --teal-ink:#9fe0e3;
+    --deep:#0a2a36; --deep-2:#0f3a49; --deep-ink:#a6d6dc;
+    --coral:#ff7368; --coral-soft:#4a2320;
+    --sand:#8b6f40; --sand-2:#6c5530; --sand-ink:#f1e2b8; --moon:#2a2f2a;
+    --green:#6cc48a; --green-soft:#183426;
+    --shadow:0 10px 28px -14px rgba(0,0,0,.7),0 1px 2px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#06161d; --surf:#10262e; --surf-2:#163139; --surf-3:#1c3a43;
+  --ink:#e6f0ee; --ink-2:#b7cbc9; --muted:#7f979b;
+  --line:#244650; --line-2:#1c3a43;
+  --teal:#4cc1c6; --teal-2:#7ad4d8; --teal-soft:#123c43; --teal-ink:#9fe0e3;
+  --deep:#0a2a36; --deep-2:#0f3a49; --deep-ink:#a6d6dc;
+  --coral:#ff7368; --coral-soft:#4a2320;
+  --sand:#8b6f40; --sand-2:#6c5530; --sand-ink:#f1e2b8; --moon:#2a2f2a;
+  --green:#6cc48a; --green-soft:#183426;
+  --shadow:0 10px 28px -14px rgba(0,0,0,.7),0 1px 2px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.7 var(--sans);-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:var(--pill)}
+h1,h2,h3,h4{margin:0;text-wrap:balance;font-weight:700}
+p{margin:0}
+.boot{padding:40px 16px;text-align:center;color:var(--muted)}
+.wrap{max-width:820px;margin:0 auto;padding-inline:16px;padding-block:22px 140px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- header (sea surface) ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surf);box-shadow:var(--shadow);border-radius:0 0 26px 26px}
+.top-in{max-width:820px;margin:0 auto;padding:12px 16px 12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand .t{font:400 25px/1.1 var(--round);letter-spacing:.04em;display:inline-flex;align-items:center;gap:8px}
+.brand .t::before{content:"";width:22px;height:22px;background:var(--flower) center/contain no-repeat;flex:none}
+.brand .s{font-size:11.5px;color:var(--muted);letter-spacing:.08em;white-space:nowrap}
+.badge-host{font-size:11px;font-weight:700;letter-spacing:.1em;color:#fff;background:var(--coral);padding:2px 9px;border-radius:var(--pill)}
+.hr{margin-left:auto;display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.stamp{display:inline-flex;align-items:baseline;gap:8px;background:var(--teal-soft);color:var(--teal-ink);padding:5px 14px;font:700 12.5px/1.4 var(--sans);letter-spacing:.04em;white-space:nowrap;border-radius:var(--pill)}
+.stamp .v{font-size:11px;font-weight:500;opacity:.75;font-variant-numeric:tabular-nums}
+.teamtag{border-color:var(--teal);color:var(--teal-ink);font-weight:700;background:var(--surf)}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;width:100%;background:var(--surf-2);border-radius:var(--pill);padding:4px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;border:0;background:none;padding:7px 14px;font-size:14px;color:var(--ink-2);cursor:pointer;white-space:nowrap;border-radius:var(--pill);text-align:center}
+.tab.on{background:var(--surf);color:var(--ink);font-weight:700;box-shadow:0 2px 8px -4px rgba(19,50,59,.35)}
+.tab.lock{color:var(--muted)}
+.tab.lock:not(.host-see){cursor:default}
+.tab .lk{font-size:11px;margin-left:3px;vertical-align:1px}
+.tab.hostonly{color:var(--coral)}
+.note{background:var(--moon)}
+.note.warn{background:var(--coral-soft)}
+.note-in{max-width:820px;margin:0 auto;padding:10px 16px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.note-in b{font-weight:700;color:var(--coral);white-space:nowrap}
+
+/* ---------- sections (pebbles of paper) ---------- */
+.sec{background:var(--surf);border-radius:var(--r);padding:24px 24px 26px;margin-bottom:16px;box-shadow:var(--shadow)}
+.eyebrow{font:700 11.5px/1 var(--sans);letter-spacing:.18em;color:var(--teal);margin-bottom:8px}
+.sec-title{font:400 24px/1.3 var(--round);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec-title::before{content:"";width:14px;height:14px;background:var(--flower) center/contain no-repeat;flex:none}
+.sec-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.sec-head .sec-title{margin-bottom:0}
+.sec-head .meta{color:var(--teal-ink);background:var(--teal-soft);border-radius:var(--pill);padding:3px 12px;font-size:13px;font-weight:700;margin-left:auto;font-variant-numeric:tabular-nums}
+.prose{font-family:var(--hand);font-size:17.5px;line-height:1.9;max-width:36em}
+.prose p+p{margin-top:.8em}
+.prose .sub{font:700 15px/1.5 var(--sans);margin:1.4em 0 .5em;color:var(--teal-ink)}
+.prose .list{margin:.6em 0;padding-left:1.3em;font-family:var(--sans);font-size:15px;line-height:1.75}
+.prose .list li+li{margin-top:.35em}
+.prose .list li::marker{color:var(--teal)}
+.prose .tblwrap{font-family:var(--sans);font-size:14px}
+.hostnote{display:inline-block;font-size:12.5px;color:var(--coral);background:var(--coral-soft);border-radius:var(--pill);padding:3px 12px;margin-bottom:14px}
+.locked{padding:22px 18px;border:2px dashed var(--line);border-radius:var(--r);color:var(--muted);text-align:center}
+.empty{color:var(--muted);font-size:14px;padding:6px 0}
+
+/* landing */
+.landing{background:var(--surf);border-radius:28px;padding:44px 24px 46px;margin-top:8px;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.landing::before{content:"";position:absolute;left:-10%;right:-10%;bottom:-40px;height:110px;background:var(--teal-soft);border-radius:50% 50% 0 0/100% 100% 0 0;opacity:.7}
+.landing .kind{font:700 12px/1 var(--sans);letter-spacing:.3em;color:var(--teal);margin-bottom:22px}
+.landing .big{font:400 clamp(60px,16vw,100px)/1 var(--round);letter-spacing:.08em;display:inline-flex;align-items:center;gap:12px;position:relative}
+.landing .big::before{content:"";width:.5em;height:.5em;background:var(--flower) center/contain no-repeat}
+.landing .sub{margin-top:20px;color:var(--ink-2);font-size:14px;letter-spacing:.18em;position:relative}
+.landing .wait{margin-top:28px;color:var(--muted);font-size:14px;line-height:1.8;position:relative}
+
+/* tables */
+.tblwrap{overflow-x:auto;margin:.6em 0;border-radius:var(--r-sm);background:var(--surf-2)}
+.tbl{border-collapse:collapse;width:100%;min-width:420px}
+.tbl th,.tbl td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line-2);line-height:1.6}
+.tbl th{font-weight:700;white-space:nowrap;font-size:13px;color:var(--teal-ink)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child{white-space:nowrap;font-weight:500}
+
+/* letter */
+.letter{margin:22px 0;background:var(--moon) repeating-linear-gradient(transparent 0 35px,var(--line-2) 35px 36px);border-radius:var(--r-sm);padding:18px 26px 22px 30px;font-family:var(--hand);font-size:18.5px;line-height:36px;max-width:32em;box-shadow:var(--shadow);color:var(--ink)}
+.letter p{margin:0}
+.letter .sig{display:flex;justify-content:flex-end;align-items:center;gap:12px}
+.seal{display:inline-grid;place-items:center;width:30px;height:30px;border:2px solid var(--coral);color:var(--coral);border-radius:8px;font:700 15px/1 var(--hand);transform:rotate(-8deg);opacity:.85}
+
+/* character cards */
+.chars{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.char{background:var(--surf-2);border-radius:var(--r);padding:0 0 18px;overflow:hidden}
+.char .nm{font:400 20px/1.2 var(--round);background:var(--teal);color:#fff;padding:12px 18px;display:flex;align-items:baseline;gap:8px}
+.char .age{font-size:12px;opacity:.85}
+.char .who{font-size:13px;color:var(--ink-2);padding:12px 18px 0}
+.char .rel{font-size:12.5px;color:var(--teal-ink);background:var(--teal-soft);border-radius:var(--pill);display:inline-block;padding:1px 10px;margin:8px 18px 0}
+.char .prose{font-size:16.5px;margin-top:12px;padding:0 18px}
+.char .prose p+p{margin-top:.6em}
+.char.opt .nm{background:var(--teal-2)}
+.char.other .nm{background:var(--surf-3);color:var(--ink)}
+.char.other .empty{margin:8px 18px 0;font-size:13px}
+
+/* pick a team */
+.pick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.pick-card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:2px solid transparent;background:var(--surf-2);border-radius:var(--r);padding:16px 18px;cursor:pointer}
+.pick-card:hover{background:var(--surf-3)}
+.pick-card .nm{font:400 20px/1.2 var(--round)}
+.pick-card .age{font-size:12px;color:var(--muted)}
+.pick-card .who{font-size:13px;color:var(--ink-2);margin-top:4px;line-height:1.5}
+.pick-card .cnt{font-size:12px;color:var(--teal-ink);background:var(--teal-soft);border-radius:var(--pill);padding:0 8px;margin-top:8px}
+.pick-card .cur{font-size:11.5px;color:#fff;background:var(--teal);border-radius:var(--pill);padding:0 8px;margin-top:8px}
+.pick-card.on{border-color:var(--teal);background:var(--teal-soft)}
+.pick-card.full{opacity:.55;cursor:default}
+.pick-card.full .cnt{background:var(--coral-soft);color:var(--coral)}
+.pick-num{margin-top:14px;border-radius:var(--r);padding:18px;background:var(--surf-2)}
+.pick-num label{display:block;font-weight:700;margin-bottom:8px}
+.pick-num .row{display:flex;gap:8px;align-items:center}
+.pick-num input{font:700 20px var(--round);padding:8px 14px;border:2px solid var(--line);border-radius:var(--pill);background:var(--surf);color:var(--ink);width:130px;text-align:center}
+
+/* ---------- locations ---------- */
+.loc{background:var(--surf-2);border-radius:var(--r);padding:16px 18px 18px;margin-bottom:12px}
+.loc-head{display:flex;align-items:center;gap:12px}
+.loc-head .nm{font:400 16px/1 var(--round);background:var(--teal);color:#fff;padding:8px 16px;border-radius:var(--pill);letter-spacing:.06em}
+.loc-head .rem{color:var(--muted);font-size:12.5px;margin-left:auto;font-variant-numeric:tabular-nums}
+.slots{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.slot{background:var(--deep);color:var(--deep-ink);padding:6px 12px;font-size:12px;font-weight:700;line-height:1.3;min-width:60px;text-align:center;border-radius:var(--pill);border:2px solid var(--deep);cursor:default;font-variant-numeric:tabular-nums}
+.slot .by{display:block;font-weight:500;font-size:11px;opacity:.95}
+.slot.drawn{background:var(--surf);border-color:var(--line);color:var(--ink-2)}
+.slot.pub{background:var(--teal-soft);border-color:var(--teal);color:var(--teal-ink)}
+.slot.table{background:var(--sand);border-color:var(--sand-2);color:var(--sand-ink)}
+.slot.can{cursor:pointer}
+.slot.sel{outline:3px solid var(--coral);outline-offset:1px}
+.cards{display:grid;gap:12px;margin-top:14px}
+.card{position:relative;background:var(--surf);border-radius:var(--r-sm);padding:12px 18px 14px 20px;box-shadow:var(--shadow);border-left:6px solid var(--teal)}
+.card.ticket{border-left-color:var(--sand-2)}
+.card.qmark{border-left-color:var(--green)}
+.card-tag{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.card-tag .code{font-weight:700;color:var(--teal-ink);font-variant-numeric:tabular-nums}
+.chip{display:inline-block;border-radius:var(--pill);padding:0 9px;font-size:11px;font-weight:700;line-height:1.7}
+.chip.clue{background:var(--teal-soft);color:var(--teal-ink)}
+.chip.ticket{background:var(--sand);color:var(--sand-ink)}
+.chip.qmark{background:var(--green-soft);color:var(--green)}
+.chip.team{background:var(--surf-3);color:var(--ink-2)}
+.card-text{font-family:var(--hand);font-size:17px;line-height:1.8;margin-top:6px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:4px 0 14px}
+.legend i{display:inline-block;width:16px;height:12px;vertical-align:-2px;margin-right:5px;border-radius:var(--pill);border:2px solid var(--line)}
+.legend .l-down{background:var(--deep);border-color:var(--deep)}
+.legend .l-drawn{background:var(--surf)}
+.legend .l-pub{background:var(--teal-soft);border-color:var(--teal)}
+.legend .l-table{background:var(--sand);border-color:var(--sand-2)}
+
+/* ---------- soup ---------- */
+.timer{display:inline-block;font:400 44px/1 var(--round);letter-spacing:.02em;background:var(--deep);color:var(--deep-ink);border-radius:var(--r);padding:14px 22px;margin-top:6px;font-variant-numeric:tabular-nums}
+.timer small{display:block;font:500 12px var(--sans);opacity:.75;margin-top:6px;letter-spacing:0}
+.timer.over{background:var(--coral);color:#fff}
+.qm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.qm{background:var(--surf-2);border-radius:var(--r);padding:14px;text-align:center}
+.qm .n{font:400 38px/1 var(--round);color:var(--teal-ink);font-variant-numeric:tabular-nums}
+.qm .t{font-size:13px;color:var(--ink-2);margin-top:6px;font-weight:700}
+.qm .ctl{display:flex;justify-content:center;gap:6px;margin-top:8px}
+.hints{display:grid;gap:8px}
+.hint{display:flex;gap:14px;align-items:baseline;border-radius:var(--r-sm);padding:12px 16px;background:var(--surf-2)}
+.hint .when{font-size:12px;color:var(--teal-ink);font-weight:700;white-space:nowrap;min-width:6em}
+.hint .tx{font-family:var(--hand);font-size:18px}
+.hint.off{background:none;border:2px dashed var(--line);color:var(--muted)}
+.hint.off .when{color:var(--muted)}
+.qa{display:grid;gap:6px}
+.qa-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;padding:9px 14px;background:var(--surf-2);border-radius:var(--r-sm)}
+.qa-row .q{font-family:var(--hand);font-size:16.5px}
+.qa-row .i{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.ans{font-size:12.5px;font-weight:700;padding:1px 10px;white-space:nowrap;border-radius:var(--pill)}
+.ans.yes{background:var(--green-soft);color:var(--green)}
+.ans.no{background:var(--coral-soft);color:var(--coral)}
+.ans.na{background:var(--surf-3);color:var(--ink-2)}
+.ans.unk{background:var(--sand);color:var(--sand-ink)}
+.ans.win{background:var(--coral);color:#fff}
+
+/* ---------- answer ---------- */
+.banner{background:var(--coral-soft);border-radius:var(--r);padding:18px 20px;margin-bottom:22px}
+.banner .h{font:400 22px/1.3 var(--round);color:var(--coral)}
+.banner .d{margin-top:4px;color:var(--ink-2);font-size:14px}
+.ending{margin-top:22px;border-radius:var(--r);padding:22px 24px;background:var(--moon);box-shadow:var(--shadow)}
+.ending .h{font:400 18px/1.3 var(--round);color:var(--coral);margin-bottom:10px;letter-spacing:.06em}
+.ending .prose{font-size:17.5px}
+.report{margin-top:22px;border-radius:var(--r);padding:20px 22px;background:var(--surf-2)}
+.report .prose{font-family:var(--sans);font-size:14.5px;line-height:1.8}
+.report .prose p+p{margin-top:.35em}
+
+/* ---------- boxes ---------- */
+.boxes{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;margin-top:14px}
+.box{aspect-ratio:1;border-radius:var(--r-sm);background:var(--sand) linear-gradient(var(--sand-2),var(--sand-2)) center/100% 18% no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;text-align:center;color:var(--sand-ink)}
+.box .n{font:400 22px/1 var(--round);background:var(--surf);color:var(--ink);padding:2px 10px;border-radius:var(--pill);font-variant-numeric:tabular-nums}
+.box .w{font-size:12px;line-height:1.3;word-break:break-all;background:var(--surf);color:var(--ink);padding:1px 8px;border-radius:var(--pill)}
+.box.open{background-color:var(--sand-2)}
+.box.can{cursor:pointer}
+.box.sel{outline:3px solid var(--coral);outline-offset:1px}
+.closing{margin-top:26px;font:400 24px/1.4 var(--round);text-align:center;color:var(--teal-ink);letter-spacing:.06em}
+
+/* ---------- host controls ---------- */
+.hctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;padding:10px 14px;background:var(--moon);border-radius:var(--r-sm)}
+.hctl .lb{font:700 11.5px var(--sans);color:var(--coral);letter-spacing:.12em;margin-right:4px}
+.hctl .val{font:700 14px var(--sans);padding:0 4px;font-variant-numeric:tabular-nums}
+.hctl input[type=text],.hctl select{font:inherit;font-size:14px;padding:6px 12px;border:2px solid var(--line);border-radius:var(--pill);background:var(--surf);color:var(--ink);min-width:0}
+.hctl input[type=text]{flex:1 1 180px}
+.btn{border:2px solid var(--line);background:var(--surf);color:var(--ink);border-radius:var(--pill);padding:6px 14px;font-size:13.5px;cursor:pointer;line-height:1.4;white-space:nowrap;font-weight:500}
+.btn:hover{border-color:var(--teal)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sm{padding:3px 11px;font-size:12.5px}
+.btn.primary{background:var(--coral);border-color:var(--coral);color:#fff;font-weight:700}
+.btn.sea{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.on{background:var(--teal-soft);border-color:var(--teal);color:var(--teal-ink);font-weight:700}
+.btn.danger{color:var(--coral);border-color:var(--coral)}
+.btn.ghost{background:none;border-color:transparent;color:var(--muted)}
+.hostbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--deep);color:var(--deep-ink);border-radius:22px 22px 0 0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -18px rgba(0,0,0,.6)}
+.hostbar-in{max-width:820px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.hostbar .btn{background:transparent;border-color:rgba(255,255,255,.35);color:var(--deep-ink)}
+.hostbar .btn:hover{border-color:#fff}
+.hostbar .btn.on{background:var(--deep-ink);color:var(--deep);border-color:var(--deep-ink)}
+.hostbar .btn.primary{background:var(--coral);border-color:var(--coral);color:#fff}
+.hostbar .btn.danger{color:#ffb3ad;border-color:#ffb3ad}
+.hostbar .grp{display:inline-flex;align-items:center;gap:4px;border:2px solid rgba(255,255,255,.25);border-radius:var(--pill);padding:2px 4px}
+.hostbar .grp .lb{font:700 11px var(--sans);opacity:.7;padding:0 6px;letter-spacing:.1em}
+.hostbar .grp .val{font-size:13px;font-weight:700;padding:0 6px;white-space:nowrap}
+.hostbar .pub{margin-left:auto;display:inline-flex;gap:6px;align-items:center}
+.hostbar .hctl{background:rgba(255,255,255,.08);margin-top:6px;flex:1}
+.hostbar .hctl .lb{color:var(--deep-ink)}
+.hostbar .hctl input[type=text]{background:var(--surf);color:var(--ink);border-color:transparent}
+.dirty{font:700 12px var(--sans);color:#ffb3ad;letter-spacing:.04em}
+.previewbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:30;max-width:calc(100vw - 32px);white-space:normal;box-shadow:var(--shadow)}
+.toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:50;background:var(--deep);color:var(--deep-ink);padding:9px 16px;font-size:13.5px;max-width:90vw;border-radius:var(--pill);box-shadow:var(--shadow)}
+
+/* footer */
+.foot{max-width:820px;margin:-110px auto 0;padding:0 16px 130px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.foot .live{display:inline-flex;align-items:center;gap:6px}
+.foot .live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.foot .live.on::before{background:var(--green)}
+.foot .who{margin-left:auto}
+
+/* share panel */
+.share{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.share .qr{background:#fff;padding:12px;border-radius:var(--r-sm);width:200px;height:200px;display:grid;place-items:center}
+.share .qr svg{display:block;width:100%;height:auto}
+.share .url{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.share .url input{flex:1 1 220px;font:500 13px var(--sans);padding:7px 12px;border:2px solid var(--line);border-radius:var(--pill);background:var(--surf-2);color:var(--ink);min-width:0}
+.share .lbl{font:700 11.5px var(--sans);letter-spacing:.12em;color:var(--teal);margin-top:14px}
+.share .lbl:first-child{margin-top:0}
+.share .hint{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.6}
+@media (max-width:560px){.share{grid-template-columns:1fr}.share .qr{margin:0 auto}}
+
+/* manual */
+.man details{border-radius:var(--r-sm);background:var(--surf-2);margin-bottom:6px}
+.man summary{cursor:pointer;padding:11px 16px;font-weight:700;font-size:15px;list-style:none;display:flex;gap:10px;align-items:baseline}
+.man summary::-webkit-details-marker{display:none}
+.man summary .k{font:700 12px var(--sans);color:var(--teal);min-width:3.6em}
+.man summary::after{content:"＋";margin-left:auto;color:var(--muted)}
+.man details[open] summary::after{content:"－"}
+.man .bd{padding:4px 16px 16px}
+.man .bd .prose{font-family:var(--sans);font-size:15px;line-height:1.8}
+.filter{width:100%;font:inherit;font-size:14px;padding:8px 14px;border:2px solid var(--line);border-radius:var(--pill);background:var(--surf);color:var(--ink);margin:6px 0 8px}
+
+</style>
+</head>
+<body>
+<div id="root"><div class="boot">《小花》載入中…</div></div>
+<script type="application/json" id="state">{"v":0,"phase":0,"teams":["美玉","志豪","老周","小雯"],"round":1,"autoPublic":false,"slots":{},"qm":{"美玉":3,"志豪":3,"老周":3,"小雯":3},"hints":0,"soupStart":null,"qa":[],"attempts":[],"winner":null,"place":null,"truth":false,"ending":null,"report":false,"boxCount":20,"boxes":{},"note":"","assign":"free","players":0}</script>
+<script id="app">
+'use strict';
+/* ============================================================
+   《小花》 — shared game page (GitHub Pages + Firebase edition)
+   Game state lives in Firestore at game/state. Everyone reads it live;
+   only signed-in hosts (game/config.hosts) write it. Players sign in
+   anonymously and record their team in players/<uid>.
+   ============================================================ */
+
+const CONTENT = (() => {
+  const bin = atob('eyJ0aXRsZSI6IuWwj+iKsSIsInN1YnRpdGxlIjoi5Lqk5o+b56au54mp5LqS5YuV5oe455aR6YGK5oiyIiwib25lTGluZXIiOiLkuIPljYHmrbLnmoTpmL/nlLDmiormiL/lrZDos6PkuobvvIznlZnkuIvkuIDlsIHkv6HvvJrjgIzmiJHljrvnnIvlsI/oirHnlJ/lranlrZDjgILmiJHnmoTmnbHopb/liIbntabkvaDlgJHjgILjgI3nhLblvozkuI3opovkuobjgILku5bmspLmnInntZDpgY7lqZrvvIzmspLmnInlsI/lranvvIznmb3mspnmnZHkuZ/mspLmnInkurrlj6vlsI/oirHjgILlm5vlgIvot5/ku5bmnIDopqrnmoTkurrogZrlnKjmnZHovqblhazlrqTvvIzopoHlvITmuIXmpZrvvJrlsI/oirHmmK/oqrDvvJ/ku5bljrvkuoblk6roo6HvvJ8iLCJwaGFzZXMiOlt7Im4iOjAsIm5hbWUiOiLmupblgpnkuK0ifSx7Im4iOjEsIm5hbWUiOiLplovloLQifSx7Im4iOjIsIm5hbWUiOiLnrKzkuIDpmo7mrrXjgIDmkJzmn6UifSx7Im4iOjMsIm5hbWUiOiLnrKzkuozpmo7mrrXjgIDmtbfpvpzmua8ifSx7Im4iOjQsIm5hbWUiOiLnrKzkuInpmo7mrrXjgIDnrZTmoYgifSx7Im4iOjUsIm5hbWUiOiLnrKzlm5vpmo7mrrXjgIDplovnrrEifV0sIm9wZW5pbmciOlt7InQiOiJwIiwicyI6IumAmeijoeaYr+eZveaymeadke+8jOWPsOeBo+WNl+mDqOa1t+mCiueahOS4gOWAi+Wwj+a8geadkeOAguS4gOaineihl++8jOS4gOmWk+mbnOiyqOW6l++8jOS4gOmWk+W7n++8jOS4gOWAi+Wwj+a4r++8jOa4r+mCiuacieS4gOeJh+abrOmtmue2sueahOawtOazpeabrOWgtOOAguadkeWtkOeahOaymeeBmOS4gOWFrOmHjOmVt++8jOiAgeS4gOi8qeiqquS7peWJjeaciea1t+m+nOS4iuS+humBju+8jOS4ieWNgeW5tOaykuimi+S6huOAgiJ9LHsidCI6InAiLCJzIjoi5p2R6KOh5pyJ5LiA5YCL5Lq65Y+r6Zi/55Sw77yM5LiD5Y2B5q2y77yM5o2V5LqG5LqU5Y2B5bm055qE6a2a77yM5LiA5YCL5Lq65L2P44CC6Kmx5b6I5bCR77yM5LiN5Zad6YWS77yM5LiN5omT54mM77yM5q+P5aSp5pep5LiK5Zub6bue5Ye65rW377yM5Lit5Y2I5Zue5L6G77yM5LiL5Y2I5Z2Q5Zyo5pus5aC055yL5rW344CC5Y675bm05LuW5oqK6Ii56LOj5LqG77yM6Kqq5bm057SA5Yiw5LqG44CCIn0seyJ0IjoicCIsInMiOiLmmKjlpKnml6nkuIrvvIzmnZHplbfplovploDnmoTmmYLlgJnvvIzploDlj6PmlL7okZfkuozljYHlgIvnrrHlrZDlkozkuIDlsIHkv6HjgIIifSx7InQiOiJwIiwicyI6IuOAjOaIkeWOu+eci+Wwj+iKseeUn+WtqeWtkOOAguaIv+WtkOizo+S6hu+8jOmMouaIkeeUqOS6hu+8jOiIueWOu+W5tOWwseizo+S6huOAguaIkeeahOadseilv+ijneS6huS6jOWNgeeuse+8jOaUvuWcqOadkei+puWFrOWupO+8jOWIhue1puS9oOWAke+8jOiqsOimgeWTquWAi+iHquW3seism+WlveOAguS4jeeUqOaJvuaIkeOAguaIkeacg+WbnuS+hu+8jOS9huS4jeaYr+W+iOW/q+OAguKAlOKAlOmYv+eUsOOAjSJ9LHsidCI6InAiLCJzIjoi6Zi/55Sw5rKS5pyJ57WQ6YGO5ama77yM5rKS5pyJ5bCP5a2p44CC5p2R6KOh5rKS5pyJ5Lq65Y+r5bCP6Iqx44CCIn0seyJ0IjoicCIsInMiOiLku5bkurrkuI3opovkuobjgILmiYvmqZ/miZPkuI3pgJrjgILmiL/lrZDlt7LntpPpgY7miLbntablu7rllYbvvIzkuIvnpq7mi5zopoHmi4bjgIIifSx7InQiOiJwIiwicyI6Iui3n+S7luacgOimqueahOWbm+WAi+S6uuiBmuWcqOadkei+puWFrOWupO+8jOaDs+W8hOa4healmuWFqeS7tuS6i++8muWwj+iKseaYr+iqsO+8n+S7luWOu+S6huWTquijoe+8nyJ9LHsidCI6InAiLCJzIjoi5L2g5YCR5bCx5piv6YCZ5Zub5YCL5Lq644CCIn0seyJ0IjoicCIsInMiOiLmr4/kuIDntYTnn6XpgZPnmoTkuovkuI3kuIDmqKPjgILlj6/ku6XorJvntabliKXntYTogb3vvIzkuZ/lj6/ku6XkuI3orJvjgIIifSx7InQiOiJwIiwicyI6IuacieWFreWAi+WcsOaWueWPr+S7peaQnO+8mumYv+eUsOeahOWutuOAgeabrOWgtOOAgeadkei+puWFrOWupOOAgea1t+a0i+Wkp+WtuOOAgembnOiyqOW6l+OAgea4r+mCiuOAguaQnOWIsOS7gOm6vO+8jOWwseaYr+S9oOWAkeeahOOAgiJ9XSwibGV0dGVyIjpbIuWQhOS9je+8miIsIuaIkeWOu+eci+Wwj+iKseeUn+WtqeWtkOOAgiIsIuaIv+WtkOizo+S6hu+8jOmMouaIkeeUqOS6hu+8jOiIueWOu+W5tOWwseizo+S6huOAgiIsIuaIkeeahOadseilv+ijneS6huS6jOWNgeeuse+8jOaUvuWcqOadkei+puWFrOWupO+8jOWIhue1puS9oOWAke+8jOiqsOimgeWTquWAi+iHquW3seism+WlveOAgiIsIuS4jeeUqOaJvuaIkeOAguaIkeacg+WbnuS+hu+8jOS9huS4jeaYr+W+iOW/q+OAgiIsIuKAlOKAlOmYv+eUsCJdLCJtaXNzaW5nIjpbWyLpmL/nlLDvvIjpmbPph5HnlLDvvIw3MO+8iSIsIueZveaymeadkeeahOiAgea8geWkq++8jOS4gOWAi+S6uuS9j+OAguWOu+W5tOaKiuiIueizo+S6hu+8jOS4iuWAi+aciOaKiuaIv+WtkOizo+S6hu+8jOaYqOWkqeS4jeimi+S6huOAgiJdLFsi5bCP6IqxIiwi5L+h6KOh5o+Q5Yiw55qE5ZCN5a2X44CC5p2R6KOh5rKS5pyJ5Lq65Y+r5bCP6Iqx44CCIl1dLCJydWxlc09wZW4iOlt7InQiOiJwIiwicyI6IuaQnOafpeS6lOi8quOAguavj+S4gOi8qu+8jOWQhOe1hOWQjOaZguS6ruS4gOW8teWcsOm7nueJjO+8jOaMh+S4gOWAi+WcsOaWueOAguaIkeW+numCo+WAi+WcsOaWueeahOWNoeWghuacgOS4iumdouaKveS4gOW8tee1puS9oOWAkeOAguWFqee1hOaMh+WQjOS4gOWAi+WcsOaWue+8jOmDveaKveOAguS4gOWAi+WcsOaWueeahOWNoeaKveWujOS6hu+8jOWwseS4jeiDveWGjeaMh+OAgiJ9LHsidCI6InAiLCJzIjoi5Y2h5pyJ5LiJ56iu44CC57ea57Si5Y2h77yM5LiK6Z2i5a+r55qE5piv5LqL5a+m77yM5LiN5aSa5LiN5bCR44CC566x5a2Q5Yi477yM5pyA5b6M5Y+v5Lul6ZaL5LiA5YCL566x5a2Q44CC5ZWP6Jmf5Y2h77yM562J5LiA5LiL5rW36b6c5rmv5Y+v5Lul5aSa5ZWP5LiA6aGM44CCIn0seyJ0IjoicCIsInMiOiLmr4/ovKrkuYvplpPmnInkuInljYHnp5LvvIzlj6/ku6Xot5/liKXntYTkuqTmmJPvvJrljaHmj5vljaHjgIHliLjmj5vljaHvvIzpg73lj6/ku6XvvIzorJvlpb3lsLHlpb3jgIIifSx7InQiOiJwIiwicyI6IuS6lOi8quS5i+W+jOaYr+a1t+m+nOa5r+OAguS9oOWAkeWVj+aIke+8jOaIkeWPquetlOOAjOaYr+OAjeOAjOS4jeaYr+OAjeOAjOaykuaciemXnOS/guOAjeOAjOS4jeefpemBk+OAjeOAguavj+e1hOacieS4ieWAi+WVj+iZn++8jOaSv+WIsOeahOWVj+iZn+WNoeWGjeWKoOOAguetlOWwjeeahOe1hOWFiOmWi+euse+8jOS5n+axuuWumuS4gOS7tuS6i+KAlOKAlOetieS4gOS4i+WGjeiqquOAgiJ9LHsidCI6InAiLCJzIjoi5pyA5b6M6ZaL566x44CC5pyJ5Yi455qE5YWI6ZaL77yM5rKS5pyJ5Yi455qE5oq957Gk44CC5ZSv5LiA55qE6KaP55+p77ya5LiN6IO95ou/5Yiw6Ieq5bex5bi25L6G55qE6YKj5LiA566x44CCIn0seyJ0IjoicCIsInMiOiLplovlp4vjgILnrKzkuIDovKrvvIzkuq7niYzjgIIifV0sImNoYXJhY3RlcnMiOlt7ImlkIjoi576O546JIiwibmFtZSI6IumZs+e+jueOiSIsImFnZSI6NjIsIm9wdGlvbmFsIjpmYWxzZSwiYmxvY2tzIjpbeyJ0IjoicCIsInMiOiLkvaDmmK/pmL/nlLDnmoTpmpTlo4HphLDlsYXvvIzkuIDlgIvkurrkvY/vvIznqK7oj5zjgILkuInljYHlubTkvobpmL/nlLDlh7rmtbfnmoTmmYLlgJnkvaDluavku5bmlLbkv6HjgIHluavku5bmm6zooaPmnI3jgIIifSx7InQiOiJwIiwicyI6IuS9oOefpemBk+eahOS6i++8miJ9LHsidCI6InAiLCJzIjoi5q+P5bm05LiJ5pyI77yM6Zi/55Sw6YO95pyD5pS25Yiw5LiA5bCB5rW35rSL5aSn5a245a+E5L6G55qE5L+h44CC5LqM5Y2B5bm05L6G5q+P5LiA5bCB5LuW6YO95pS26YCy5oq95bGc77yM5pS25Yiw55qE5pmC5YCZ6YO95pyD56yR44CCIn0seyJ0IjoicCIsInMiOiLku4rlubTpgqPlsIHvvIzku5bnnIvlrozlsLHnm7TmjqXlh7rploDvvIzljrvkuobmnZHovqblhazlrqTjgILkv6HpgoTmlL7lnKjmoYzkuIrvvIzmspLmlLbjgIIifSx7InQiOiJwIiwicyI6IuS7luS4jeWWnemFku+8jOS4jeaJk+eJjO+8jOaykuaciee1kOmBjuWpmuOAguS9oOW+nuS+huaykuiBvemBjuOAjOWwj+iKseOAjemAmeWAi+WQjeWtl+OAgiJ9XSwid2hvIjoi6ZqU5aOB6YSw5bGF77yM5LiA5YCL5Lq65L2P77yM56iu6I+cIiwicmVsIjoi5LiJ5Y2B5bm05L6G5bmr5LuW5pS25L+h44CB5bmr5LuW5pus6KGj5pyNIn0seyJpZCI6IuW/l+ixqiIsIm5hbWUiOiLmnpflv5fosaoiLCJhZ2UiOjQwLCJvcHRpb25hbCI6ZmFsc2UsImJsb2NrcyI6W3sidCI6InAiLCJzIjoi5L2g5piv6Zi/55Sw55qE5aeq5a2Q77yM5Zyo6Y6u5LiK5YGa5oi/5Luy77yM5piv5LuW5ZSv5LiA55qE6Kaq5Lq644CCIn0seyJ0IjoicCIsInMiOiLkvaDnn6XpgZPnmoTkuovvvJoifSx7InQiOiJwIiwicyI6IuS4ieaciOS4gOaXpemYv+eUsOaJk+e1puS9oO+8jOiqquimgeizo+aIv+WtkO+8jOWHuuWDueavlOihjOaDheS9juWFqeeZvuiQrO+8jOiqquOAjOW/q+S4gOm7nuWwseWlveOAjeOAguS4ieaciOWFq+aXpeewvee0hO+8jOS7luWPquacieS4gOWAi+aineS7tu+8muabrOWgtOeahOawtOanveS4jeiDveaLhuOAgiJ9LHsidCI6InAiLCJzIjoi6LOj5a6M5LuW5Y+r5L2g6KiC5YWp6ZaT5rCR5a6/77yM5LiA6ZaT5Zyo6Iqx6JOu44CB5LiA6ZaT5Zyo5rKW57mp77yM5ZCE6KiC5YWp5YCL5pyI77yM5ZCM5LiA5aSp5YWl5L2P44CC5L2g5ZWP5LuW6KaB5L2P5ZOq5LiA6ZaT77yM5LuW6Kqq44CM5Yiw5pmC5YCZ5Y+q5pyD5L2P5LiA6ZaT77yM5Y+m5LiA6ZaT55qE6Yyi5bCx55W25Lif5o6J44CN44CCIn0seyJ0IjoicCIsInMiOiLkvaDllY/ku5bljrvlgZrku4DpurzvvIzku5boqqrjgIzliLDmmYLlgJnlho3oqqrjgI3jgIIifV0sIndobyI6IumYv+eUsOeahOWnquWtkO+8jOWcqOmOruS4iuWBmuaIv+S7siIsInJlbCI6IumYv+eUsOWUr+S4gOeahOimquS6uiJ9LHsiaWQiOiLogIHlkagiLCJuYW1lIjoi6ICB5ZGoIiwiYWdlIjo3MCwib3B0aW9uYWwiOmZhbHNlLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuS9oOaYr+mYv+eUsOeahOiAgeiIueWToe+8jOWQjOiIueS4ieWNgeW5tO+8jOWOu+W5tOS4gOi1t+mAgOS8keOAgiJ9LHsidCI6InAiLCJzIjoi5L2g55+l6YGT55qE5LqL77yaIn0seyJ0IjoicCIsInMiOiLkuozljYHlubTliY3nmoTkuInmnIjvvIzpmL/nlLDlnKjmm6zloLTnoIzkuobkuIDlgIvmsLTmp73vvIzkuIDlgIvmnIjkuI3orpPku7vkvZXkurrnnIvvvIzpgKPkvaDpg73kuI3ooYzjgIIifSx7InQiOiJwIiwicyI6IuS4gOWAi+aciOW+jOafkOWkqeWNiuWknO+8jOS7luWPq+S9oOmWi+iIueWIsOWklua1t++8jOaKiuS4gOaoo+eUqOavm+W3vuWMheiRl+eahOadseilv+aUvumAsua1t+ijoeOAgumCo+adseilv+acg+WLle+8jOmChOWSrOS6huS7luS4gOWPo++8jOaJi+aMh+a1geihgOOAguaUvuS4i+WOu+S5i+WJjeS7luWwjeiRl+a1t+ism+S6huW+iOS5heeahOipseOAguWbnueoi+S7luS4gOebtOWTreOAgiJ9LHsidCI6InAiLCJzIjoi5L2g5rKS5ZWP44CC5LqM5Y2B5bm05rKS5ZWP44CCIn1dLCJ3aG8iOiLpmL/nlLDnmoTogIHoiLnlk6EiLCJyZWwiOiLlkIzoiLnkuInljYHlubTvvIzljrvlubTkuIDotbfpgIDkvJEifSx7ImlkIjoi5bCP6ZuvIiwibmFtZSI6IuWwj+mbryIsImFnZSI6MjgsIm9wdGlvbmFsIjpmYWxzZSwiYmxvY2tzIjpbeyJ0IjoicCIsInMiOiLkvaDmmK/mtbfmtIvlpKflrbjnmoTnoJTnqbbliqnnkIbvvIzosqDosqzmtbfpvpzov73ouaToqIjnlavnmoTooYzmlL/jgIIifSx7InQiOiJwIiwicyI6IuS9oOefpemBk+eahOS6i++8miJ9LHsidCI6InAiLCJzIjoi5q+P5bm05LiJ5pyI77yM5L2g6KaB5a+E5LiA5Lu96L+96Lmk5aCx5ZGK57Wm44CM57eo6JmfIDA0MTcg55qE6YCa5aCx5Lq66Zmz6YeR55Sw77yM55m95rKZ5p2R44CN44CC5L2g5Y+q6LKg6LKs5a+E77yM5LiN55+l6YGTIDA0MTcg5piv5LuA6bq877yM6LOH5paZ5Zyo5pWZ5o6I55qE6L6m5YWs5a6k44CCIn0seyJ0IjoicCIsInMiOiLku4rlubTkuInmnIjkuInml6XvvIzpmbPph5HnlLDmiZPpm7voqbHkvobllY/jgIwwNDE3IOacg+WOu+WTquijoeOAjeOAguS9oOi9iee1puaVmeaOiOOAguaVmeaOiOism+S6huW+iOS5he+8jOacgOW+jOiqquOAjOaIkeWAkeS5n+S4jeefpemBk+OAjeOAguS7luiqquisneisne+8jOaOm+S6huOAgiJ9LHsidCI6InAiLCJzIjoi5L2g5rKS6KaL6YGO5LuW44CCIn1dLCJ3aG8iOiLmtbfmtIvlpKflrbjnmoTnoJTnqbbliqnnkIYiLCJyZWwiOiLmr4/lubTlr4TloLHlkYrntabku5bnmoTkuroifSx7ImlkIjoi6Zi/5YexIiwibmFtZSI6IumYv+WHsSIsImFnZSI6MzUsIm9wdGlvbmFsIjp0cnVlLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuS9oOaYr+W7uuWVhueahOWwj+mWi++8jOS4ieW5tOWJjeWwseaDs+iyt+mYv+eUsOmCo+S4gOaOkuaIv+WtkO+8jOS7luS4gOebtOS4jeiCr+OAguS7iuW5tOS4ieaciOS7luiHquW3seiqquimgeizo+OAgiJ9LHsidCI6InAiLCJzIjoi5L2g55+l6YGT55qE5LqL77yaIn0seyJ0IjoicCIsInMiOiLku5blj6rmnInkuIDlgIvmop3ku7bvvJrmm6zloLTnmoTmsLTmp73kuI3og73mi4bvvIznrYnku5blm57kvobjgILkvaDnrZTmh4nkuobjgIIifSx7InQiOiJwIiwicyI6Iuewvee0hOmCo+WkqeS7luWVj+S9oO+8muOAjOaLhuaIv+WtkOeahOaZguWAme+8jOWPr+S7peaZmuS4iuS4jeimgeWLleW3peWXju+8n+a1t+mCiuaZmuS4iuimgeWuiemdnOOAguOAjeS9oOS4jeefpemBk+S7luWcqOism+S7gOm6vO+8jOiqquWlveOAgiJ9LHsidCI6InAiLCJzIjoi5LuW5b6e5L2g6YCZ6KOh5ou/5Yiw55qE6Yyi77yM5L2g6IG95p2R6ZW36Kqq5aSn6YOo5YiG6YO95o2Q5o6J5LqG44CCIn1dLCJ3aG8iOiLlu7rllYblsI/plovvvIzosrfkuobpmL/nlLDnmoTmiL/lrZAiLCJyZWwiOiLkuInlubTliY3lsLHmg7Posrfku5bpgqPkuIDmjpLmiL/lrZAifV0sImxvY2F0aW9ucyI6W3sibmFtZSI6IumYv+eUsOeahOWutiIsImNhcmRzIjpbeyJjb2RlIjoi5a62LTEiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLniYbkuIrmjpvokZfkuozljYHmnKzmnIjmm4bvvIzkuIDlubTkuIDmnKzvvIzmr4/kuIDmnKznmoTkuInmnIjpg73nlKjntIXnrYblnIjotbfkvobjgILku4rlubTnmoTmnIjmm4blnIjnmoTkuI3mmK/kuInmnIjvvIzmmK/mjqXkuIvkvobnmoTlm5vmnIjlkozkupTmnIjvvIzmlbTmlbTlha3ljYHlpKnvvIzmr4/kuIDmoLzpg73lnIjjgIIifSx7ImNvZGUiOiLlrrYtMiIsInR5cGUiOiJ0aWNrZXQiLCJ0ZXh0IjoiIn0seyJjb2RlIjoi5a62LTMiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLkuIDlvLXnhafniYfvvJrpmL/nlLDoubLlnKjmm6zloLTnmoTmsLTmp73ml4HpgorvvIzmsLTmp73oo6HmnInmnbHopb/vvIznnIvkuI3muIXmpZrvvIzlj6rnnIvlvpflh7rkuIDlsI/pu57ntIXoibLjgILnhafniYfog4zpnaLlr6vvvJrjgIzlsI/oirHvvIznrKzkuIDlpKnjgILjgI3ml6XmnJ/mmK/kuozljYHlubTliY3nmoTkuInmnIjjgIIifSx7ImNvZGUiOiLlrrYtNCIsInR5cGUiOiJjbHVlIiwidGV4dCI6IuahjOS4iuS4gOW8teeZvOelqO+8muWknOimluacm+mBoOmPoe+8jOWFq+iQrOS6jOWNg+WFg++8jOS4iuWAi+aciOWNgeS6lOaXpeOAguaXgemCiuS4gOacrOiqquaYjuabuO+8jOe/u+WIsOOAjOWknOmWk+ingOWvn+OAjemCo+S4gOmggeOAguaKveWxnOijoeacrOS+huaUvuitt+eFp+eahOWcsOaWue+8jOepuueahOOAgiJ9LHsiY29kZSI6IuWuti01IiwidHlwZSI6InRpY2tldCIsInRleHQiOiIifSx7ImNvZGUiOiLlrrYtNiIsInR5cGUiOiJjbHVlIiwidGV4dCI6IuahjOS4iuaUvuiRl+S7iuW5tOS4ieaciOa1t+a0i+Wkp+WtuOWvhOS+hueahOS/oe+8jOaLhumWi+eahOOAguS/oeWwgeS4iuWNsOOAjDA0MTcg6L+96Lmk5aCx5ZGK44CN44CC5L+h57SZ5LiN5Zyo5L+h5bCB6KOh44CCIn1dLCJpZCI6IuWutiJ9LHsibmFtZSI6IuabrOWgtCIsImNhcmRzIjpbeyJjb2RlIjoi5pusLTEiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLmm6zloLTop5LokL3kuIDlgIvmsLTms6XnoIznmoTmsLTmp73vvIzplbflhanlhazlsLrjgIHlr6zkuIDlhazlsLrvvIzlvojkuYXmspLnlKjkuobvvIzoo6HpnaLmmK/kub7nmoTjgILmsLTmp73nmoTlhafniYbkuIrnlKjntIXoibLoiLnmvIbnlavkuobkuIDmnLXlsI/oirHvvIzmvIblvojoiIrvvIzlv6vmjonkuobjgIIifSx7ImNvZGUiOiLmm6wtMiIsInR5cGUiOiJxbWFyayIsInRleHQiOiIifSx7ImNvZGUiOiLmm6wtMyIsInR5cGUiOiJjbHVlIiwidGV4dCI6IuawtOanveaXgemCiuS4gOeWiuiIiuabuO+8jOeUqOWhkeiGoOiii+WMheiRl++8muOAiue2oOigtem+nOS/neiCsuaJi+WGiuOAi+OAiua1t+m+nOWCt+WPo+eFp+itt+OAi+OAiuWPsOeBo+a1t+m+nOWclumRkeOAi++8jOmDveaYr+S6jOWNgeW5tOWJjeeahOeJiOacrO+8jOe/u+WIsOeIm++8jOijoemdoueVq+a7v+S6hue3muOAgiJ9LHsiY29kZSI6IuabrC00IiwidHlwZSI6InRpY2tldCIsInRleHQiOiIifSx7ImNvZGUiOiLmm6wtNSIsInR5cGUiOiJjbHVlIiwidGV4dCI6IuawtOanveW6lemDqOWIu+iRl+Wbm+WAi+aVuOWtl++8mjA0MTfjgILliLvnl5Xlvojmt7HvvIzmmK/nlKjph5jlrZDkuIDnrYbkuIDnrYbliLvnmoTjgIIifSx7ImNvZGUiOiLmm6wtNiIsInR5cGUiOiJjbHVlIiwidGV4dCI6IuW7uuWVhumYv+WHseiqqu+8mumYv+eUsOizo+aIv+WtkOWPquacieS4gOWAi+aineS7tuKAlOKAlOabrOWgtOeahOawtOanveS4jeiDveaLhu+8jOetieS7luWbnuS+huOAguOAjOaIkeiqquWlve+8jOWPjeato+mCo+WhiuWcsOaIkeWAkeaaq+aZguS4jeWLleOAguOAjSJ9XSwiaWQiOiLmm6wifSx7Im5hbWUiOiLmnZHovqblhazlrqQiLCJjYXJkcyI6W3siY29kZSI6IuadkS0xIiwidHlwZSI6ImNsdWUiLCJ0ZXh0Ijoi5p2R6ZW36Kqq77ya6Zi/55Sw57C96LOj5oi/5aWR57SE55qE5pmC5YCZ5Y+q6Kyb5LiA5Y+l6Kmx77yM44CM5oiR55So5LiN5Yiw5LqG77yM5bCP6Iqx55So5b6X5Yiw44CC44CNIn0seyJjb2RlIjoi5p2RLTIiLCJ0eXBlIjoidGlja2V0IiwidGV4dCI6IiJ9LHsiY29kZSI6IuadkS0zIiwidHlwZSI6ImNsdWUiLCJ0ZXh0Ijoi5LiA5by15o2Q5qy+5pS25pOa77yM5LiJ5pyI5Y2B5pel77ya6Zmz6YeR55Sw5o2Q57Wm44CM5rW36b6c5L+d6IKy5Z+66YeR44CN5LqU55m+6JCs5YWD44CC5pS25pOa5LiK55qE55So6YCU5qyE5a+r77ya44CM5LiN5oyH5a6a44CC44CNIn0seyJjb2RlIjoi5p2RLTQiLCJ0eXBlIjoicW1hcmsiLCJ0ZXh0IjoiIn0seyJjb2RlIjoi5p2RLTUiLCJ0eXBlIjoidGlja2V0IiwidGV4dCI6IiJ9LHsiY29kZSI6IuadkS02IiwidHlwZSI6ImNsdWUiLCJ0ZXh0Ijoi5p2R6ZW36Kqq77ya5LiJ5bm05YmN5bu65ZWG5bCx5oOz6LK36Zi/55Sw6YKj5LiA5o6S5oi/5a2Q77yM6Zi/55Sw5LiA55u05LiN6IKv77yM6Kqq44CM5oiR6KaB5Zyo6YCZ6KOh562J44CN44CC5LuK5bm05LiJ5pyI5LiA5pel5LuW6Ieq5bex5L6G6Kqq6KaB6LOj77yM5p2R6ZW35ZWP5LuW5LiN562J5LqG5ZeO77yM5LuW6Kqq44CM5LiN55So5Zyo6YCZ6KOh562J5LqG44CN44CCIn1dLCJpZCI6IuadkSJ9LHsibmFtZSI6Iua1t+a0i+Wkp+WtuCIsImNhcmRzIjpbeyJjb2RlIjoi5rW3LTEiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLkuozljYHlubTliY3nmoTpgJrloLHntIDpjITvvJrpgJrloLHkurrpmbPph5HnlLDvvIznmb3mspnmnZHjgILntqDooLXpvpzlubzpq5TvvIzpm4zmgKfvvIzmrrznt6Poo4LlgrfvvIzlt7LnlLHpgJrloLHkurroh6rooYznhaforbfkuInljYHml6XvvIzlgrflj6PnmZLlkIjvvIzni4Dms4Hoia/lpb3jgILoo53oqK3ph5HlsazmqJnnsaTlvoznlLHpgJrloLHkurroh6rooYzph47mlL7jgILmqJnnsaTnt6jomZ8gMDQxN+OAguWCmeiou++8mumAmuWgseS6uuS7pee0hea8huaWvOauvOe3o+WBmuiomOiZn++8jOW3suWLuOWwjuOAgiJ9LHsiY29kZSI6Iua1ty0yIiwidHlwZSI6ImNsdWUiLCJ0ZXh0Ijoi5LuK5bm055qE6L+96Lmk5aCx5ZGK5YWo5paH77yI6ZmE6YyE77yi77yJ77yaMDQxNyDlt7LpgZTmiJDlubTvvIzooZvmmJ/oqIromZ/poa/npLrlvoDljJfnp7vli5XvvIzooYzngrrnrKblkIjliY3lvoDnlKLljbXmspnngZjnmoTmqKHlvI/jgILmnIDlvozkuIDmrKHoqIromZ/kvY3nva7lnKjoirHok67lpJbmtbfoiIfmspbnuankuYvplpPvvIzkuYvlvozov73ouaTlmajpm7vlipvogJfnm6HjgIIifSx7ImNvZGUiOiLmtbctMyIsInR5cGUiOiJ0aWNrZXQiLCJ0ZXh0IjoiIn0seyJjb2RlIjoi5rW3LTQiLCJ0eXBlIjoicW1hcmsiLCJ0ZXh0IjoiIn0seyJjb2RlIjoi5rW3LTUiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLmlZnmjojoqqrvvJrntqDooLXpvpzmnIPlm57liLDoh6rlt7Hlh7rnlJ/nmoTmspnngZjnlKLljbXjgIIwNDE3IOWHuueUn+WcqOWTquijoeaykuaciee0gOmMhOOAguOAjOeJoOacg+S4iuWTquWAi+aymeeBmO+8jOaIkeWAkeS5n+S4jeefpemBk+OAguS4ieaciOS4ieaXpemZs+WFiOeUn+aJk+S+huWVj++8jOaIkeWwseaYr+mAmeaoo+i3n+S7luiqqueahOOAguS7luiqquisneisne+8jOeEtuW+jOaOm+S6huOAguOAjSJ9LHsiY29kZSI6Iua1ty02IiwidHlwZSI6ImNsdWUiLCJ0ZXh0Ijoi5pWZ5o6I6Kqq77ya57ag6KC16b6c55Si5Y215a2j5piv5Zub5pyI5Yiw5YWt5pyI77yM6YCa5bi45Y2K5aSc5LiK5bK477yM5oyW5rSe5LiA5YCL5bCP5pmC77yM55Si5Y215LiA5YCL5bCP5pmC77yM5aSp5Lqu5YmN5Zue5rW36KOh44CC44CM6KaB55yL55qE6Kmx77yM6KaB5Zyo5rKZ54GY5LiK6La06JGX562J77yM5LiA5YCL5pma5LiK5LiN6IO95YuV77yM5Y+v6IO96KaB562J5bm+5Y2B5YCL5pma5LiK44CC44CNIn1dLCJpZCI6Iua1tyJ9LHsibmFtZSI6IumbnOiyqOW6lyIsImNhcmRzIjpbeyJjb2RlIjoi6ZucLTEiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLpmL/moYLoqqrvvJrpmL/nlLDkuInmnIjkuozljYHlhavml6XkvobosrfkuobkuozljYHnm5LomorpppnjgIHkupTljYHljIXms6HpurXjgIHkuIDku7bpm6jooaPjgIHkuIDlgIvkv53muqvnk7bjgIHlhanmop3mr5vlt77jgIIifSx7ImNvZGUiOiLpm5wtMiIsInR5cGUiOiJ0aWNrZXQiLCJ0ZXh0IjoiIn0seyJjb2RlIjoi6ZucLTMiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLpmL/moYLoqqrvvJrku5bllY/lpbnjgIzmspnngZjkuIrmmZrkuIrlj6/ku6XlvoXliLDlub7pu57jgI3vvIzlpbnoqqrjgIzkvaDopoHljrvpnLLnh5/llpTjgI3vvIzku5boqqrjgIzlt67kuI3lpJrjgI3jgILlj4jllY/lpbnjgIzotrTlnKjmspnkuIrlhanlgIvlsI/mmYLohbDmnIPkuI3mnIPnl5vjgI3vvIzlpbnoqqrjgIzkvaDkuIPljYHmrbLkuobmrLjjgI3vvIzku5boqqrjgIzmiYDku6XopoHnt7TjgI3jgIIifSx7ImNvZGUiOiLpm5wtNCIsInR5cGUiOiJxbWFyayIsInRleHQiOiIifSx7ImNvZGUiOiLpm5wtNSIsInR5cGUiOiJ0aWNrZXQiLCJ0ZXh0IjoiIn0seyJjb2RlIjoi6ZucLTYiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLpmL/moYLoqqrvvJrpmL/nlLDkuozljYHlubTliY3nmoTkuInmnIjvvIzpgKPnuozkuInljYHlpKnmr4/lpKnkvobosrfonabvvIzkuIDlpKnkuIDmlqTvvIzpg73mmK/mnIDlsI/mnIDkvr/lrpznmoTpgqPnqK7jgILjgIzmiJHllY/ku5blkIPpgqPpurzlpJronabllpTvvIzku5boqqrkuI3mmK/ku5blkIPnmoTjgILjgI0ifV0sImlkIjoi6ZucIn0seyJuYW1lIjoi5riv6YKKIiwiY2FyZHMiOlt7ImNvZGUiOiLmuK8tMSIsInR5cGUiOiJjbHVlIiwidGV4dCI6IuiAgeWRqOiqqu+8muS6jOWNgeW5tOWJjemCo+WkqeWNiuWknOaUvumAsua1t+ijoeeahOadseilv++8jOmYv+eUsOeUqOavm+W3vuWMheiRl++8jOOAjOacg+WLle+8jOmChOWSrOS6huS7luS4gOWPo++8jOaJi+aMh+a1geihgOOAjeOAguaUvuS4i+WOu+S5i+WJjemYv+eUsOWwjeiRl+a1t+ism+S6huW+iOS5heeahOipseOAgiJ9LHsiY29kZSI6Iua4ry0yIiwidHlwZSI6ImNsdWUiLCJ0ZXh0Ijoi6ICB5ZGo6Kqq77ya6Zi/55Sw5pyA6L+R5q+P5aSp5pma5LiK6YO95Y675rKZ54GY77yM6La05Zyo5rKZ5LiK5LiA5YuV5LiN5YuV77yM5LiA6La05YWp5YCL5bCP5pmC44CC5ZWP5LuW5Zyo5bm55Zib77yM5LuW6Kqq44CM57e057+S44CN44CCIn0seyJjb2RlIjoi5rivLTMiLCJ0eXBlIjoidGlja2V0IiwidGV4dCI6IiJ9LHsiY29kZSI6Iua4ry00IiwidHlwZSI6InFtYXJrIiwidGV4dCI6IiJ9LHsiY29kZSI6Iua4ry01IiwidHlwZSI6ImNsdWUiLCJ0ZXh0Ijoi6LK36Ii555qE5bm06LyV5Lq66Kqq77ya6Zi/55Sw5Y675bm06LOj6Ii55Y+q5pyJ5LiA5YCL5qKd5Lu277yM44CM6Ii55ZCN5LiN6KaB5pS544CN44CC6Ii55ZCN5piv44CM5bCP6Iqx6Jmf44CN44CC6Ii555qE55m76KiY6LOH5paZ5LiK77yM6YCZ6ImY6Ii55Y2B5Lmd5bm05YmN5b6e44CM6YeR55Sw6Jmf44CN5pS55ZCN54K644CM5bCP6Iqx6Jmf44CN44CCIn0seyJjb2RlIjoi5rivLTYiLCJ0eXBlIjoiY2x1ZSIsInRleHQiOiLogIHlkajoqqrvvJrpmL/nlLDlh7rmtbfkuInljYHlubTvvIzntrLlrZDmkojliLDmtbfpvpzpg73mnIPmlL7vvIzmkojliLDkuIDmrKHmlL7kuIDmrKHvvIzjgIzku5boqqrmtbfpvpzmr5TkurrogIHvvIzkuI3og73mrLrosqDjgI3jgIIifV0sImlkIjoi5rivIn1dLCJzZWFyY2hSdWxlcyI6W3sidCI6ImxpIiwicyI6IuS6lOi8quOAguavj+i8quWQhOe1hOWQjOaZguS6ruWcsOm7nueJjOOAgiJ9LHsidCI6ImxpIiwicyI6IuWQhOe1hOW+nuiHquW3seaMh+eahOWcsOm7nuaKveacgOS4iumdouS4gOW8teWNoeOAguWkmue1hOaMh+WQjOS4gOWcsOm7nu+8jOmDveaKve+8iOWQhOS4gOW8te+8ieOAguWcsOm7nueahOWNoeaKveWujOWwseS4jeiDveWGjeaMh+OAgiJ9LHsidCI6ImxpIiwicyI6IuaKveWIsOeahOWNoeaUtumAsue1hOS/oeWwgeOAguWPr+S7pee1puWIpee1hOeci++8jOWPr+S7peS4jee1puOAgiJ9LHsidCI6ImxpIiwicyI6Iuavj+i8quS5i+mWkyAzMCDnp5LkuqTmmJPmmYLplpPvvIzkuLvmjIHkurroqIjmmYLjgILkuqTmmJPkuI3pmZDlvaLlvI/jgIIifSx7InQiOiJsaSIsInMiOiLkupTovKrntZDmnZ/lvozjgIzmj63niYzjgI3vvJrkuLvmjIHkurrmiormr4/lgIvlnLDpu57liankuIvnmoTljaHkuK3mnIDkuIrpnaLkuIDlvLXnv7vplovmlL7lnKjmoYzkuIrvvIzlhajloLTpg73nnIvlvpfliLDvvIjlj6rnv7vnt5rntKLljaHvvJvnv7vliLDliLjmiJbllY/omZ/lsLHmlL7lm57ljrvvvIznv7vkuIvkuIDlvLXvvInjgIIifSx7InQiOiJsaSIsInMiOiLmj63niYzlvozlkITntYTmuIXpu57llY/omZ/vvJrln7rmnKwgMyDlgIvvvIvllY/omZ/ljaHjgIIifV0sInNvdXBPcGVuIjpbeyJ0IjoicCIsInMiOiLkupTovKrmkJzlrozvvIzniYzkuZ/mj63kuobjgILmr4/kuIDntYTmiYvkuIrmnInkuIDkupvkuovlr6bjgIHkuIDkupvnrrHlrZDliLjjgIHkuIDkupvllY/omZ/jgIIifSx7InQiOiJwIiwicyI6IuaOpeS4i+S+huaYr+a1t+m+nOa5r+OAguWVj+mhjOWFqeWAi++8muWwj+iKseaYr+iqsO+8n+S7luWOu+S6huWTquijoe+8nyJ9LHsidCI6InAiLCJzIjoi5ZCE57WE6Lyq5rWB5ZWP5oiR77yM5LiA5qyh5LiA5YCL5ZWP6aGM77yM55So5o6J5LiA5YCL5ZWP6Jmf44CC5oiR5Y+q5Zue562U5Zub56iu77ya44CM5piv44CN44CM5LiN5piv44CN44CM5rKS5pyJ6Zec5L+C44CN44CM5LiN55+l6YGT44CN44CC44CM5rKS5pyJ6Zec5L+C44CN5piv6Kqq6YCZ5Lu25LqL6Lef562U5qGI54Sh6Zec44CC44CM5LiN55+l6YGT44CN5piv6Kqq4oCU4oCU5pWF5LqL6KOh5rKS5pyJ5Lq655+l6YGT44CCIn0seyJ0IjoicCIsInMiOiLovKrliLDkvaDlgJHnmoTmmYLlgJnvvIzlj6/ku6XkuI3llY/vvIzmlLnmiJDmraPlvI/nrZTpoYzvvJrkuIDlj6PmsKPmiornrZTmoYjorJvlrozvvIzorJvlrozmiJHmiY3liKTjgILnrZTlsI3vvIzntZDmnZ/vvJvnrZTpjK/vvIzmiJHlj6roqqrjgIzkuI3lsI3jgI3miJbjgIzlt67kuIDpu57jgI3vvIzkuIvkuIDovKrot7PpgY7kvaDlgJHjgILnrZTpoYzkuI3nlKjllY/omZ/jgIIifSx7InQiOiJwIiwicyI6IuWVj+iZn+eUqOWujOWwseWPquiDveiBve+8jOaIluiAhei3n+WIpee1hOS6pOaYk+OAgiJ9LHsidCI6InAiLCJzIjoi5LiJ5Y2B5YiG6ZCY44CC5b6e576O546J57WE6ZaL5aeL44CCIn1dLCJzb3VwUnVsZXMiOltbIumghuW6jyIsIue+jueOieKGkuW/l+ixquKGkuiAgeWRqOKGkuWwj+mbr++8jOW+queSsOOAgiJdLFsi6aGN5bqmIiwi5q+P57WE5Z+65pysIDMg5ZWP77yL5ZWP6Jmf5Y2h44CCIl0sWyLlm57nrZQiLCLmmK/vvI/kuI3mmK/vvI/mspLmnInpl5zkv4LvvI/kuI3nn6XpgZPjgILkuI3mmK/mmK/pnZ7poYzoq4vph43llY/vvIzkuI3miaPjgILkuIDpoYzoo6HllY/lhanku7bkuovvvIzkuLvmjIHkurrlj6rnrZTnrKzkuIDku7bjgIIiXSxbIuato+W8j+etlOmhjCIsIui8quWIsOiHquW3seaZguWPr+etlO+8jOS4gOasoeism+WujOOAguetlOWwjeKGkuesrOS4iemajuaute+8m+etlOmMr+KGkuOAjOS4jeWwjeOAjeaIluOAjOW3ruS4gOm7nuOAje+8jOS4i+S4gOi8qui3s+mBjuOAguetlOmhjOS4jeeUqOWVj+iZn+OAgiJdLFsi5Lqk5piTIiwi5Lu75L2V5pmC5YCZ5Y+v5Lul6Lef5Yil57WE5Lqk5o+b57ea57Si5Y2h44CB566x5a2Q5Yi444CB5ZWP6Jmf5Y2h77yM5Li75oyB5Lq65LiN566h44CCIl0sWyLmj5DnpLoiLCLnrKwgMTUg5YiG6ZCY44CB56ysIDIyIOWIhumQmOOAgeesrCAzMCDliIbpkJjlkITllLjkuIDlvLXmj5DnpLrljaHvvIg2LTTvvInjgIIiXSxbIuaZgumWkyIsIjMwIOWIhumQmOOAguWUuOWujOesrOS4ieW8teaPkOekuu+8jOmWi+aUvuS4gOi8quaQtuetlOOAgiJdXSwiaGludHMiOlt7Im1pbiI6MTUsInRleHQiOiLjgIzlsI/oirHkuI3mmK/kurrjgILjgI0ifSx7Im1pbiI6MjIsInRleHQiOiLjgIzkuozljYHlubTliY3vvIzniaDlnKjmm6zloLTnmoTmsLTmp73oo6HkvY/kuobkuIDlgIvmnIjjgILjgI0ifSx7Im1pbiI6MzAsInRleHQiOiLjgIzniaDopoHlm57oh6rlt7Hlh7rnlJ/nmoTmspnngZjjgILmspLmnInkurrnn6XpgZPmmK/lk6rkuIDlgIvjgILjgI0ifV0sInFhIjpbeyJxIjoi5bCP6Iqx5piv5Lq65ZeO77yfIiwiYSI6IuS4jeaYryIsIm4iOiIifSx7InEiOiLlsI/oirHmmK/lpbPkurrll47vvJ8iLCJhIjoi5LiN5pivIiwibiI6IiJ9LHsicSI6IuWwj+iKseaYr+S7lueahOWls+WFkuWXju+8nyIsImEiOiLkuI3mmK8iLCJuIjoiIn0seyJxIjoi5bCP6Iqx5piv5LuW55qE5oOF5Lq65ZeO77yfIiwiYSI6IuS4jeaYryIsIm4iOiIifSx7InEiOiLlsI/oirHmmK/mnZHoo6HnmoTkurrll47vvJ8iLCJhIjoi5LiN5pivIiwibiI6IiJ9LHsicSI6IuWwj+iKseaYr+WLleeJqeWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi5bCP6Iqx5piv54uX77yP6LKT77yP6bOl5ZeO77yfIiwiYSI6IuS4jeaYryIsIm4iOiIifSx7InEiOiLlsI/oirHkvY/lnKjmtbfoo6Hll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuWwj+iKseaYr+mtmuWXju+8nyIsImEiOiLkuI3mmK8iLCJuIjoiIn0seyJxIjoi5bCP6Iqx5piv5rW36LGa77yP6a+o6a2a5ZeO77yfIiwiYSI6IuS4jeaYryIsIm4iOiIifSx7InEiOiLlsI/oirHmmK/mtbfpvpzll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuWwj+iKseaYr+e2oOigtem+nOWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi5bCP6Iqx5piv5LuW6aSK55qE5ZeO77yfIiwiYSI6IuaYryIsIm4iOiLppIrpgY7kuInljYHlpKkifSx7InEiOiLlsI/oirHmmK/ku5bmlZHnmoTll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuWwj+iKseWwseaYryAwNDE3IOWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi5q685LiK55qE57SF6Iqx5piv5LuW55Wr55qE5ZeO77yfIiwiYSI6IuaYryIsIm4iOiIifSx7InEiOiLlsI/oirHnj77lnKjpgoTmtLvokZfll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuWwj+iKseePvuWcqOWcqOa1t+ijoeWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi5bCP6Iqx54++5Zyo5Zyo5rC05qe96KOh5ZeO77yfIiwiYSI6IuS4jeaYryIsIm4iOiIifSx7InEiOiLjgIznlJ/lranlrZDjgI3mmK/nnJ/nmoTnlJ/lranlrZDll47vvJ8iLCJhIjoi5pivIiwibiI6IueUouWNtSJ9LHsicSI6IuWwj+iKseaHt+WtleS6huWXju+8nyIsImEiOiLmmK8iLCJuIjoi5oSP5oCd566X5bCNIn0seyJxIjoi5bCP6Iqx6KaB5LiK5bK455Si5Y215ZeO77yfIiwiYSI6IuaYryIsIm4iOiIifSx7InEiOiLku5bljrvmspnngZjll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuS7luWOu+etieWwj+iKseS4iuWyuOWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi5LuW6KaB5Zyo5rKZ54GY5LiK562J5b6I5aSa5aSp5ZeO77yfIiwiYSI6IuaYryIsIm4iOiIifSx7InEiOiLku5bnn6XpgZPlsI/oirHmnIPkuIrlk6rlgIvmspnngZjll47vvJ8iLCJhIjoi5LiN5pivIiwibiI6IiJ9LHsicSI6Iua1t+a0i+Wkp+WtuOefpemBk+WXju+8nyIsImEiOiLkuI3mmK8iLCJuIjoiIn0seyJxIjoi5pyJ5Lu75L2V5Lq655+l6YGT5ZeO77yfIiwiYSI6IuS4jeaYryIsIm4iOiIifSx7InEiOiLku5bljrvkuoboirHok67ll47vvJ8iLCJhIjoi5LiN55+l6YGTIiwibiI6IiJ9LHsicSI6IuS7luWOu+S6huaylue5qeWXju+8nyIsImEiOiLkuI3nn6XpgZMiLCJuIjoiIn0seyJxIjoi5LuW5YWp5YCL5Zyw5pa56YO95Y675ZeO77yfIiwiYSI6IuS4jeaYryIsIm4iOiLlj6rkvY/kuIDplpMifSx7InEiOiLku5bmmK/nlKjnjJznmoTll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuS7luacieWHuuWci+WXju+8nyIsImEiOiLkuI3nn6XpgZMiLCJuIjoiIn0seyJxIjoi5LuW5bi25LqG6K2354Wn5ZeO77yfIiwiYSI6IuaYryIsIm4iOiLluLbkuobkuI3ku6PooajnlKjkuoYifSx7InEiOiLos6PmiL/lrZDmmK/lm6DngrrnvLrpjKLll47vvJ8iLCJhIjoi5LiN5pivIiwibiI6IiJ9LHsicSI6Iuizo+aIv+WtkOaYr+eCuuS6humAmeS7tuS6i+WXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi6LOj5oi/5a2Q55qE6Yyi5aSn6YOo5YiG5o2Q5o6J5LqG5ZeO77yfIiwiYSI6IuaYryIsIm4iOiIifSx7InEiOiLmjZDmrL7ot5/lsI/oirHmnInpl5zll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuawtOanveS4jeiDveaLhui3n+Wwj+iKseaciemXnOWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi5LuW5pyD5Zue5L6G5ZeO77yfIiwiYSI6IuaYryIsIm4iOiIifSx7InEiOiLku5bnlJ/nl4Xkuobll47vvJ8iLCJhIjoi5LiN5pivIiwibiI6IiJ9LHsicSI6IuS7luimgeWOu+atu+WXju+8nyIsImEiOiLkuI3mmK8iLCJuIjoiIn0seyJxIjoi5pyb6YGg6Y+h5piv54K65LqG55yL5bCP6Iqx5ZeO77yfIiwiYSI6IuaYryIsIm4iOiIifSx7InEiOiLomorpppnjgIHms6HpurXmmK/ngrrkuoblnKjmspnngZjkuIrlvoXlvojkuYXll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuOAjOe3tOe/kuOAjeaYr+e3tOe/kuWcqOaymeeBmOS4iui2tOiRl+etieWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi6Ii55ZCN44CM5bCP6Iqx6Jmf44CN55qE5bCP6Iqx5piv5ZCM5LiA5YCL5ZeO77yfIiwiYSI6IuaYryIsIm4iOiIifSx7InEiOiLku5bmlLnoiLnlkI3mmK/lm6DngrrlsI/oirHll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuS6jOWNgeW5tOWJjeiyt+eahOidpuaYr+mkteWwj+iKseeahOWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi5pyI5puG5ZyI5YWt5Y2B5aSp5piv55Si5Y215a2j5ZeO77yfIiwiYSI6IuaYryIsIm4iOiIifSx7InEiOiLmsJHlrr/oqILlhanlgIvmnIjmmK/ngrrkuobnrYnll47vvJ8iLCJhIjoi5pivIiwibiI6IiJ9LHsicSI6IuaVmeaOiOiqqueahOOAjOW5vuWNgeWAi+aZmuS4iuOAjei3n+mAmeaciemXnOWXju+8nyIsImEiOiLmmK8iLCJuIjoiIn0seyJxIjoi5LuW54K65LuA6bq85LiN6YCa5aCx5bCx6Ieq5bex6aSK77yfIiwiYSI6IuaykuaciemXnOS/giIsIm4iOiLkuI3mmK/mmK/pnZ7poYzvvJvoq4vph43llY8ifSx7InEiOiLku5bmnInmspLmnInntZDpgY7lqZrvvJ8iLCJhIjoi5LiN5pivIiwibiI6IuaykuaciSJ9XSwidHJ1dGgiOlt7InQiOiJwIiwicyI6IuWwjeOAgiJ9LHsidCI6InAiLCJzIjoi5bCP6Iqx5piv5LiA6Zq757ag6KC16b6c44CCIn0seyJ0IjoicCIsInMiOiLkuozljYHlubTliY3nmoTkuInmnIjvvIzpmL/nlLDmlLbntrLnmoTmmYLlgJnvvIzntrLlrZDoo6Hnuo/okZfkuIDpmrvlsI/ntqDooLXpvpzvvIzmrrzot5/miYvmjozlt67kuI3lpJrlpKfvvIzmrrznmoTpgornt6Poo4LkuobkuIDpgZPvvIzkuIDnm7TmtYHooYDjgILpgqPlpKnmmK/npq7mi5zlha3vvIzmtbfmtIvlpKflrbjnmoTpm7voqbHmspLkurrmjqXjgILpmL/nlLDmiorniaDluLblm57lrrbvvIzpmpTlpKnlnKjmm6zloLTnoIzkuobkuIDlgIvmsLTmp73vvIzmjqXmtbfmsLTpgLLljrvjgIIifSx7InQiOiJwIiwicyI6IuS7lumkiuS6hueJoOS4ieWNgeWkqeOAguavj+WkqeWHuua1t+WJjeaPm+S4gOasoeawtO+8jOWbnuS+huWGjeaPm+S4gOasoe+8m+avj+WkqeWOu+mYv+ahgumCo+ijoeiyt+S4gOaWpOacgOWwj+eahOidpu+8jOWIh+eiju+8jOmkteOAguesrOWNgeWkqe+8jOS7lueUqOiIuea8huWcqOeJoOauvOeahOmCiue3o+m7nuS6huS4gOactee0heiJsueahOWwj+iKse+8jOiqqumAmeaoo+S7peW+jOeci+W+l+WHuuS+huaYr+iqsOOAguS7luWPq+eJoOWwj+iKseOAgiJ9LHsidCI6InAiLCJzIjoi56ys5LiJ5Y2B5aSp77yM5YK35aW95LqG44CC5pWZ5o6I5L6G6KOd5LqG5qiZ57Gk77yMMDQxN++8jOiqqumAmemau+aYr+avjeeahO+8jOS6jOWNgeW5tOW+jOaJjeacg+aIkOW5tOOAgumCo+WkqeaZmuS4iumYv+eUsOWPq+iAgeWRqOmWi+iIue+8jOWIsOWklua1t++8jOaKiuWwj+iKseaUvuWbnua1t+ijoeOAguaUvuS4i+WOu+S5i+WJje+8jOS7luWwjeiRl+a1t+ism+S6huW+iOS5heeahOipseOAgiJ9LHsidCI6InAiLCJzIjoi6ZqU5bm077yM5LuW5oqK6Ii55ZCN5pS55oiQ5bCP6Iqx6Jmf44CCIn0seyJ0IjoicCIsInMiOiLkuYvlvozmr4/lubTkuInmnIjvvIzmtbfmtIvlpKflrbjlr4TkuIDlsIHloLHlkYrntabku5bvvIzlkYroqLTku5blsI/oirHljrvkuoblk6roo6HjgILkuozljYHlsIHjgILku4rlubTnmoTloLHlkYroqqrvvJrlsI/oirHmiJDlubTkuobvvIzmraPlvoDljJfmuLjvvIzopoHlm57oh6rlt7Hlh7rnlJ/nmoTmspnngZjnlKLljbXjgILmnIDlvoznmoToqIromZ/lnKjoirHok67lpJbmtbflkozmspbnuankuYvplpPvvIznhLblvozov73ouaTlmajmspLpm7vkuobjgIIifSx7InQiOiJwIiwicyI6Iue2oOigtem+nOacg+WbnuiHquW3seWHuueUn+eahOaymeeBmOOAguWwj+iKseWHuueUn+WcqOWTquijoe+8jOaykuacieS6uuefpemBk+OAgiJ9LHsidCI6InAiLCJzIjoi6Zi/55Sw5oqK5oi/5a2Q6LOj5LqG77yM5LqU55m+6JCs5o2Q57Wm5rW36b6c5L+d6IKy5Z+66YeR77yM5Ymp5LiL55qE6LK35LqG5LiA5Y+w5aSc6KaW5pyb6YGg6Y+h77yM6KiC5LqG5YWp6ZaT5rCR5a6/77yM5ZCE5YWp5YCL5pyI44CC5LuW5q+P5aSp5pma5LiK5Y675rKZ54GY57e057+S6La06JGX44CC54S25b6M5LuW6LWw5LqG44CCIn0seyJ0IjoicCIsInMiOiLku5bljrvmspnngZjkuIrnrYnlsI/oirHkuIrlsrjjgIIifSx7InQiOiJwIiwicyI6IuiHs+aWvOS7luWOu+S6huWTquijoeKAlOKAlOS7luiHquW3seS5n+WPquaYr+eMnOOAguS9oOWAkeiqquS7luWOu+S6hu+8iOikh+i/sOipsue1hOiqqueahOWcsOaWue+8ieOAgiJ9LHsidCI6InAiLCJzIjoi77yI5L6d6Kmy57WE6Kqq55qE5Zyw5pa577yM5ouG5bCN5oeJ55qE57WQ5bGA5L+h5bCB44CC77yJIn1dLCJlbmRpbmdzIjp7IkEiOnsicGxhY2UiOiLmspbnuakiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuWFqeWAi+aciOW+jO+8jOadkei+puWFrOWupOaUtuWIsOS4gOWAi+S/oeWwge+8jOaylue5qeWvhOeahOOAguijoemdouS4gOW8teeFp+eJh+WSjOS4gOW8tee0meOAgiJ9LHsidCI6InAiLCJzIjoi54Wn54mH77ya5pma5LiK55qE5rKZ54GY77yM5pyI5Lqu5b6I5Lqu77yM5LiA6Zq75rW36b6c5q2j5Zyo5oyW5rSe77yM6b6c5q6855qE6YKK57ej5pyJ5LiA5bCP6bue57SF6Imy44CCIn0seyJ0IjoicCIsInMiOiLntJnkuIrlr6vvvJoifSx7InQiOiJwIiwicyI6IuOAjOeJoOWbnuS+huS6huOAgiJ9LHsidCI6InAiLCJzIjoi56ys5LqU5Y2B5LiJ5aSp77yM5Y2K5aSc5YWp6bue77yM54mg5b6e5rW36KOh5LiK5L6G77yM54is5LqG5Zub5Y2B5YWs5bC677yM5oyW5LqG5LiA5YCL5bCP5pmC55qE5rSe44CC5oiR6La05Zyo5peB6YKK77yM54mg5rKS5pyJ55yL5oiR44CCIn0seyJ0IjoicCIsInMiOiLmiJHmlbjkuobvvIzkuIDnmb7pm7bkuInpoYbjgIIifSx7InQiOiJwIiwicyI6IuWkqeS6ruWJjeeJoOWbnua1t+ijoe+8jOi1sOWIsOawtOmCiueahOaZguWAmeWBnOS6huS4gOS4i+OAgiJ9LHsidCI6InAiLCJzIjoi5piO5bm06YCZ5YCL5pmC5YCZ77yM5bCP6b6c5pyD5a215Ye65L6G77yM5b6A5rW36KOh54is44CC5L2g5YCR5L6G55yL44CCIn0seyJ0IjoicCIsInMiOiLigJTigJTpmL/nlLDjgI0ifSx7InQiOiJwIiwicyI6IuaYjuW5tO+8jOWOu+aylue5qeOAgiJ9XX0sIkIiOnsicGxhY2UiOiLoirHok64iLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuWFqeWAi+aciOW+jO+8jOadkei+puWFrOWupOaUtuWIsOS4gOWAi+S/oeWwge+8jOiKseiTruWvhOeahOOAguijoemdouS4gOW8teeFp+eJh+WSjOS4gOW8tee0meOAgiJ9LHsidCI6InAiLCJzIjoi54Wn54mH77ya5pma5LiK55qE5rKZ54GY77yM5pyI5Lqu5b6I5Lqu77yM5LiA6Zq75rW36b6c5q2j5Zyo5oyW5rSe77yM6b6c5q6855qE6YKK57ej5pyJ5LiA5bCP6bue57SF6Imy44CCIn0seyJ0IjoicCIsInMiOiLntJnkuIrlr6vvvJoifSx7InQiOiJwIiwicyI6IuOAjOeJoOWbnuS+huS6huOAgiJ9LHsidCI6InAiLCJzIjoi56ys5LqU5Y2B5LiJ5aSp77yM5Y2K5aSc5YWp6bue77yM54mg5b6e5rW36KOh5LiK5L6G77yM54is5LqG5Zub5Y2B5YWs5bC677yM5oyW5LqG5LiA5YCL5bCP5pmC55qE5rSe44CC5oiR6La05Zyo5peB6YKK77yM54mg5rKS5pyJ55yL5oiR44CCIn0seyJ0IjoicCIsInMiOiLmiJHmlbjkuobvvIzkuIDnmb7pm7bkuInpoYbjgIIifSx7InQiOiJwIiwicyI6IuWkqeS6ruWJjeeJoOWbnua1t+ijoe+8jOi1sOWIsOawtOmCiueahOaZguWAmeWBnOS6huS4gOS4i+OAgiJ9LHsidCI6InAiLCJzIjoi5piO5bm06YCZ5YCL5pmC5YCZ77yM5bCP6b6c5pyD5a215Ye65L6G77yM5b6A5rW36KOh54is44CC5L2g5YCR5L6G55yL44CCIn0seyJ0IjoicCIsInMiOiLigJTigJTpmL/nlLDjgI0ifSx7InQiOiJwIiwicyI6IuaYjuW5tO+8jOWOu+iKseiTruOAgiJ9XX19LCJub1dpbm5lciI6W3sidCI6InAiLCJzIjoiMzAg5YiG6ZCY77yL5LiJ5by15o+Q56S677yL5pC2562U6YO95rKS562U5bCN77ya5Li75oyB5Lq65ZS4IDctMSDnmoTnnJ/nm7jliLDjgIzku5bljrvmspnngZjkuIrnrYnlsI/oirHkuIrlsrjjgI3vvIznhLblvozoqqrvvJrjgIzku5bljrvkuoblk6roo6HvvIzmlYXkuovoo6HmspLmnInlr6vjgILlm5vntYTmipXnpajvvIzkuIDntYTkuIDnpajvvIzlubPmiYvnlLHllY/omZ/lianmnIDlpJrnmoTntYTmsbrlrprjgILjgI3mipXlrozllLjlsI3mh4nntZDlsYDjgIIifV0sImJveE9wZW4iOlt7InQiOiJwIiwicyI6IuS/oeS4iuiqqu+8muaIkeeahOadseilv+WIhue1puS9oOWAkeOAguS6jOWNgeWAi+euseWtkOOAgiJ9LHsidCI6InAiLCJzIjoi5pyJ566x5a2Q5Yi455qE57WE5YWI6ZaL44CC5b6e562U5bCN55qE6YKj57WE6ZaL5aeL77yM6aCG5pmC6Yed77yM5LiA5qyh55So5LiA5by15Yi477yM5oyH5LiA5YCL6YKE5rKS6ZaL55qE566x5a2Q77yM5ou/6LWw44CC5Yi455So5a6M54K65q2i44CCIn0seyJ0IjoicCIsInMiOiLliankuIvnmoTnrrHlrZDvvIzpgoTmspLmnInnrrHlrZDnmoTkurrmir3nsaTvvIzmir3liLDlub7omZ/mi7/lub7omZ/jgIIifSx7InQiOiJwIiwicyI6IuacgOW+jOS4gOaineimj+efqe+8muaykuacieS6uuWPr+S7peaLv+WIsOiHquW3seW4tuS+hueahOmCo+S4gOeuseOAguaLv+WIsOeahOS6uu+8jOi3n+etlOWwjeeahOmCo+e1hOaMh+WumueahOS6uuS6pOaPm+OAgiJ9XSwiYm94U3RlcHMiOltbIjEiLCLnrZTlsI3nmoTntYTlhYjvvIzpoIbmmYLph53vvIzmr4/lvLXnrrHlrZDliLjplovkuIDnrrHvvIznrrHlrZDmrbjoqbLntYTvvIzntYTlhafoh6rooYzliIbphY3vvIjkuIDkurrkuIDnrrHvvInjgIIiXSxbIjIiLCLliLjnlKjlrozjgILpgoTmspLmnInnrrHlrZDnmoTkurrkvp3luo/mir3nsaTvvIznsaTnrZLoo6HmlL7liankuIvnmoTnrrHomZ/jgIIiXSxbIjMiLCLkuLvmjIHkurrlsI3nhaflkI3llq7vvIzmnInkurrmi7/liLDoh6rlt7HluLbnmoTvvIznlLHnrZTlsI3nmoTntYTmjIflrprku5bot5/oqrDmj5vvvIzooqvmjIflrprnmoTkurrkuI3og73mi5LntZXjgIIiXSxbIjQiLCLlhajpg6jmi4bplovjgIIiXV0sImNsb3NpbmciOlt7InQiOiJwIiwicyI6IumYv+eUsOeahOaIv+WtkOS4i+emruaLnOaLhu+8jOabrOWgtOeahOawtOanveeVmeiRl+OAguS7lueahOadseilv+WcqOS9oOWAkeaJi+S4iuOAgiJ9LHsidCI6InAiLCJzIjoi5piO5bm06YCZ5YCL5pmC5YCZ4oCU4oCU77yI5oyH57WQ5bGA77yJ4oCU4oCU5Y6755yL5bCP6b6c44CCIn1dLCJyZXBvcnQiOlt7InQiOiJwIiwicyI6Iua1t+a0i+Wkp+WtuOa1t+m+nOi/vei5pOioiOeVq+OAgOWAi+mrlCAwNDE344CA6L+96Lmk5pGY6KaBIn0seyJ0IjoicCIsInMiOiLpgJrloLHkurrvvJrpmbPph5HnlLDvvIjnmb3mspnmnZHvvIkifSx7InQiOiJwIiwicyI6IuesrCAxIOW5tOOAgDA0MTcg5pa855m95rKZ5p2R5aSW5rW36YeO5pS+77yM5qiZ57Gk6YGL5L2c5q2j5bi444CCIn0seyJ0IjoicCIsInMiOiLnrKwgMyDlubTjgIAwNDE3IOaWvOiYreW2vOadseWNl+aWuea1t+Wfn+iiq+a8geawkeebruaTiu+8jOauvOe3o+aciee0heiJsuiomOiZn++8jOeLgOazgeiJr+WlveOAgiJ9LHsidCI6InAiLCJzIjoi56ysIDUg5bm044CAMDQxNyDmlrzoj7Llvovos5PljJfpg6jmtbfln5/ooqvmi43liLDvvIzpq5Tplbflm5vljYHlhazliIbjgIIifSx7InQiOiJwIiwicyI6IuesrCA4IOW5tOOAgDA0MTcg5pa85Y+w54Gj5p2x6YOo5rW35Z+f5Ye654++77yM6auU6ZW35LqU5Y2B5LqU5YWs5YiG44CCIn0seyJ0IjoicCIsInMiOiLnrKwgMTIg5bm044CAMDQxNyDmlrzmspbnuanljZfmlrnmtbfln5/ooqvnoJTnqbboiLnoqJjpjITvvIzmrrznt6PntIXmvIbku43lj6/ovqjorZjjgIIifSx7InQiOiJwIiwicyI6IuesrCAxNSDlubTjgIAwNDE3IOaWvOiKseiTruWklua1t+iiq+ebruaTiu+8jOmrlOmVt+S4g+WNgeWFrOWIhuOAgiJ9LHsidCI6InAiLCJzIjoi56ysIDE4IOW5tOOAgDA0MTcg6KOd6Kit6KGb5pif6L+96Lmk5Zmo77yM6ZaL5aeL5Y2z5pmC6L+96Lmk44CCIn0seyJ0IjoicCIsInMiOiLnrKwgMjAg5bm044CAMDQxNyDlt7LpgZTmiJDlubTjgILooZvmmJ/oqIromZ/poa/npLrlvoDljJfnp7vli5XvvIzooYzngrrnrKblkIjliY3lvoDnlKLljbXmspnngZjnmoTmqKHlvI/jgILntqDooLXpvpzmnIPlm57liLDoh6rlt7Hlh7rnlJ/nmoTmspnngZjnlKLljbXvvIwwNDE3IOWHuueUn+WcsOeEoee0gOmMhOOAguacgOW+jOS4gOasoeioiuiZn+S9jee9ruWcqOiKseiTruWklua1t+iIh+aylue5qeS5i+mWk++8jOS5i+W+jOi/vei5pOWZqOmbu+WKm+iAl+eboe+8jOeEoeioiuiZn+OAgiJ9XSwibWFudWFsIjpbeyJrZXkiOiIxLTIiLCJ0aXRsZSI6IuS4ieS7tuWbuuWumueahOS6i+aAjum6vOiQveWvpiIsImJsb2NrcyI6W3sidCI6InRhYmxlIiwicm93cyI6W1si5Zu65a6aIiwi5YGa5rOVIl0sWyLmtbfpvpzmua8iLCLnrKzkuozpmo7mrrXjgILkuLvmjIHkurrlj6rnrZTjgIzmmK/jgI3jgIzkuI3mmK/jgI3jgIzmspLmnInpl5zkv4LjgI3jgIzkuI3nn6XpgZPjgI3jgILnnJ/nm7jlj6rmnInkuIDlgIvvvIzkvYbjgIzku5bljrvkuoblk6roo6HjgI3mlYXkuovoo6HmspLmnInnrZTmoYjvvIzkuLvmjIHkurrkuIDlvovnrZTjgIzkuI3nn6XpgZPjgI3jgIIiXSxbIuS6pOaPm+emrueJqSIsIuWkp+WutuW4tuS+hueahOemrueJqeWwseaYr+mYv+eUsOeVmeWcqOadkei+puWFrOWupOeahOS6jOWNgeWAi+euseWtkOOAguesrOS4gOmajuauteaQnOafpeaSv+WIsOOAjOeuseWtkOWIuOOAje+8jOesrOWbm+majuauteeUqOWIuOmWi+euse+8m+aykuacieWIuOeahOS6uuaKveexpOOAguS4jeiDveaLv+WIsOiHquW3seW4tuS+hueahOmCo+S4gOeuseOAgiJdLFsi5rG65a6a5rKW57mp5oiW6Iqx6JOuIiwi5pyA5YWI562U5bCN5rW36b6c5rmv55qE57WE77yM562U5qGI6KOh5b+F6aCI6Kqq5Ye644CM5LuW5Y675LqG5ZOq6KOh44CN4oCU4oCU6Kqq5rKW57mp5bCx5piv5rKW57mp77yM6Kqq6Iqx6JOu5bCx5piv6Iqx6JOu44CC5Li75oyB5Lq65L6d5LuW5YCR6Kqq55qE5ZS45bCN5oeJ55qE57WQ5bGA44CCIl1dfV19LHsia2V5IjoiMS0zIiwidGl0bGUiOiLkuLvmjIHkurrlgZrku4DpurwiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuS4u+aMgeS6uuS4jea8lOaIsuOAguS4u+aMgeS6uuWBmuS6lOS7tuS6i++8muWUuOWHuueZvOeUn+S6huS7gOm6vOOAgeeZvOWNoeiIh+aUtuWNoeOAgeWbnuetlOa1t+m+nOa5r+OAgeWIpOWumuetlOahiOOAgeWUuOe1kOWxgOOAguaVheS6i+ijoeeahOS6uu+8iOadkemVt+OAgeaVmeaOiOOAgembnOiyqOW6l+mYv+ahguOAgeW7uuWVhu+8ieeUseS4u+aMgeS6uui9iei/sO+8jOWUuOS7luWAkeiqqueahOipseWwseWlve+8jOS4jeeUqOaooeS7v+OAgueOqeWutuS5n+S4jea8lOaIsu+8jOWbm+e1hOWQhOS7o+ihqOS4gOS9jeS6uueJqe+8jOeUqOmCo+WAi+S6uueJqeefpemBk+eahOS6i+S+huiojuirluOAgeaOqOeQhuOAgiJ9XX0seyJrZXkiOiIxLTQiLCJ0aXRsZSI6Iua1geeoi+iIh+aZgumWk++8iOe0hCAxMTAg5YiG6ZCY77yJIiwiYmxvY2tzIjpbeyJ0IjoidGFibGUiLCJyb3dzIjpbWyLpmo7mrrUiLCLlhaflrrkiLCLmmYLplpMiXSxbIumWi+WgtCIsIuaUtuemrueJqee3qOiZn+OAgeWIhue1hOOAgeWUuOiDjOaZr+OAgeWUuOS6uueJqeOAgeWUuOS/oeOAgeism+imj+WJhyIsIjE1IOWIhiJdLFsi56ys5LiA6ZqO5q6144CA5pCc5p+lIiwi5YWt5YCL5Zyw6bue77yM5LqU6Lyq77yM5ZCE57WE5q+P6Lyq6YG45LiA6JmV5pCc77yb5q+P6Lyq5LmL6ZaTIDMwIOenkuS6pOaYk++8m+S6lOi8quW+jOaPreeJjCIsIjM1IOWIhiJdLFsi56ys5LqM6ZqO5q6144CA5rW36b6c5rmvIiwi5ZCE57WE55So5ZWP6Jmf6Lyq5rWB5o+Q5ZWP77yM6Zqo5pmC5Y+v5q2j5byP562U6aGM77yb5LiJ5q615o+Q56S6IiwiMzAg5YiGIl0sWyLnrKzkuInpmo7mrrXjgIDnrZTmoYgiLCLnrZTlsI3ihpLoqqrlh7rlnLDpu57ihpLllLjnnJ/nm7jihpLllLjntZDlsYAiLCIxMCDliIYiXSxbIuesrOWbm+majuauteOAgOmWi+eusSIsIueuseWtkOWIuOmWi+euseKGkuaKveexpOKGkuaqouafpeKGkue1kOadnyIsIjE1IOWIhiJdXX0seyJ0IjoicCIsInMiOiLliIbpkJjntJrmmYLplpPou7jopovnrKzkuZ3nq6DjgIIifV19LHsia2V5IjoiMS01IiwidGl0bGUiOiLkurrmlbjororljJYiLCJibG9ja3MiOlt7InQiOiJ0YWJsZSIsInJvd3MiOltbIue1hOaVuCIsIuS6uueJqSIsIuaQnOafpSIsIua1t+m+nOa5r+WfuuacrOWVj+iZnyJdLFsiMyDntYQiLCLnvo7njonjgIHlv5fosarjgIHogIHlkajvvIjlsI/pm6/nn6XpgZPnmoTkuovkvbXntablv5fosarvvIkiLCLlm5vovKoiLCI0Il0sWyI0IOe1hCIsIue+jueOieOAgeW/l+ixquOAgeiAgeWRqOOAgeWwj+mbryIsIuS6lOi8qiIsIjMiXSxbIjUg57WEIiwi5Yqg5LiK5bu65ZWG6Zi/5Yex77yI6ZmE6YyE77yh5pyJ56ys5LqU5by15Lq654mp5Y2h77yJIiwi5LqU6LyqIiwiMyJdXX1dfSx7ImtleSI6IjItMSIsInRpdGxlIjoi5pWF5LqL44O755m95rKZ5p2RIiwiYmxvY2tzIjpbeyJ0IjoicCIsInMiOiLlj7DngaPljZfpg6jmtbfpgornmoTlsI/mvIHmnZHvvIzkuIDmop3kuLvooZfvvIzkuIDplpPpm5zosqjlupfvvIzkuIDplpPlu5/vvIzkuIDlgIvlsI/mvIHmuK/vvIzmuK/pgorkuIDniYfmm6zprZrntrLnmoTmsLTms6Xmm6zloLTjgILmnZHlrZDljJfpgorkuInljYHlhazph4zmnInkuIDmiYDmtbfmtIvlpKflrbjvvIzmnZHoo6HnmoTlubTovJXkurrpg73lvoDlpJbot5HvvIznlZnkuIvnmoTmmK/ogIHkurrjgILmnZHovqblhazlrqTlnKjkuLvooZfkuK3plpPvvIzmnZHplbflha3ljYHkupTmrbLvvIznrqHmiYDmnInkuovjgIIifSx7InQiOiJwIiwicyI6IuadkeWtkOeahOaymeeBmOS4jemVt++8jOS4gOWFrOmHjOOAguiAgeS4gOi8qeiqquS7peWJjeaciea1t+m+nOS4iuS+humBju+8jOS9huS4ieWNgeW5tOaykuimi+mBjuS6huOAgiJ9XX0seyJrZXkiOiIyLTIiLCJ0aXRsZSI6IuaVheS6i+ODu+mYv+eUsCIsImJsb2NrcyI6W3sidCI6InAiLCJzIjoi6Zmz6YeR55Sw77yM5LiD5Y2B5q2y77yM5p2R6KOh5Y+r5LuW6Zi/55Sw5Lyv44CC5Y2B5YWt5q2y6Lef54i26Kaq5Ye65rW377yM5o2V5LqG5LqU5Y2B5bm055qE6a2a44CC5rKS5pyJ57WQ6YGO5ama77yM5q+N6Kaq5Zyo5LiW55qE5pmC5YCZ5LiA55u06Lef5q+N6Kaq5L2P77yM5q+N6Kaq5Y2B5LqU5bm05YmN6YGO5LiW5b6M5bCx5LiA5YCL5Lq644CC6Kmx5b6I5bCR77yM5LiN5Zad6YWS77yM5LiN5omT54mM77yM5q+P5aSp5pep5LiK5Zub6bue5Ye65rW377yM5Lit5Y2I5Zue5L6G77yM5LiL5Y2I5Z2Q5Zyo5pus5aC055yL5rW344CCIn0seyJ0IjoicCIsInMiOiLljrvlubTku5bmioroiLnos6PkuobvvIzoqqrjgIzlubTntIDliLDkuobjgI3jgILosrfoiLnnmoTmmK/pmpTlo4HmnZHnmoTlubTovJXkurrvvIzpmL/nlLDlj6rmj5DkuobkuIDlgIvmop3ku7bvvJroiLnlkI3kuI3og73mlLnjgILoiLnlkI3mmK/jgIzlsI/oirHomZ/jgI3igJTigJToiLnmmK/ljYHkuZ3lubTliY3ph43mlrDnmbvoqJjnmoTvvIzpgqPmmYLlgJnku5bmiorljp/mnKznmoToiLnlkI3jgIzph5HnlLDomZ/jgI3mlLnmjonkuobjgILmnZHoo6HmspLmnInkurrllY/pgY7ngrrku4DpurzjgIIifV19LHsia2V5IjoiMi0zIiwidGl0bGUiOiLmlYXkuovjg7vkuozljYHlubTliY3nmoTpgqPkuIDlgIvmnIgiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuS6jOWNgeW5tOWJjeeahOS4ieaciO+8jOmYv+eUsOaUtue2sueahOaZguWAme+8jOe2suWtkOijoee6j+iRl+S4gOmau+Wwj+e2oOigtem+nO+8jOauvOi3n+aJi+aOjOW3ruS4jeWkmuWkp++8jOauvOeahOmCiue3o+ijguS6huS4gOmBk++8jOS4gOebtOa1geihgOOAgueFp+imj+WumuaHieipsumAmuWgse+8jOS9humCo+WkqeaYr+emruaLnOWFre+8jOa1t+a0i+Wkp+WtuOeahOmbu+ipseaykuS6uuaOpeOAgumYv+eUsOaKiueJoOW4tuWbnuWutu+8jOaUvuWcqOiHieebhuijoe+8jOmalOWkqeeUqOawtOazpeWcqOabrOWgtOegjOS6huS4gOWAi+awtOanve+8jOaOpea1t+awtOmAsuWOu+OAgiJ9LHsidCI6InAiLCJzIjoi5LuW6aSK5LqG54mg5LiJ5Y2B5aSp44CC5q+P5aSp5pep5LiK5Ye65rW35YmN5o+b5LiA5qyh5rC077yM5Zue5L6G5YaN5o+b5LiA5qyh77yb6LK36J2m44CB5YiH56KO44CB6aS144CC6KOC55eV5oWi5oWi5ZCI6LW35L6G44CC56ys5Y2B5aSp5LuW55So6Ii55ryG5Zyo54mg5q6855qE6YKK57ej6bue5LqG5LiA5py157SF6Imy55qE5bCP6Iqx77yM6Kqq5piv44CM6YCZ5qij5Lul5b6M55yL5b6X5Ye65L6G5piv6Kqw44CN44CC5LuW5Y+r54mg5bCP6Iqx44CC6YKj5LiJ5Y2B5aSp5LuW5LiN6K6T5Lu75L2V5Lq66Z2g6L+R5pus5aC077yM5p2R6KOh5Lul54K65LuW5Zyo6KOh6Z2i6aSK5LuA6bq86LO66Yyi55qE5p2x6KW/44CCIn0seyJ0IjoicCIsInMiOiLnrKzkuInljYHlpKnvvIzlgrflj6Plpb3kuobjgILpmL/nlLDmiZPpm7voqbHliLDmtbfmtIvlpKflrbjjgILmlZnmjojkvobkuobvvIzph4/kuobjgIHmi43kuobnhafjgIHlnKjniaDnmoTliY3ogqLoo53kuobkuIDlgIvph5HlsazmqJnnsaTvvIznt6jomZ8gMDQxN++8jOeZu+iomOmAmuWgseS6uumZs+mHkeeUsOOAguaVmeaOiOiqqu+8jOmAmemau+aYr+avjeeahO+8jOS6jOWNgeW5tOW+jOaJjeacg+aIkOW5tOOAgiJ9LHsidCI6InAiLCJzIjoi6YKj5aSp5pma5LiK77yM6Zi/55Sw5Y+r6ICB5ZGo6ZaL6Ii577yM6ZaL5Yiw5aSW5rW377yM5oqK5bCP6Iqx5pS+5Zue5rW36KOh44CC6ICB5ZGo5Y+q55yL5Yiw5q+b5be+5YyF6JGX55qE5p2x6KW/5Zyo5YuV77yM6YKE5ZKs5LqG6Zi/55Sw5LiA5Y+j44CC5Zue56iL55qE6Lev5LiK6Zi/55Sw5LiA55u05ZOt44CC6ICB5ZGo5rKS5ZWP44CCIn0seyJ0IjoicCIsInMiOiLpmL/nlLDpmpTlubTmioroiLnlkI3mlLnmiJDlsI/oirHomZ/jgIIifV19LHsia2V5IjoiMi00IiwidGl0bGUiOiLmlYXkuovjg7vkuozljYHlubTnmoTloLHlkYoiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6Iua1t+a0i+Wkp+WtuOeahOi/vei5pOioiOeVq++8jOavj+W5tOS4ieaciOWvhOS4gOS7vSAwNDE3IOeahOi/vei5pOWgseWRiue1pumAmuWgseS6uuOAguS6jOWNgeW5tOS+humYv+eUsOaUtuWIsOS6jOWNgeWwgeOAguWFp+WuueWkp+iHtOWmguS4i++8iOWNsOaIkOmZhOmMhO+8ou+8jOaYr+WcsOm7nuWbm+eahOe3mue0ouS5i+S4gO+8jOS5n+aYr+e1kOWxgOW+jOWPr+S7peWUuOe1puWFqOWgtOeahOadseilv++8ie+8miJ9LHsidCI6InRhYmxlIiwicm93cyI6W1si5bm0Iiwi5aCx5ZGKIl0sWyLnrKwgMSDlubQiLCIwNDE3IOaWvOacrOadkeWklua1t+mHjuaUvu+8jOaomeexpOmBi+S9nOato+W4uOOAgiJdLFsi56ysIDMg5bm0IiwiMDQxNyDmlrzomK3ltrzmnbHljZfmlrnmtbfln5/ooqvmvIHmsJHnm67mk4rvvIzmrrznt6PmnInntIXoibLoqJjomZ/vvIzni4Dms4Hoia/lpb3jgIIiXSxbIuesrCA1IOW5tCIsIjA0MTcg5pa86I+y5b6L6LOT5YyX6YOo5rW35Z+f6KKr5ouN5Yiw77yM6auU6ZW35Zub5Y2B5YWs5YiG44CCIl0sWyLnrKwgOCDlubQiLCIwNDE3IOaWvOWPsOeBo+adsemDqOa1t+Wfn+WHuuePvu+8jOmrlOmVt+S6lOWNgeS6lOWFrOWIhuOAgiJdLFsi56ysIDEyIOW5tCIsIjA0MTcg5pa85rKW57mp5Y2X5pa55rW35Z+f6KKr56CU56m26Ii56KiY6YyE77yM5q6857ej57SF5ryG5LuN5Y+v6L6o6K2Y44CCIl0sWyLnrKwgMTUg5bm0IiwiMDQxNyDmlrzoirHok67lpJbmtbfooqvnm67mk4rvvIzpq5TplbfkuIPljYHlhazliIbjgIIiXSxbIuesrCAxOCDlubQiLCIwNDE3IOijneioreihm+aYn+i/vei5pOWZqO+8jOmWi+Wni+WNs+aZgui/vei5pOOAgiJdLFsi56ysIDIwIOW5tO+8iOS7iuW5tO+8iSIsIjA0MTcg5bey6YGU5oiQ5bm044CC6KGb5pif6KiK6Jmf6aGv56S654mg5q2j5b6A5YyX56e75YuV77yM6KGM54K656ym5ZCI5YmN5b6A55Si5Y215rKZ54GY55qE5qih5byP44CC57ag6KC16b6c5pyD5Zue5Yiw6Ieq5bex5Ye655Sf55qE5rKZ54GY55Si5Y2177yM5L2GIDA0MTcg5Ye655Sf5Zyo5ZOq6KOh5rKS5pyJ57SA6YyE44CC5pyA5b6M5LiA5qyh6KiK6Jmf5L2N572u5Zyo6Iqx6JOu5aSW5rW36IiH5rKW57mp5LmL6ZaT77yM5LmL5b6M6L+96Lmk5Zmo6Zu75Yqb6ICX55uh44CCIl1dfV19LHsia2V5IjoiMi01IiwidGl0bGUiOiLmlYXkuovjg7vku4rlubTnmbznlJ/nmoTkuovvvIjml6XmnJ/lsI3nhafvvIkiLCJibG9ja3MiOlt7InQiOiJ0YWJsZSIsInJvd3MiOltbIuaXpeacnyIsIuS6iyJdLFsiMyDmnIggMSDml6UiLCLpmL/nlLDmlLbliLDku4rlubTnmoTloLHlkYrjgILnvo7njonluavku5bmlLbnmoTkv6HvvIznnIvku5bnnIvlrozlsLHlh7rploDjgIIiXSxbIjMg5pyIIDEg5pelIiwi6Zi/55Sw5Y675p2R6L6m5YWs5a6k5om+5p2R6ZW377yM6Kqq6KaB6LOj5oi/5a2Q44CC5bu65ZWG5LiJ5bm05YmN5bCx5oOz6LK35LuW6YKj5LiA5o6S77yM5LuW5LiA55u05LiN6IKv44CCIl0sWyIzIOaciCAzIOaXpSIsIumYv+eUsOaJk+mbu+ipseWIsOa1t+a0i+Wkp+WtuOWVjyAwNDE3IOacg+S4iuWTquWAi+aymeeBmOOAguWwj+mbr+aOpeeahO+8jOi9iee1puaVmeaOiOOAguaVmeaOiOiqquS4jeefpemBk+OAgiJdLFsiMyDmnIggOCDml6UiLCLos6PmiL/lpZHntITnsL3kuobjgILpmL/nlLDlj6rmnInkuIDlgIvmop3ku7bvvJrmm6zloLTnmoTmsLTmp73kuI3og73mi4bjgIIiXSxbIjMg5pyIIDEwIOaXpSIsIumYv+eUsOaNkOS6huS6lOeZvuiQrOe1pua1t+m+nOS/neiCsuWfuumHkeOAgiJdLFsiMyDmnIggMTIg5pelIiwi6Zi/55Sw5Y+r5b+X6LGq6KiC5rCR5a6/77yM6Iqx6JOu5LiA6ZaT44CB5rKW57mp5LiA6ZaT77yM5ZCE5YWp5YCL5pyI44CCIl0sWyIzIOaciCAxNSDml6UiLCLpmL/nlLDosrfkuoblpJzoppbmnJvpgaDpj6HjgIIiXSxbIjMg5pyIIDIwIOaXpei1tyIsIumYv+eUsOavj+WkqeaZmuS4iuWOu+aymeeBmOi2tOiRl+OAgiJdLFsiMyDmnIggMjgg5pelIiwi6Zi/55Sw5Zyo6Zuc6LKo5bqX6LK35LqG6JqK6aaZ44CB5rOh6bq144CB6Zuo6KGj44CB5L+d5rqr55O244CCIl0sWyIzIOaciCAzMSDml6UiLCLpmL/nlLDmiorkuozljYHlgIvnrrHlrZDlkozkv6HmlL7lnKjmnZHovqblhazlrqTploDlj6PjgIIiXSxbIjQg5pyIIDEg5pelIiwi5p2R6ZW36ZaL6ZaA55m854++44CC6Zi/55Sw5LiN6KaL5LqG44CCIl1dfV19LHsia2V5IjoiMi02IiwidGl0bGUiOiLnnJ/nm7jmkZjopoEiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuWwj+iKseaYr+mYv+eUsOS6jOWNgeW5tOWJjeaVkeeahOe2oOigtem+nO+8jOe3qOiZnyAwNDE344CC5LuK5bm054mg5oiQ5bm05LqG77yM6KaB5Zue5Ye655Sf55qE5rKZ54GY55Si5Y2144CC54mg5pyD5LiK5ZOq5YCL5rKZ54GY77yM6YCj5rW35rSL5aSn5a245Lmf5LiN55+l6YGT77yb5pyA5b6M55qE6KiK6Jmf5Zyo6Iqx6JOu5aSW5rW35ZKM5rKW57mp5LmL6ZaT44CC6Zi/55Sw6KaB5Y675rKZ54GY5LiK562J54mg44CC5LuW6KiC5LqG5YWp6ZaT5rCR5a6/77yM5Y675LqG5YW25Lit5LiA6ZaT44CCIn0seyJ0IjoicCIsInMiOiLku5bljrvkuoblk6roo6HvvIzmlYXkuovoo6HmspLmnInnrZTmoYjjgILpgJnkuIDmoLznlLHmnIDlhYjnrZTlsI3nmoTntYTloavjgIIifV19LHsia2V5IjoiMi03IiwidGl0bGUiOiLnrZTmoYjliKTlrpoiLCJibG9ja3MiOlt7InQiOiJ0YWJsZSIsInJvd3MiOltbIuimgee0oCIsIuaEj+aAnSIsIuWPr+aOpeWPl+eahOiqquazlSJdLFsi4pGgIOWwj+iKseaYr+S7gOm6vCIsIuS4gOmau+a1t+m+nO+8jOS6jOWNgeW5tOWJjeS7luaVkeeahCIsIuOAjOWwj+iKseaYr+S7luaVkemBjueahOa1t+m+nOOAjeOAjOWwj+iKseWwseaYryAwNDE344CNIl0sWyLikaEg44CM55Sf5a2p5a2Q44CN5piv5LuA6bq8Iiwi5rW36b6c5Zue5rKZ54GY55Si5Y2177yM5LuW6KaB5Y675rKZ54GY5LiK562J54mgIiwi44CM5LuW5Y67562J54mg5LiK5bK455Si5Y2144CNIl0sWyLikaIg5LuW5Y675LqG5ZOq6KOhIiwi5rKW57mp5oiW6Iqx6JOu77yM5LqM6YG45LiA77yM6Kqq5ZOq5YCL6YO95bCNIiwi44CM5LuW5Y675LqG5rKW57mp44CN77yP44CM5LuW5Y675LqG6Iqx6JOu44CNIl1dfSx7InQiOiJsaSIsInMiOiLikaDikaHikaLpg73mnIkg4oaSIOOAjOWwjeOAguOAjemAsuesrOS4iemajuauteOAgiJ9LHsidCI6ImxpIiwicyI6IuacieKRoOKRoeOAgeaykuiqquKRoiDihpIg44CM5beu5LiA5YCL77ya5LuW5Y675LqG5ZOq6KOh77yf44CN77yI6Kmy57WE55W25aC06Kqq5LiA5YCL77yM5LiN6IO96KiO6KuW6LaF6YGOIDMwIOenkuOAgu+8iSJ9LHsidCI6ImxpIiwicyI6IuacieKRoOOAgeaykuacieKRoSDihpIg44CM5beu5LiA6bue44CC55Sf5a2p5a2Q5piv5LuA6bq85oSP5oCd77yf5LuW5Y675YGa5LuA6bq877yf44CNIn0seyJ0IjoibGkiLCJzIjoi5Y+q5pyJ4pGhIOKGkiDjgIzlt67kuIDpu57jgILlsI/oirHmmK/oqrDvvJ/jgI0ifSx7InQiOiJsaSIsInMiOiLoqqrjgIzlsI/oirHmmK/lpbPkurrvvI/lpbPlhZLvvI/ni5fjgI3ihpIg44CM5LiN5bCN44CC44CNIn0seyJ0IjoibGkiLCJzIjoi562U5bCN55qE57WE5aaC5p6c5aSa6Kqq5LqG44CM6LOj5oi/5a2Q5piv54K65LqG5o2Q6Yyi44CN5LmL6aGe55qE77yM5LiN5b2x6Z+/5Yik5a6a44CCIn1dfSx7ImtleSI6IjMtMyIsInRpdGxlIjoi5pyD5Ye654++55qE5Lq677yI5Li75oyB5Lq66L2J6L+w77yJIiwiYmxvY2tzIjpbeyJ0IjoidGFibGUiLCJyb3dzIjpbWyLkurrniakiLCLmmK/oqrAiLCLmnIPoqqrnmoToqbEiXSxbIuadkemVt++8iDY177yJIiwi566h5p2R6L6m5YWs5a6kIiwi44CM5LuW57C957SE55qE5pmC5YCZ5Y+q6Kyb5LiA5Y+l77ya5oiR55So5LiN5Yiw5LqG77yM5bCP6Iqx55So5b6X5Yiw44CC44CNIl0sWyLmlZnmjojvvIg1OO+8iSIsIua1t+a0i+Wkp+WtuO+8jOS6jOWNgeW5tOWJjee2k+aJiyAwNDE3Iiwi44CM57ag6KC16b6c5pyD5Zue6Ieq5bex5Ye655Sf55qE5rKZ54GY55Si5Y2144CCMDQxNyDmmK/lnKjlk6roo6Hlh7rnlJ/nmoTvvIzmspLmnInkurrnn6XpgZPjgILjgI0iXSxbIumYv+ahgu+8iDU177yJIiwi6Zuc6LKo5bqX6ICB6ZeG5aiYIiwi44CM5LuW6LK35LqG5LqM5Y2B55uS6JqK6aaZ77yM5oiR5ZWP5LuW6KaB5Y676Zyy54ef5ZaU77yM5LuW6Kqq5beu5LiN5aSa44CC44CNIl0sWyLpmL/lh7HvvIgzNe+8iSIsIuW7uuWVhuWwj+mWi++8jOiyt+S6humYv+eUsOeahOaIv+WtkCIsIuOAjOS7luiqquabrOWgtOmCo+WAi+awtOanveS4jeiDveaLhu+8jOetieS7luWbnuS+huOAguaIkeiqquWlve+8jOWPjeato+mCo+WhiuWcsOaIkeWAkeaaq+aZguS4jeWLleOAguOAjSJdXX1dfSx7ImtleSI6IjQtMSIsInRpdGxlIjoi6ZaL5aC05YmN55qE5rqW5YKZIiwiYmxvY2tzIjpbeyJ0IjoibGkiLCJzIjoi5pS256au54mp77ya5q+P5YCL5Lq65Yiw5aC05YWI5Lqk5LiA5Lu95YyF5aW955qE56au54mp44CC5Li75oyB5Lq66LK85LiK566x6JmfIDHvvZ4yMO+8jOaOkuWcqOS4gOW8temVt+ahjOS4iu+8jOahjOWJjeeri+eJjOOAjOmYv+eUsOeahOadseilv+OAjeOAguS4u+aMgeS6uuengeS4i+iomOS4i+OAjOW5vuiZn+aYr+iqsOW4tueahOOAje+8jOesrOWbm+majuauteaqouafpeeUqOOAgiJ9LHsidCI6ImxpIiwicyI6IuWFreWAi+WcsOm7nu+8muWFreWAi+exg+WtkO+8iOaIluWFreW8teWwj+ahjO+8ie+8jOiyvOWcsOm7nuWQje+8jOavj+WAi+exg+WtkOaUvuS4gOeWiuWNoe+8jOmdouacneS4i++8jOmghuW6j+eFp+esrOS6lOeroOaOkuWlveOAgiJ9LHsidCI6ImxpIiwicyI6Iuavj+e1hO+8muS4gOW8teS6uueJqeWNoeOAgeS4gOWAi+S/oeWwge+8iOaUvuaSv+WIsOeahOWNoe+8ieOAgeS4gOWll+WcsOm7nueJjO+8iOWFreW8te+8jOWvq+WcsOm7nuWQje+8ieOAgiJ9LHsidCI6ImxpIiwicyI6IuS4u+aMgeS6uuaJi+mCiu+8mumCo+WwgeS/oe+8iOWNsOS4gOW8te+8ieOAgeWbm+W8teS6uueJqeWNoeOAgemZhOmMhO+8ouOAjOS6jOWNgeW5tOeahOWgseWRiuOAjeS4gOW8teOAgeS4ieW8teaPkOekuuWNoeOAgeWFqeWAi+e1kOWxgOS/oeWwge+8iO+8oeaylue5qe+8j++8ouiKseiTru+8ieOAgeaKveexpOetkuOAgeioiOaZguWZqOOAgiJ9LHsidCI6ImxpIiwicyI6IuWIhue1hO+8mumAsuWgtOaZguaKveexpOWIhuWbm+e1hO+8jOavj+e1hCA0772eNiDkurrjgIIifV19LHsia2V5IjoiNC0yIiwidGl0bGUiOiLplovloLTnqL/vvIjnhafllLjvvIkiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuWQhOS9jeOAgiJ9LHsidCI6InAiLCJzIjoi6YCZ6KOh5piv55m95rKZ5p2R77yM5Y+w54Gj5Y2X6YOo5rW36YKK55qE5LiA5YCL5bCP5ryB5p2R44CC5LiA5qKd6KGX77yM5LiA6ZaT6Zuc6LKo5bqX77yM5LiA6ZaT5buf77yM5LiA5YCL5bCP5riv77yM5riv6YKK5pyJ5LiA54mH5pus6a2a57ay55qE5rC05rOl5pus5aC044CC5p2R5a2Q55qE5rKZ54GY5LiA5YWs6YeM6ZW377yM6ICB5LiA6Lyp6Kqq5Lul5YmN5pyJ5rW36b6c5LiK5L6G6YGO77yM5LiJ5Y2B5bm05rKS6KaL5LqG44CCIn0seyJ0IjoicCIsInMiOiLmnZHoo6HmnInkuIDlgIvkurrlj6vpmL/nlLDvvIzkuIPljYHmrbLvvIzmjZXkuobkupTljYHlubTnmoTprZrvvIzkuIDlgIvkurrkvY/jgILoqbHlvojlsJHvvIzkuI3llp3phZLvvIzkuI3miZPniYzvvIzmr4/lpKnml6nkuIrlm5vpu57lh7rmtbfvvIzkuK3ljYjlm57kvobvvIzkuIvljYjlnZDlnKjmm6zloLTnnIvmtbfjgILljrvlubTku5bmioroiLnos6PkuobvvIzoqqrlubTntIDliLDkuobjgIIifSx7InQiOiJwIiwicyI6IuaYqOWkqeaXqeS4iu+8jOadkemVt+mWi+mWgOeahOaZguWAme+8jOmWgOWPo+aUvuiRl+S6jOWNgeWAi+euseWtkOWSjOS4gOWwgeS/oeOAgiJ9LHsidCI6InAiLCJzIjoi77yI5ou/6LW35L+h77yM5ZS444CC77yJIn0seyJ0IjoicCIsInMiOiLjgIzmiJHljrvnnIvlsI/oirHnlJ/lranlrZDjgILmiL/lrZDos6PkuobvvIzpjKLmiJHnlKjkuobvvIzoiLnljrvlubTlsLHos6PkuobjgILmiJHnmoTmnbHopb/oo53kuobkuozljYHnrrHvvIzmlL7lnKjmnZHovqblhazlrqTvvIzliIbntabkvaDlgJHvvIzoqrDopoHlk6rlgIvoh6rlt7HorJvlpb3jgILkuI3nlKjmib7miJHjgILmiJHmnIPlm57kvobvvIzkvYbkuI3mmK/lvojlv6vjgILigJTigJTpmL/nlLDjgI0ifSx7InQiOiJwIiwicyI6IumYv+eUsOaykuaciee1kOmBjuWpmu+8jOaykuacieWwj+WtqeOAguadkeijoeaykuacieS6uuWPq+Wwj+iKseOAgiJ9LHsidCI6InAiLCJzIjoi5LuW5Lq65LiN6KaL5LqG44CC5omL5qmf5omT5LiN6YCa44CC5oi/5a2Q5bey57aT6YGO5oi257Wm5bu65ZWG77yM5LiL56au5ouc6KaB5ouG44CCIn0seyJ0IjoicCIsInMiOiLot5/ku5bmnIDopqrnmoTlm5vlgIvkurrogZrlnKjmnZHovqblhazlrqTvvIzmg7PlvITmuIXmpZrlhanku7bkuovvvJrlsI/oirHmmK/oqrDvvJ/ku5bljrvkuoblk6roo6HvvJ8ifSx7InQiOiJwIiwicyI6IuS9oOWAkeWwseaYr+mAmeWbm+WAi+S6uuOAgiJ9LHsidCI6InAiLCJzIjoi77yI5ZS45Zub5by15Lq654mp5Y2h77yM5ZS45LiA5by155m85LiA5by144CC77yJIn0seyJ0IjoicCIsInMiOiLmr4/kuIDntYTnn6XpgZPnmoTkuovkuI3kuIDmqKPjgILlj6/ku6XorJvntabliKXntYTogb3vvIzkuZ/lj6/ku6XkuI3orJvjgIIifSx7InQiOiJwIiwicyI6IuacieWFreWAi+WcsOaWueWPr+S7peaQnO+8mumYv+eUsOeahOWutuOAgeabrOWgtOOAgeadkei+puWFrOWupOOAgea1t+a0i+Wkp+WtuOOAgembnOiyqOW6l+OAgea4r+mCiuOAguaQnOWIsOS7gOm6vO+8jOWwseaYr+S9oOWAkeeahOOAgiJ9XX0seyJrZXkiOiI0LTMiLCJ0aXRsZSI6Iuimj+WJh+iqquaYju+8iOeFp+WUuO+8iSIsImJsb2NrcyI6W3sidCI6InAiLCJzIjoi5pCc5p+l5LqU6Lyq44CC5q+P5LiA6Lyq77yM5ZCE57WE5ZCM5pmC5Lqu5LiA5by15Zyw6bue54mM77yM5oyH5LiA5YCL5Zyw5pa544CC5oiR5b6e6YKj5YCL5Zyw5pa555qE5Y2h5aCG5pyA5LiK6Z2i5oq95LiA5by157Wm5L2g5YCR44CC5YWp57WE5oyH5ZCM5LiA5YCL5Zyw5pa577yM6YO95oq944CC5LiA5YCL5Zyw5pa555qE5Y2h5oq95a6M5LqG77yM5bCx5LiN6IO95YaN5oyH44CCIn0seyJ0IjoicCIsInMiOiLljaHmnInkuInnqK7jgILnt5rntKLljaHvvIzkuIrpnaLlr6vnmoTmmK/kuovlr6bvvIzkuI3lpJrkuI3lsJHjgILnrrHlrZDliLjvvIzmnIDlvozlj6/ku6XplovkuIDlgIvnrrHlrZDjgILllY/omZ/ljaHvvIznrYnkuIDkuIvmtbfpvpzmua/lj6/ku6XlpJrllY/kuIDpoYzjgIIifSx7InQiOiJwIiwicyI6Iuavj+i8quS5i+mWk+acieS4ieWNgeenku+8jOWPr+S7pei3n+WIpee1hOS6pOaYk++8muWNoeaPm+WNoeOAgeWIuOaPm+WNoe+8jOmDveWPr+S7pe+8jOism+WlveWwseWlveOAgiJ9LHsidCI6InAiLCJzIjoi5LqU6Lyq5LmL5b6M5piv5rW36b6c5rmv44CC5L2g5YCR5ZWP5oiR77yM5oiR5Y+q562U44CM5piv44CN44CM5LiN5piv44CN44CM5rKS5pyJ6Zec5L+C44CN44CM5LiN55+l6YGT44CN44CC5q+P57WE5pyJ5LiJ5YCL5ZWP6Jmf77yM5pK/5Yiw55qE5ZWP6Jmf5Y2h5YaN5Yqg44CC562U5bCN55qE57WE5YWI6ZaL566x77yM5Lmf5rG65a6a5LiA5Lu25LqL4oCU4oCU562J5LiA5LiL5YaN6Kqq44CCIn0seyJ0IjoicCIsInMiOiLmnIDlvozplovnrrHjgILmnInliLjnmoTlhYjplovvvIzmspLmnInliLjnmoTmir3nsaTjgILllK/kuIDnmoTopo/nn6nvvJrkuI3og73mi7/liLDoh6rlt7HluLbkvobnmoTpgqPkuIDnrrHjgIIifSx7InQiOiJwIiwicyI6IumWi+Wni+OAguesrOS4gOi8qu+8jOS6rueJjOOAgiJ9XX0seyJrZXkiOiI1LTEiLCJ0aXRsZSI6IuaQnOafpeimj+WJhyIsImJsb2NrcyI6W3sidCI6ImxpIiwicyI6IuS6lOi8quOAguavj+i8quWQhOe1hOWQjOaZguS6ruWcsOm7nueJjOOAgiJ9LHsidCI6ImxpIiwicyI6IuWQhOe1hOW+nuiHquW3seaMh+eahOWcsOm7nuaKveacgOS4iumdouS4gOW8teWNoeOAguWkmue1hOaMh+WQjOS4gOWcsOm7nu+8jOmDveaKve+8iOWQhOS4gOW8te+8ieOAguWcsOm7nueahOWNoeaKveWujOWwseS4jeiDveWGjeaMh+OAgiJ9LHsidCI6ImxpIiwicyI6IuaKveWIsOeahOWNoeaUtumAsue1hOS/oeWwgeOAguWPr+S7pee1puWIpee1hOeci++8jOWPr+S7peS4jee1puOAgiJ9LHsidCI6ImxpIiwicyI6Iuavj+i8quS5i+mWkyAzMCDnp5LkuqTmmJPmmYLplpPvvIzkuLvmjIHkurroqIjmmYLjgILkuqTmmJPkuI3pmZDlvaLlvI/jgIIifSx7InQiOiJsaSIsInMiOiLkupTovKrntZDmnZ/lvozjgIzmj63niYzjgI3vvJrkuLvmjIHkurrmiormr4/lgIvlnLDpu57liankuIvnmoTljaHkuK3mnIDkuIrpnaLkuIDlvLXnv7vplovmlL7lnKjmoYzkuIrvvIzlhajloLTpg73nnIvlvpfliLDvvIjlj6rnv7vnt5rntKLljaHvvJvnv7vliLDliLjmiJbllY/omZ/lsLHmlL7lm57ljrvvvIznv7vkuIvkuIDlvLXvvInjgIIifSx7InQiOiJsaSIsInMiOiLmj63niYzlvozlkITntYTmuIXpu57llY/omZ/vvJrln7rmnKwgMyDlgIvvvIvllY/omZ/ljaHjgIIifV19LHsia2V5IjoiNS0zIiwidGl0bGUiOiLmkJzmn6Xjg7vkuLvmjIHkurrlgpnlv5giLCJibG9ja3MiOlt7InQiOiJsaSIsInMiOiLlpJrntYTmjIflkIzkuIDlnLDpu57kuI3nlKjnjJzmi7PvvIzpg73mir3jgIIifSx7InQiOiJsaSIsInMiOiLljaHkuIrnmoTlhaflrrnmmK/jgIzkuovlr6bjgI3vvIzkuLvmjIHkurrkuI3oo5zlhYXjgIHkuI3op6Pph4vjgILnjqnlrrbllY/jgIzpgJnmmK/ku4DpurzmhI/mgJ3jgI3vvIznrZTvvJrjgIzljaHkuIrlr6vnmoTlsLHmmK/lhajpg6jjgILjgI0ifSx7InQiOiJsaSIsInMiOiLkuqTmmJPmmYLplpPkuLvmjIHkurrlj6roqIjmmYLvvIzkuI3ku4vlhaXjgIIifSx7InQiOiJsaSIsInMiOiLmj63niYzmmYLnv7vliLDliLjmiJbllY/omZ/mlL7lm57ljrvjgIHnv7vkuIvkuIDlvLXvvIznm7TliLDnv7vliLDnt5rntKLljaHmiJboqbLnlornv7vlrozjgIIifSx7InQiOiJsaSIsInMiOiLnrrHlrZDliLggOSDlvLXlsJHmlrznrrHlrZAgMjAg5YCL77yM5rKS5pyJ5Yi455qE5Lq656ys5Zub6ZqO5q615oq957Gk77yM5YWI6Kyb5riF5qWa77yM6YG/5YWN5pC25Yi444CCIn1dfSx7ImtleSI6IjYtMSIsInRpdGxlIjoi5rW36b6c5rmv6ZaL5aC056i/77yI54Wn5ZS477yJIiwiYmxvY2tzIjpbeyJ0IjoicCIsInMiOiLkupTovKrmkJzlrozvvIzniYzkuZ/mj63kuobjgILmr4/kuIDntYTmiYvkuIrmnInkuIDkupvkuovlr6bjgIHkuIDkupvnrrHlrZDliLjjgIHkuIDkupvllY/omZ/jgIIifSx7InQiOiJwIiwicyI6IuaOpeS4i+S+huaYr+a1t+m+nOa5r+OAguWVj+mhjOWFqeWAi++8muWwj+iKseaYr+iqsO+8n+S7luWOu+S6huWTquijoe+8nyJ9LHsidCI6InAiLCJzIjoi5ZCE57WE6Lyq5rWB5ZWP5oiR77yM5LiA5qyh5LiA5YCL5ZWP6aGM77yM55So5o6J5LiA5YCL5ZWP6Jmf44CC5oiR5Y+q5Zue562U5Zub56iu77ya44CM5piv44CN44CM5LiN5piv44CN44CM5rKS5pyJ6Zec5L+C44CN44CM5LiN55+l6YGT44CN44CC44CM5rKS5pyJ6Zec5L+C44CN5piv6Kqq6YCZ5Lu25LqL6Lef562U5qGI54Sh6Zec44CC44CM5LiN55+l6YGT44CN5piv6Kqq4oCU4oCU5pWF5LqL6KOh5rKS5pyJ5Lq655+l6YGT44CCIn0seyJ0IjoicCIsInMiOiLovKrliLDkvaDlgJHnmoTmmYLlgJnvvIzlj6/ku6XkuI3llY/vvIzmlLnmiJDmraPlvI/nrZTpoYzvvJrkuIDlj6PmsKPmiornrZTmoYjorJvlrozvvIzorJvlrozmiJHmiY3liKTjgILnrZTlsI3vvIzntZDmnZ/vvJvnrZTpjK/vvIzmiJHlj6roqqrjgIzkuI3lsI3jgI3miJbjgIzlt67kuIDpu57jgI3vvIzkuIvkuIDovKrot7PpgY7kvaDlgJHjgILnrZTpoYzkuI3nlKjllY/omZ/jgIIifSx7InQiOiJwIiwicyI6IuWVj+iZn+eUqOWujOWwseWPquiDveiBve+8jOaIluiAhei3n+WIpee1hOS6pOaYk+OAgiJ9LHsidCI6InAiLCJzIjoi5LiJ5Y2B5YiG6ZCY44CC5b6e576O546J57WE6ZaL5aeL44CCIn1dfSx7ImtleSI6IjYtMiIsInRpdGxlIjoi5rW36b6c5rmv6KaP5YmHIiwiYmxvY2tzIjpbeyJ0IjoidGFibGUiLCJyb3dzIjpbWyLpoIXnm64iLCLopo/liYciXSxbIumghuW6jyIsIue+jueOieKGkuW/l+ixquKGkuiAgeWRqOKGkuWwj+mbr++8jOW+queSsOOAgiJdLFsi6aGN5bqmIiwi5q+P57WE5Z+65pysIDMg5ZWP77yL5ZWP6Jmf5Y2h44CCIl0sWyLlm57nrZQiLCLmmK/vvI/kuI3mmK/vvI/mspLmnInpl5zkv4LvvI/kuI3nn6XpgZPjgILkuI3mmK/mmK/pnZ7poYzoq4vph43llY/vvIzkuI3miaPjgILkuIDpoYzoo6HllY/lhanku7bkuovvvIzkuLvmjIHkurrlj6rnrZTnrKzkuIDku7bjgIIiXSxbIuato+W8j+etlOmhjCIsIui8quWIsOiHquW3seaZguWPr+etlO+8jOS4gOasoeism+WujOOAguetlOWwjeKGkuesrOS4iemajuaute+8m+etlOmMr+KGkuOAjOS4jeWwjeOAjeaIluOAjOW3ruS4gOm7nuOAje+8jOS4i+S4gOi8qui3s+mBjuOAguetlOmhjOS4jeeUqOWVj+iZn+OAgiJdLFsi5Lqk5piTIiwi5Lu75L2V5pmC5YCZ5Y+v5Lul6Lef5Yil57WE5Lqk5o+b57ea57Si5Y2h44CB566x5a2Q5Yi444CB5ZWP6Jmf5Y2h77yM5Li75oyB5Lq65LiN566h44CCIl0sWyLmj5DnpLoiLCLnrKwgMTUg5YiG6ZCY44CB56ysIDIyIOWIhumQmOOAgeesrCAzMCDliIbpkJjlkITllLjkuIDlvLXmj5DnpLrljaHvvIg2LTTvvInjgIIiXSxbIuaZgumWkyIsIjMwIOWIhumQmOOAguWUuOWujOesrOS4ieW8teaPkOekuu+8jOmWi+aUvuS4gOi8quaQtuetlOOAgiJdXX1dfSx7ImtleSI6IjYtMyIsInRpdGxlIjoi5rW36b6c5rmv44O75ZWP562U6KGoIiwiYmxvY2tzIjpbeyJ0IjoidGFibGUiLCJyb3dzIjpbWyLllY/poYwiLCLnrZQiLCLlgpnoqLsiXSxbIuWwj+iKseaYr+S6uuWXju+8nyIsIuS4jeaYryIsIiJdLFsi5bCP6Iqx5piv5aWz5Lq65ZeO77yfIiwi5LiN5pivIiwiIl0sWyLlsI/oirHmmK/ku5bnmoTlpbPlhZLll47vvJ8iLCLkuI3mmK8iLCIiXSxbIuWwj+iKseaYr+S7lueahOaDheS6uuWXju+8nyIsIuS4jeaYryIsIiJdLFsi5bCP6Iqx5piv5p2R6KOh55qE5Lq65ZeO77yfIiwi5LiN5pivIiwiIl0sWyLlsI/oirHmmK/li5Xnianll47vvJ8iLCLmmK8iLCIiXSxbIuWwj+iKseaYr+eLl++8j+iyk++8j+mzpeWXju+8nyIsIuS4jeaYryIsIiJdLFsi5bCP6Iqx5L2P5Zyo5rW36KOh5ZeO77yfIiwi5pivIiwiIl0sWyLlsI/oirHmmK/prZrll47vvJ8iLCLkuI3mmK8iLCIiXSxbIuWwj+iKseaYr+a1t+ixmu+8j+mvqOmtmuWXju+8nyIsIuS4jeaYryIsIiJdLFsi5bCP6Iqx5piv5rW36b6c5ZeO77yfIiwi5pivIiwiIl0sWyLlsI/oirHmmK/ntqDooLXpvpzll47vvJ8iLCLmmK8iLCIiXSxbIuWwj+iKseaYr+S7lumkiueahOWXju+8nyIsIuaYryIsIumkiumBjuS4ieWNgeWkqSJdLFsi5bCP6Iqx5piv5LuW5pWR55qE5ZeO77yfIiwi5pivIiwiIl0sWyLlsI/oirHlsLHmmK8gMDQxNyDll47vvJ8iLCLmmK8iLCIiXSxbIuauvOS4iueahOe0heiKseaYr+S7lueVq+eahOWXju+8nyIsIuaYryIsIiJdLFsi5bCP6Iqx54++5Zyo6YKE5rS76JGX5ZeO77yfIiwi5pivIiwiIl0sWyLlsI/oirHnj77lnKjlnKjmtbfoo6Hll47vvJ8iLCLmmK8iLCIiXSxbIuWwj+iKseePvuWcqOWcqOawtOanveijoeWXju+8nyIsIuS4jeaYryIsIiJdLFsi44CM55Sf5a2p5a2Q44CN5piv55yf55qE55Sf5a2p5a2Q5ZeO77yfIiwi5pivIiwi55Si5Y21Il0sWyLlsI/oirHmh7flrZXkuobll47vvJ8iLCLmmK8iLCLmhI/mgJ3nrpflsI0iXSxbIuWwj+iKseimgeS4iuWyuOeUouWNteWXju+8nyIsIuaYryIsIiJdLFsi5LuW5Y675rKZ54GY5ZeO77yfIiwi5pivIiwiIl0sWyLku5bljrvnrYnlsI/oirHkuIrlsrjll47vvJ8iLCLmmK8iLCIiXSxbIuS7luimgeWcqOaymeeBmOS4iuetieW+iOWkmuWkqeWXju+8nyIsIuaYryIsIiJdLFsi5LuW55+l6YGT5bCP6Iqx5pyD5LiK5ZOq5YCL5rKZ54GY5ZeO77yfIiwi5LiN5pivIiwiIl0sWyLmtbfmtIvlpKflrbjnn6XpgZPll47vvJ8iLCLkuI3mmK8iLCIiXSxbIuacieS7u+S9leS6uuefpemBk+WXju+8nyIsIuS4jeaYryIsIiJdLFsi5LuW5Y675LqG6Iqx6JOu5ZeO77yfIiwi5LiN55+l6YGTIiwiIl0sWyLku5bljrvkuobmspbnuanll47vvJ8iLCLkuI3nn6XpgZMiLCIiXSxbIuS7luWFqeWAi+WcsOaWuemDveWOu+WXju+8nyIsIuS4jeaYryIsIuWPquS9j+S4gOmWkyJdLFsi5LuW5piv55So54yc55qE5ZeO77yfIiwi5pivIiwiIl0sWyLku5bmnInlh7rlnIvll47vvJ8iLCLkuI3nn6XpgZMiLCIiXSxbIuS7luW4tuS6huitt+eFp+WXju+8nyIsIuaYryIsIuW4tuS6huS4jeS7o+ihqOeUqOS6hiJdLFsi6LOj5oi/5a2Q5piv5Zug54K657y66Yyi5ZeO77yfIiwi5LiN5pivIiwiIl0sWyLos6PmiL/lrZDmmK/ngrrkuobpgJnku7bkuovll47vvJ8iLCLmmK8iLCIiXSxbIuizo+aIv+WtkOeahOmMouWkp+mDqOWIhuaNkOaOieS6huWXju+8nyIsIuaYryIsIiJdLFsi5o2Q5qy+6Lef5bCP6Iqx5pyJ6Zec5ZeO77yfIiwi5pivIiwiIl0sWyLmsLTmp73kuI3og73mi4bot5/lsI/oirHmnInpl5zll47vvJ8iLCLmmK8iLCIiXSxbIuS7luacg+WbnuS+huWXju+8nyIsIuaYryIsIiJdLFsi5LuW55Sf55eF5LqG5ZeO77yfIiwi5LiN5pivIiwiIl0sWyLku5bopoHljrvmrbvll47vvJ8iLCLkuI3mmK8iLCIiXSxbIuacm+mBoOmPoeaYr+eCuuS6hueci+Wwj+iKseWXju+8nyIsIuaYryIsIiJdLFsi6JqK6aaZ44CB5rOh6bq15piv54K65LqG5Zyo5rKZ54GY5LiK5b6F5b6I5LmF5ZeO77yfIiwi5pivIiwiIl0sWyLjgIznt7Tnv5LjgI3mmK/nt7Tnv5LlnKjmspnngZjkuIrotrTokZfnrYnll47vvJ8iLCLmmK8iLCIiXSxbIuiIueWQjeOAjOWwj+iKseiZn+OAjeeahOWwj+iKseaYr+WQjOS4gOWAi+WXju+8nyIsIuaYryIsIiJdLFsi5LuW5pS56Ii55ZCN5piv5Zug54K65bCP6Iqx5ZeO77yfIiwi5pivIiwiIl0sWyLkuozljYHlubTliY3osrfnmoTonabmmK/ppLXlsI/oirHnmoTll47vvJ8iLCLmmK8iLCIiXSxbIuaciOabhuWciOWFreWNgeWkqeaYr+eUouWNteWto+WXju+8nyIsIuaYryIsIiJdLFsi5rCR5a6/6KiC5YWp5YCL5pyI5piv54K65LqG562J5ZeO77yfIiwi5pivIiwiIl0sWyLmlZnmjojoqqrnmoTjgIzlub7ljYHlgIvmmZrkuIrjgI3ot5/pgJnmnInpl5zll47vvJ8iLCLmmK8iLCIiXSxbIuS7lueCuuS7gOm6vOS4jemAmuWgseWwseiHquW3semkiu+8nyIsIuaykuaciemXnOS/giIsIuS4jeaYr+aYr+mdnumhjO+8m+iri+mHjeWVjyJdLFsi5LuW5pyJ5rKS5pyJ57WQ6YGO5ama77yfIiwi5LiN5pivIiwi5rKS5pyJIl1dfV19LHsia2V5IjoiNi00IiwidGl0bGUiOiLmj5DnpLrljaEiLCJibG9ja3MiOlt7InQiOiJ0YWJsZSIsInJvd3MiOltbIuaZgumWkyIsIuaPkOekuiJdLFsi56ysIDE1IOWIhumQmCIsIuOAjOWwj+iKseS4jeaYr+S6uuOAguOAjSJdLFsi56ysIDIyIOWIhumQmCIsIuOAjOS6jOWNgeW5tOWJje+8jOeJoOWcqOabrOWgtOeahOawtOanveijoeS9j+S6huS4gOWAi+aciOOAguOAjSJdLFsi56ysIDMwIOWIhumQmCIsIuOAjOeJoOimgeWbnuiHquW3seWHuueUn+eahOaymeeBmOOAguaykuacieS6uuefpemBk+aYr+WTquS4gOWAi+OAguOAjSJdXX0seyJ0IjoicCIsInMiOiLllLjlroznrKzkuInlvLXvvIzplovmlL7kuIDovKrmkLbnrZTjgIIifV19LHsia2V5IjoiNi01IiwidGl0bGUiOiLmjqjnkIbnpLrnr4QiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuekuuevhOS4gO+8muaJi+S4iuWNoeavlOi8g+WkmueahOe1hOOAgiJ9LHsidCI6InRhYmxlIiwicm93cyI6W1si5q2l6amfIiwi5omL5LiK55qE5Y2hIiwi5ZWPIiwi562UIl0sWyIxIiwi5a62LTMg54Wn54mH44CM5bCP6Iqx77yM56ys5LiA5aSp44CN44CB5rivLTHjgIzmnIPli5XjgIHmnIPlkqzkurrjgI0iLCLlsI/oirHmmK/kurrll47vvJ8iLCLkuI3mmK8iXSxbIjIiLCLmm6wtMyDkv53ogrLmiYvlhorjgIHmm6wtMSDmsLTmp70iLCLlsI/oirHmmK/mtbfpvpzll47vvJ8iLCLmmK8iXSxbIjMiLCLmm6wtNSDjgIwwNDE344CN44CB5rW3LTEg6YCa5aCx57SA6YyEIiwi5bCP6Iqx5bCx5pivIDA0MTcg5ZeO77yfIiwi5pivIl0sWyI0Iiwi5rW3LTIg5LuK5bm05aCx5ZGK77ya5b6A55Si5Y215rKZ54GYIiwi44CM55Sf5a2p5a2Q44CN5piv55Si5Y215ZeO77yfIiwi5pivIl0sWyI1Iiwi5a62LTQg5pyb6YGg6Y+h44CB6ZucLTEg6JqK6aaZ44CB5rivLTIg57e057+S6La0Iiwi5LuW5Y675rKZ54GY562J54mg5LiK5bK45ZeO77yfIiwi5pivIl0sWyI2Iiwi5b+X6LGq77ya5YWp6ZaT5rCR5a6/44CB5rW3LTUg5pWZ5o6I5LiN55+l6YGTIiwi5LuW55+l6YGT5piv5ZOq5YCL5rKZ54GY5ZeO77yfIiwi5LiN5pivIl0sWyLnrZTpoYwiLCIiLCLjgIzlsI/oirHmmK/ku5bkuozljYHlubTliY3mlZHnmoTmtbfpvpzvvIwwNDE344CC54mg5oiQ5bm05LqG6KaB5Zue5rKZ54GY55Si5Y2177yM5LuW5Y675rKZ54GY5LiK562J54mg44CC5LuW5Y675LqG6Iqx6JOu44CC44CNIiwi5bCNIl1dfSx7InQiOiJwIiwicyI6IuekuuevhOS6jO+8muaJi+S4iuWNoeavlOi8g+WwkeeahOe1hO+8iOWPquacieS6uueJqeWNoe+8i+WFqeW8tee3mue0ou+8ieOAgiJ9LHsidCI6InRhYmxlIiwicm93cyI6W1si5q2l6amfIiwi5omL5LiK55qE5Y2hIiwi5ZWPIiwi562UIl0sWyIxIiwi6ICB5ZGo55qE5Lq654mp5Y2h77ya5pyD5YuV44CB5pyD5ZKs5Lq6Iiwi5bCP6Iqx5piv5YuV54mp5ZeO77yfIiwi5pivIl0sWyIyIiwi5rivLTYg5pKI5Yiw5rW36b6c6YO95pyD5pS+Iiwi5bCP6Iqx5piv5rW36b6c5ZeO77yfIiwi5pivIl0sWyIzIiwi5o+Q56S65LiA44CB5o+Q56S65LqMIiwi44CM55Sf5a2p5a2Q44CN5piv54mg6KaB55Si5Y215ZeO77yfIiwi5pivIl0sWyI0Iiwi6Lef5Yil57WE5o+b5L6G5rW3LTUiLCLku5bljrvmspnngZjnrYnniaDll47vvJ8iLCLmmK8iXSxbIuetlOmhjCIsIiIsIuOAjOWwj+iKseaYr+a1t+m+nO+8jOS7luS6jOWNgeW5tOWJjeaVkeeahOmCo+mau+OAgueJoOimgeS4iuWyuOeUouWNte+8jOS7luWOu+aymeeBmOetieOAguS7luWOu+S6huaylue5qeOAguOAjSIsIuWwjSJdXX1dfSx7ImtleSI6IjctMSIsInRpdGxlIjoi562U5bCN5LmL5b6M77yI54Wn5ZS477yJIiwiYmxvY2tzIjpbeyJ0IjoicCIsInMiOiLlsI3jgIIifSx7InQiOiJwIiwicyI6IuWwj+iKseaYr+S4gOmau+e2oOigtem+nOOAgiJ9LHsidCI6InAiLCJzIjoi5LqM5Y2B5bm05YmN55qE5LiJ5pyI77yM6Zi/55Sw5pS257ay55qE5pmC5YCZ77yM57ay5a2Q6KOh57qP6JGX5LiA6Zq75bCP57ag6KC16b6c77yM5q686Lef5omL5o6M5beu5LiN5aSa5aSn77yM5q6855qE6YKK57ej6KOC5LqG5LiA6YGT77yM5LiA55u05rWB6KGA44CC6YKj5aSp5piv56au5ouc5YWt77yM5rW35rSL5aSn5a2455qE6Zu76Kmx5rKS5Lq65o6l44CC6Zi/55Sw5oqK54mg5bi25Zue5a6277yM6ZqU5aSp5Zyo5pus5aC056CM5LqG5LiA5YCL5rC05qe977yM5o6l5rW35rC06YCy5Y6744CCIn0seyJ0IjoicCIsInMiOiLku5bppIrkuobniaDkuInljYHlpKnjgILmr4/lpKnlh7rmtbfliY3mj5vkuIDmrKHmsLTvvIzlm57kvoblho3mj5vkuIDmrKHvvJvmr4/lpKnljrvpmL/moYLpgqPoo6HosrfkuIDmlqTmnIDlsI/nmoTonabvvIzliIfnoo7vvIzppLXjgILnrKzljYHlpKnvvIzku5bnlKjoiLnmvIblnKjniaDmrrznmoTpgornt6Ppu57kuobkuIDmnLXntIXoibLnmoTlsI/oirHvvIzoqqrpgJnmqKPku6XlvoznnIvlvpflh7rkvobmmK/oqrDjgILku5blj6vniaDlsI/oirHjgIIifSx7InQiOiJwIiwicyI6IuesrOS4ieWNgeWkqe+8jOWCt+WlveS6huOAguaVmeaOiOS+huijneS6huaomeexpO+8jDA0MTfvvIzoqqrpgJnpmrvmmK/mr43nmoTvvIzkuozljYHlubTlvozmiY3mnIPmiJDlubTjgILpgqPlpKnmmZrkuIrpmL/nlLDlj6vogIHlkajplovoiLnvvIzliLDlpJbmtbfvvIzmiorlsI/oirHmlL7lm57mtbfoo6HjgILmlL7kuIvljrvkuYvliY3vvIzku5blsI3okZfmtbforJvkuoblvojkuYXnmoToqbHjgIIifSx7InQiOiJwIiwicyI6IumalOW5tO+8jOS7luaKiuiIueWQjeaUueaIkOWwj+iKseiZn+OAgiJ9LHsidCI6InAiLCJzIjoi5LmL5b6M5q+P5bm05LiJ5pyI77yM5rW35rSL5aSn5a245a+E5LiA5bCB5aCx5ZGK57Wm5LuW77yM5ZGK6Ki05LuW5bCP6Iqx5Y675LqG5ZOq6KOh44CC5LqM5Y2B5bCB44CC5LuK5bm055qE5aCx5ZGK6Kqq77ya5bCP6Iqx5oiQ5bm05LqG77yM5q2j5b6A5YyX5ri477yM6KaB5Zue6Ieq5bex5Ye655Sf55qE5rKZ54GY55Si5Y2144CC5pyA5b6M55qE6KiK6Jmf5Zyo6Iqx6JOu5aSW5rW35ZKM5rKW57mp5LmL6ZaT77yM54S25b6M6L+96Lmk5Zmo5rKS6Zu75LqG44CCIn0seyJ0IjoicCIsInMiOiLntqDooLXpvpzmnIPlm57oh6rlt7Hlh7rnlJ/nmoTmspnngZjjgILlsI/oirHlh7rnlJ/lnKjlk6roo6HvvIzmspLmnInkurrnn6XpgZPjgIIifSx7InQiOiJwIiwicyI6IumYv+eUsOaKiuaIv+WtkOizo+S6hu+8jOS6lOeZvuiQrOaNkOe1pua1t+m+nOS/neiCsuWfuumHke+8jOWJqeS4i+eahOiyt+S6huS4gOWPsOWknOimluacm+mBoOmPoe+8jOioguS6huWFqemWk+awkeWuv++8jOWQhOWFqeWAi+aciOOAguS7luavj+WkqeaZmuS4iuWOu+aymeeBmOe3tOe/kui2tOiRl+OAgueEtuW+jOS7lui1sOS6huOAgiJ9LHsidCI6InAiLCJzIjoi5LuW5Y675rKZ54GY5LiK562J5bCP6Iqx5LiK5bK444CCIn0seyJ0IjoicCIsInMiOiLoh7Pmlrzku5bljrvkuoblk6roo6HigJTigJTku5boh6rlt7HkuZ/lj6rmmK/njJzjgILkvaDlgJHoqqrku5bljrvkuobvvIjopIfov7DoqbLntYToqqrnmoTlnLDmlrnvvInjgIIifSx7InQiOiJwIiwicyI6Iu+8iOS+neipsue1hOiqqueahOWcsOaWue+8jOaLhuWwjeaHieeahOe1kOWxgOS/oeWwgeOAgu+8iSJ9XX0seyJrZXkiOiI3LTQiLCJ0aXRsZSI6IuaykuS6uuetlOWwjSIsImJsb2NrcyI6W3sidCI6InAiLCJzIjoiMzAg5YiG6ZCY77yL5LiJ5by15o+Q56S677yL5pC2562U6YO95rKS562U5bCN77ya5Li75oyB5Lq65ZS4IDctMSDnmoTnnJ/nm7jliLDjgIzku5bljrvmspnngZjkuIrnrYnlsI/oirHkuIrlsrjjgI3vvIznhLblvozoqqrvvJrjgIzku5bljrvkuoblk6roo6HvvIzmlYXkuovoo6HmspLmnInlr6vjgILlm5vntYTmipXnpajvvIzkuIDntYTkuIDnpajvvIzlubPmiYvnlLHllY/omZ/lianmnIDlpJrnmoTntYTmsbrlrprjgILjgI3mipXlrozllLjlsI3mh4nntZDlsYDjgIIifV19LHsia2V5IjoiOC0xIiwidGl0bGUiOiLplovnrrHnqL/vvIjnhafllLjvvIkiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IuS/oeS4iuiqqu+8muaIkeeahOadseilv+WIhue1puS9oOWAkeOAguS6jOWNgeWAi+euseWtkOOAgiJ9LHsidCI6InAiLCJzIjoi5pyJ566x5a2Q5Yi455qE57WE5YWI6ZaL44CC5b6e562U5bCN55qE6YKj57WE6ZaL5aeL77yM6aCG5pmC6Yed77yM5LiA5qyh55So5LiA5by15Yi477yM5oyH5LiA5YCL6YKE5rKS6ZaL55qE566x5a2Q77yM5ou/6LWw44CC5Yi455So5a6M54K65q2i44CCIn0seyJ0IjoicCIsInMiOiLliankuIvnmoTnrrHlrZDvvIzpgoTmspLmnInnrrHlrZDnmoTkurrmir3nsaTvvIzmir3liLDlub7omZ/mi7/lub7omZ/jgIIifSx7InQiOiJwIiwicyI6IuacgOW+jOS4gOaineimj+efqe+8muaykuacieS6uuWPr+S7peaLv+WIsOiHquW3seW4tuS+hueahOmCo+S4gOeuseOAguaLv+WIsOeahOS6uu+8jOi3n+etlOWwjeeahOmCo+e1hOaMh+WumueahOS6uuS6pOaPm+OAgiJ9XX0seyJrZXkiOiI4LTIiLCJ0aXRsZSI6IumWi+eusea1geeoiyIsImJsb2NrcyI6W3sidCI6InRhYmxlIiwicm93cyI6W1si5q2l6amfIiwi5YuV5L2cIl0sWyIxIiwi562U5bCN55qE57WE5YWI77yM6aCG5pmC6Yed77yM5q+P5by1566x5a2Q5Yi46ZaL5LiA566x77yM566x5a2Q5q246Kmy57WE77yM57WE5YWn6Ieq6KGM5YiG6YWN77yI5LiA5Lq65LiA566x77yJ44CCIl0sWyIyIiwi5Yi455So5a6M44CC6YKE5rKS5pyJ566x5a2Q55qE5Lq65L6d5bqP5oq957Gk77yM57Gk562S6KOh5pS+5Ymp5LiL55qE566x6Jmf44CCIl0sWyIzIiwi5Li75oyB5Lq65bCN54Wn5ZCN5Zau77yM5pyJ5Lq65ou/5Yiw6Ieq5bex5bi255qE77yM55Sx562U5bCN55qE57WE5oyH5a6a5LuW6Lef6Kqw5o+b77yM6KKr5oyH5a6a55qE5Lq65LiN6IO95ouS57WV44CCIl0sWyI0Iiwi5YWo6YOo5ouG6ZaL44CCIl1dfV19LHsia2V5IjoiOC0zIiwidGl0bGUiOiLntZDmnZ/nqL/vvIjnhafllLjvvIkiLCJibG9ja3MiOlt7InQiOiJwIiwicyI6IumYv+eUsOeahOaIv+WtkOS4i+emruaLnOaLhu+8jOabrOWgtOeahOawtOanveeVmeiRl+OAguS7lueahOadseilv+WcqOS9oOWAkeaJi+S4iuOAgiJ9LHsidCI6InAiLCJzIjoi5piO5bm06YCZ5YCL5pmC5YCZ4oCU4oCU77yI5oyH57WQ5bGA77yJ4oCU4oCU5Y6755yL5bCP6b6c44CCIn1dfSx7ImtleSI6IuesrOS5neeroCIsInRpdGxlIjoi5pmC6ZaT6Lu4IiwiYmxvY2tzIjpbeyJ0IjoicCIsInMiOiLku6UgMTk6MDAg6ZaL5aeL44CCIn0seyJ0IjoidGFibGUiLCJyb3dzIjpbWyLmmYLplpMiLCLmrrXokL0iLCLkuLvmjIHkurrli5XkvZwiXSxbIjE4OjQwIiwi5rqW5YKZIiwi5pS256au54mp44CB6LK8566x6Jmf44CB6KiY5ZCN5Zau77yb5YWt5YCL57GD5a2Q5o6S5Y2h77yb5Lq654mp5Y2h44CB5L+h44CB5o+Q56S65Y2h44CB57WQ5bGA5L+h5bCB5bCx5L2NIl0sWyIxOTowMCIsIumWi+WgtCIsIuWIhue1hO+8m+WUuOiDjOaZr+iIh+S/oe+8iDQtMu+8ie+8m+WUuOWbm+W8teS6uueJqeWNoSJdLFsiMTk6MTAiLCLopo/liYciLCLllLggNC0zIl0sWyIxOToxNSIsIuaQnOafpeesrCAx772eNSDovKoiLCLmr4/ovKrvvJrkuq7niYzihpLmir3ljaHihpIzMCDnp5LkuqTmmJPvvJvkuIDovKrntIQgNSDliIbpkJgiXSxbIjE5OjQyIiwi5o+t54mMIiwi5q+P5YCL5Zyw6bue57+75LiA5by157ea57Si5Y2h5pS+5qGM5LiKIl0sWyIxOTo0NSIsIua4hem7niIsIuWQhOe1hOWgseWVj+iZn+aVuO+8jOS4u+aMgeS6uuWvq+WcqOeZveadvyJdLFsiMTk6NTAiLCLmtbfpvpzmua/plovlp4siLCLllLggNi0xIl0sWyIyMDowNSIsIuaPkOekuuS4gCIsIuOAjOWwj+iKseS4jeaYr+S6uuOAguOAjSJdLFsiMjA6MTIiLCLmj5DnpLrkuowiLCLjgIzkuozljYHlubTliY3vvIzniaDlnKjmm6zloLTnmoTmsLTmp73oo6HkvY/kuobkuIDlgIvmnIjjgILjgI0iXSxbIjIwOjIwIiwi5o+Q56S65LiJIiwi44CM54mg6KaB5Zue6Ieq5bex5Ye655Sf55qE5rKZ54GY44CC5rKS5pyJ5Lq655+l6YGT5piv5ZOq5LiA5YCL44CC44CN4oaSIOaQtuetlCJdLFsiMjA6MjIiLCLnrZTlsI0iLCLllLggNy0xIOecn+ebuO+8jOWUuOe1kOWxgCJdLFsiMjA6MzIiLCLplovnrrEiLCLliLjihpLmir3nsaTihpLmqqLmn6XihpLmi4YiXSxbIjIwOjQ3Iiwi57WQ5p2fIiwi5ZS4IDgtMyJdXX0seyJ0IjoicCIsInMiOiLmtbfpvpzmua/oi6Xmj5Dml6nnrZTlsI3vvIzlvozpnaLlhajpg6jmj5DliY3vvIzkuI3nlKjnrYnjgIIifV19LHsia2V5Ijoi56ys5Y2B56ugIiwidGl0bGUiOiLnianmlpkiLCJibG9ja3MiOlt7InQiOiJoMiIsInMiOiIxMC0x44CA5Y2w5Yi35ZOBIn0seyJ0IjoidGFibGUiLCJyb3dzIjpbWyLnianmlpkiLCLmlbjph48iLCLopo/moLwiXSxbIuS/oSIsIjEiLCLmiYvlr6vmiJbmiYvlr6vpq5TvvIxBNSJdLFsi5Lq654mp5Y2hIiwiNO+8iOS6lOe1hOeJiCA177yJIiwiQTXvvIzpmYTpjITvvKHlhajmlociXSxbIuWcsOm7nueJjCIsIjQg57WEIMOXIDYiLCLlkI3niYflpKflsI/vvIzljbDlnLDpu57lkI0iXSxbIue3mue0ouWNoSIsIjIyIiwi5ZCN54mH5aSn5bCP77yM5q2j6Z2i44CM5Zyw6bue5ZCN77yL57eo6Jmf44CN77yM6IOM6Z2i5YWn5a6577yI56ys5LqU56ug77yJIl0sWyLnrrHlrZDliLgiLCI5Iiwi5ZCN54mH5aSn5bCP77yM5Y2w44CM566x5a2Q5Yi444O76ZaL5LiA566x44CNIl0sWyLllY/omZ/ljaEiLCI1Iiwi5ZCN54mH5aSn5bCP77yM5Y2w44CM77yf44O75aSa5ZWP5LiA6aGM44CNIl0sWyLlnLDpu57lkI3niYwiLCI2Iiwi6LK857GD5a2QIl0sWyLnrrHomZ/osrzntJkiLCIx772eMjAiLCLosrznpq7niakiXSxbIuOAjOmYv+eUsOeahOadseilv+OAjeeri+eJjCIsIjEiLCIiXSxbIuS6jOWNgeW5tOeahOWgseWRiiIsIjEiLCLpmYTpjITvvKLvvIxBNO+8jOaUvua1ty0yIOaXgemCiue1puaKveWIsOeahOe1hOeciyJdLFsi5o+Q56S65Y2hIiwiMyIsIjYtNCJdLFsi57WQ5bGA5L+h5bCBIiwiMiIsIuWklumdouWvq++8oeOAge+8ou+8m+WQhOaUvuS4gOW8teOAjOa1t+m+nOaMlua0nuOAjeeahOeFp+eJh++8iOe2sui3r+aJvuS4gOW8tee2oOigtem+nOeUouWNteeahOWknOmWk+eFp+eJh+WNsOWHuuS+hu+8jOauvOe3o+eUqOe0heethum7nuS4gOm7nu+8ieWSjCA3LTLvvI83LTMg55qE6YKj5by157SZIl0sWyLnmb3mnb8iLCIxIiwi6KiY5ZCE57WE5ZWP6Jmf5pW444CB562U6aGM54uA5rOBIl1dfSx7InQiOiJoMiIsInMiOiIxMC0y44CA6YGT5YW3In0seyJ0IjoidGFibGUiLCJyb3dzIjpbWyLnianmlpkiLCLmlbjph48iLCLoqqrmmI4iXSxbIuexg+WtkOaIluWwj+ahjCIsIjYiLCLmlL7lha3nlorljaEiXSxbIue1hOS/oeWwgSIsIjQiLCLmlL7mkr/liLDnmoTljaEiXSxbIuexpOetku+8i+expCIsIjEg5aWXIiwi566x6JmfIl0sWyLoqIjmmYLlmagiLCIxIiwi5Lqk5piTIDMwIOenkuOAgea1t+m+nOa5ryAzMCDliIYiXSxbIumVt+ahjCIsIjEiLCLmlL7kuozljYHlgIvnrrHlrZAiXSxbIuS4gOWwj+e9kOe0heiJsuayuea8hu+8iOWPr+mBuO+8iSIsIjEiLCLmlL7kuLvmjIHkurrmoYzkuIoiXV19XX0seyJrZXkiOiLnrKzljYHkuIDnq6AiLCJ0aXRsZSI6IuS4u+aMgeS6uuWCmeW/mCIsImJsb2NrcyI6W3sidCI6InRhYmxlIiwicm93cyI6W1si54uA5rOBIiwi6JmV55CGIl0sWyLnrKzkuIDpmo7mrrXlsLHmnInkurrllorjgIzlsI/oirHmmK/mtbfpvpzjgI0iLCLjgIznlZnliLDmtbfpvpzmua/lho3oqqrjgILjgI3mkJzmn6XnhafluLjjgILnrKzkuozpmo7mrrXku5blgJHlj6/ku6XnrKzkuIDovKrlsLHnrZTpoYzjgIIiXSxbIua1t+m+nOa5r+esrOS4gOi8quWwseetlOWwjSIsIuWwseaYr+etlOWwjeOAguW+jOmdouWFqOmDqOaPkOWJjeOAgiJdLFsi5pyJ57WE5ZWP6Jmf55So5a6MIiwi5Y+q6IO96IG944CB5Y+q6IO95Lqk5piT44CC5Y+v5Lul55So566x5a2Q5Yi45o+b5ZWP6Jmf44CCIl0sWyLnrZTpoYzmmYLoqqrkuoblnLDpu57kvYbikaDikaHkuI3lrozmlbQiLCLkvp0gMi03IOWbnuOAjOW3ruS4gOm7nuOAje+8jOWcsOm7nuS4jeeul+aVuO+8jOS4i+asoeetlOmhjOimgemHjeaWsOiqquOAgiJdLFsi562U5bCN55qE57WE5YWn6YOo5bCN5Zyw6bue5pyJ5YiG5q2nIiwiMzAg56eS5YWn6Kyb5LiA5YCL44CC6Kyb5LiN5Ye65L6G77yM6Kmy57WE5LuN566X562U5bCN77yM5L2G5Zyw6bue5rG65a6a5qyK57Wm5LiL5LiA5YCL562U5bCN55qE57WE77yb5rKS5pyJ5YW25LuW57WE562U5bCN5bCx5YWo5aC05oqV56Wo44CCIl0sWyLmnInkurrkuLvlvLXjgIzku5bljrvkuobliKXnmoTlnLDmlrnjgI0iLCLjgIzku5blj6roqILkuoblhanplpPmsJHlrr/jgILjgI0iXSxbIuacieS6uuWVj+OAjOeJoOWIsOW6leS4iuWTquWAi+aymeeBmOOAjSIsIuOAjOS4jeefpemBk+OAguOAjSJdLFsi5pyJ5Lq65ZWP44CM5LuW5pyJ5rKS5pyJ5Ye65ZyL44CNIiwi44CM5LiN55+l6YGT44CC44CNIl0sWyLnjqnlrrbllY/nmoTkuI3mmK/mmK/pnZ7poYwiLCLjgIzoq4vmlLnmiJDmmK/miJbkuI3mmK/lj6/ku6Xlm57nrZTnmoTllY/poYzjgILjgI3kuI3miaPllY/omZ/jgIIiXSxbIueOqeWutuS4gOmhjOWVj+WFqeS7tuS6iyIsIuWPquetlOesrOS4gOS7tuOAgiJdLFsi5o+t54mM57+75Yiw55qE6YO95piv5Yi45ZKM5ZWP6JmfIiwi57+75Yiw57ea57Si5Y2h54K65q2i77yb6Kmy55aK57+75a6M5bCx566X44CCIl0sWyLkurrmlbjkuI3mmK8gMjAiLCLnrrHlrZDmlbjvvJ3kurrmlbjvvJvnrrHlrZDliLjntITnrrHlrZDmlbjnmoTkuIDljYrvvIzlpJrnmoTliLjlvp7lnLDpu57nloroo6Hmir3mjonjgIIiXSxbIuS4iee1hCIsIuWOu+aOieWwj+mbr++8jOaQnOafpeWbm+i8qu+8jOWVj+iZn+WfuuacrCA0IOWAi+OAgiJdLFsi5LqU57WEIiwi5Yqg5bu65ZWG6Zi/5Yex77yI6ZmE6YyE77yh77yJ77yM6aCG5bqP576O546J4oaS5b+X6LGq4oaS6ICB5ZGo4oaS5bCP6Zuv4oaS6Zi/5Yex44CCIl0sWyLmnInkurrmir3nsaTmir3liLDoh6rlt7HnmoTnrrHlrZAiLCLkvp0gOC0yIOatpempnyAzIOS6pOaPm+OAgiJdXX1dfV0sInNoYXJlVXJsIjoiaHR0cHM6Ly9VU0VSLmdpdGh1Yi5pby94aWFvaHVhLyIsInFyU3ZnIjoiPHN2ZyB3aWR0aD1cIjEzMlwiIGhlaWdodD1cIjEzMlwiIGNsYXNzPVwic2Vnbm9cIj48ZyB0cmFuc2Zvcm09XCJzY2FsZSg0KVwiPjxwYXRoIGZpbGw9XCIjZmZmXCIgZD1cIk0wIDBoMzN2MzNoLTMzelwiLz48cGF0aCBjbGFzcz1cInFybGluZVwiIHN0cm9rZT1cIiMwMDBcIiBkPVwiTTIgMi41aDdtMyAwaDJtMSAwaDFtMiAwaDNtMyAwaDdtLTI5IDFoMW01IDBoMW0xIDBoMW0xIDBoM20xIDBoM20yIDBoMW0yIDBoMW01IDBoMW0tMjkgMWgxbTEgMGgzbTEgMGgxbTIgMGgybTEgMGgxbTEgMGgzbTMgMGgxbTEgMGgxbTEgMGgzbTEgMGgxbS0yOSAxaDFtMSAwaDNtMSAwaDFtMSAwaDJtMSAwaDZtMiAwaDJtMSAwaDFtMSAwaDNtMSAwaDFtLTI5IDFoMW0xIDBoM20xIDBoMW0xIDBoMm0xIDBoMW0zIDBoMm01IDBoMW0xIDBoM20xIDBoMW0tMjkgMWgxbTUgMGgxbTIgMGgzbTUgMGgybTEgMGgxbTEgMGgxbTUgMGgxbS0yOSAxaDdtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDdtLTIxIDFoMm0xIDBoMm01IDBoMW0xIDBoMW0tMjAgMWgxbTEgMGg0bTEgMGgxbTUgMGgxbTIgMGgxbTEgMGgxbTEgMGgybTEgMGgybTEgMGgxbS0yNSAxaDFtMSAwaDFtMiAwaDFtMSAwaDVtNCAwaDFtNCAwaDRtLTI4IDFoMW0xIDBoOG0yIDBoMm0xIDBoMW0yIDBoMW0yIDBoMm0yIDBoMm0tMjIgMWgxbTExIDBoMm02IDBoMW0yIDBoMW0tMjkgMWgybTEgMGgxbTEgMGgybTMgMGgxbTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgybTEgMGgybTIgMGgxbTEgMGgxbS0yOCAxaDFtMiAwaDFtMSAwaDFtNyAwaDFtMiAwaDFtMSAwaDJtMiAwaDFtMSAwaDFtMSAwaDNtLTI4IDFoMW0xIDBoMW0yIDBoMW0yIDBoM20yIDBoMW00IDBoMm0yIDBoMW0xIDBoMW0yIDBoMW0tMjIgMWgzbTIgMGgybTEgMGgxbTUgMGgxbTIgMGgzbTEgMGgxbS0yNyAxaDNtMSAwaDFtMiAwaDFtMiAwaDFtNyAwaDFtMiAwaDFtMSAwaDFtMSAwaDJtLTI5IDFoM20yIDBoMW0zIDBoMW0xIDBoMW00IDBoMW0xIDBoNG0yIDBoMW0tMjUgMWg0bTEgMGg1bTMgMGgxbTEgMGgybTIgMGgxbTQgMGgybTIgMGgxbS0yOSAxaDJtMiAwaDJtMSAwaDZtMSAwaDFtMyAwaDVtMiAwaDRtLTI5IDFoMm0xIDBoMm0xIDBoNG01IDBoMW0xIDBoMW0yIDBoN20tMTkgMWgxbTEgMGgybTEgMGgxbTEgMGgxbTIgMGgzbTMgMGgzbS0yNyAxaDdtMyAwaDFtMSAwaDFtMiAwaDRtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtLTI3IDFoMW01IDBoMW0xIDBoMW0xIDBoMm00IDBoMm0xIDBoMm0zIDBoMm0yIDBoMW0tMjkgMWgxbTEgMGgzbTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgxbTIgMGgxbTEgMGg3bTMgMGgxbS0yOSAxaDFtMSAwaDNtMSAwaDFtMSAwaDFtMyAwaDJtNCAwaDFtNCAwaDFtMyAwaDFtLTI4IDFoMW0xIDBoM20xIDBoMW0yIDBoM20zIDBoMW0xIDBoMW0yIDBoMm0xIDBoNm0tMjkgMWgxbTUgMGgxbTEgMGgzbTIgMGgxbTEgMGgxbTggMGgzbTEgMGgxbS0yOSAxaDdtMyAwaDFtMSAwaDFtMSAwaDFtNCAwaDNtMSAwaDJcIi8+PC9nPjwvc3ZnPiJ9');
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return JSON.parse(new TextDecoder().decode(bytes));
+})();
+
+const SITE_URL = 'https://USER.github.io/xiaohua/';
+const TEAM_ORDER = ['美玉', '志豪', '老周', '小雯', '阿凱'];
+const ANSWERS = [['是', 'yes'], ['不是', 'no'], ['沒有關係', 'na'], ['不知道', 'unk']];
+const TABS = [
+  { id: 'open', label: '開場', phase: 1 },
+  { id: 'chars', label: '人物', phase: 1 },
+  { id: 'search', label: '搜查', phase: 2 },
+  { id: 'soup', label: '海龜湯', phase: 3 },
+  { id: 'answer', label: '答案', phase: 4 },
+  { id: 'boxes', label: '開箱', phase: 5 },
+  { id: 'manual', label: '主持手冊', host: true },
+];
+const DEFAULT_TAB = ['open', 'open', 'search', 'soup', 'answer', 'boxes'];
+
+const DEFAULT_STATE = JSON.parse(document.getElementById('state').textContent);
+let STATE = DEFAULT_STATE;   // replaced by the live Firestore document
+let pending = null;          // host's unpublished edits
+let host = false;
+let publishing = false;
+const fb = { ok: false, db: null, auth: null, user: null, hosts: null, players: {}, live: false, error: null, demo: false };
+const ui = { tab: null, sel: null, box: null, noteOpen: false, filter: '', preview: false, picking: false, skippedPick: false, shareOpen: false, resetArmed: false };
+const root = document.getElementById('root');
+
+/* ---------- this device's team ---------- */
+const player = { team: null };
+try { player.team = localStorage.getItem('xh_team') || null; } catch (e) { player.team = null; }
+function setTeam(t) {
+  player.team = t || null;
+  try { if (t) localStorage.setItem('xh_team', t); else localStorage.removeItem('xh_team'); } catch (e) { /* no storage */ }
+}
+function myTeam() { const s = S(); return player.team && s.teams.includes(player.team) ? player.team : null; }
+async function joinTeam(t, n) {
+  setTeam(t);
+  if (fb.ok && fb.user) {
+    try { await fb.db.doc('players/' + fb.user.uid).set({ team: t, n: n || null, at: Date.now() }); }
+    catch (e) { console.warn('join write failed', e); }
+  }
+}
+function teamCounts() {
+  const s = S(); const c = {};
+  s.teams.forEach((t) => { c[t] = 0; });
+  Object.keys(fb.players).forEach((uid) => { const p = fb.players[uid]; if (p && c[p.team] != null) c[p.team] += 1; });
+  return c;
+}
+function teamCapacity() { const s = S(); return s.players > 0 ? Math.ceil(s.players / s.teams.length) : null; }
+
+/* ---------- helpers ---------- */
+const $ = (sel) => document.querySelector(sel);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clone = (o) => (typeof structuredClone === 'function' ? structuredClone(o) : JSON.parse(JSON.stringify(o)));
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const S = () => pending || STATE;
+const phaseName = (n) => (CONTENT.phases[n] || CONTENT.phases[0]).name;
+const findLoc = (id) => CONTENT.locations.find((l) => l.id === id);
+const findCard = (code) => { for (const l of CONTENT.locations) { const c = l.cards.find((c) => c.code === code); if (c) return c; } return null; };
+const typeLabel = { clue: '線索', ticket: '箱子券', qmark: '問號' };
+const typeText = { ticket: '箱子券・第四階段可以開一個箱子。', qmark: '問號卡・海龜湯可以多問一題。' };
+
+function edit(fn) {
+  const p = clone(S());
+  if (fn(p) === false) { render(); return; }
+  pending = p;
+  stash();
+  render();
+}
+
+function stash() { try { sessionStorage.setItem('xh_pending', JSON.stringify({ base: STATE.v || 0, p: pending })); } catch (e) { /* no storage */ } }
+function clearStash() { try { sessionStorage.removeItem('xh_pending'); } catch (e) { /* no storage */ } }
+function restoreStash() {
+  try {
+    const raw = sessionStorage.getItem('xh_pending');
+    if (!raw) return;
+    const o = JSON.parse(raw);
+    if (o && o.base === (STATE.v || 0) && o.p) pending = o.p; else sessionStorage.removeItem('xh_pending');
+  } catch (e) { /* ignore */ }
+}
+function saveTab() { try { sessionStorage.setItem('xh_tab', ui.tab); } catch (e) { /* ignore */ } }
+
+let toastTimer = null;
+function toast(msg) {
+  let el = $('.toast');
+  if (!el) { el = document.createElement('div'); el.className = 'toast'; document.body.appendChild(el); }
+  el.textContent = msg;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.remove(), 3200);
+}
+
+function unlocked(tab, s) { return tab.host ? host : s.phase >= tab.phase; }
+const forcePlayer = () => /^#player\b/.test(location.hash || '');
+
+/* ---------- generic block renderer ---------- */
+function table(rows) {
+  if (!rows || !rows.length) return '';
+  const [head, ...body] = rows;
+  return '<div class="tblwrap"><table class="tbl"><thead><tr>' + head.map((c) => '<th>' + esc(c) + '</th>').join('') + '</tr></thead><tbody>' +
+    body.map((r) => '<tr>' + r.map((c) => '<td>' + esc(c) + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>';
+}
+function isStage(s) { return s.startsWith('（') && s.endsWith('）'); }
+function letterHtml() {
+  const lines = CONTENT.letter;
+  const last = lines[lines.length - 1];
+  return '<div class="letter">' + lines.slice(0, -1).map((l) => '<p>' + esc(l) + '</p>').join('') +
+    '<div class="sig"><span>' + esc(last) + '</span><span class="seal" aria-hidden="true">田</span></div></div>';
+}
+function blocks(bs, opt) {
+  opt = opt || {};
+  let out = '', list = [];
+  const flush = () => { if (list.length) { out += '<ul class="list">' + list.map((li) => '<li>' + esc(li) + '</li>').join('') + '</ul>'; list = []; } };
+  for (const b of bs) {
+    if (b.t === 'li') { list.push(b.s); continue; }
+    flush();
+    if (b.t === 'p') {
+      let s = b.s;
+      if (opt.strip && isStage(s)) continue;
+      if (opt.letter && s.startsWith('「我去看')) { out += letterHtml(); continue; }
+      if (opt.place !== undefined) s = s.replace('（複述該組說的地方）', opt.place ? opt.place : '……');
+      out += '<p>' + esc(s) + '</p>';
+    } else if (b.t === 'h3' || b.t === 'h2') {
+      out += '<h4 class="sub">' + esc(b.s) + '</h4>';
+    } else if (b.t === 'table') {
+      out += table(b.rows);
+    }
+  }
+  flush();
+  return out;
+}
+
+/* ---------- Firebase ---------- */
+function evalHost() {
+  const u = fb.user;
+  host = !!(u && !u.isAnonymous && fb.hosts && fb.hosts.includes(u.uid)) && !forcePlayer();
+  if (fb.demo) host = /^#host\b/.test(location.hash || '') && !forcePlayer();
+}
+
+let subscribed = false;
+function subscribeAll() {
+  if (subscribed) return;
+  subscribed = true;
+  fb.db.doc('game/state').onSnapshot((snap) => {
+    STATE = snap.exists ? Object.assign({}, DEFAULT_STATE, snap.data()) : DEFAULT_STATE;
+    fb.live = true;
+    if (!pending) restoreStash();
+    render();
+  }, (err) => { fb.error = '讀取遊戲狀態失敗：' + (err.code || err.message); render(); });
+  fb.db.doc('game/config').onSnapshot((snap) => {
+    fb.hosts = snap.exists ? (snap.data().hosts || []) : [];
+    evalHost(); render();
+  }, (err) => { fb.hosts = []; evalHost(); render(); });
+  fb.db.collection('players').onSnapshot((qs) => {
+    const p = {}; qs.forEach((d) => { p[d.id] = d.data(); }); fb.players = p; render();
+  }, () => { /* counts stay empty */ });
+}
+
+function initFirebase() {
+  const cfg = window.FIREBASE_CONFIG;
+  if (!cfg || !cfg.apiKey || String(cfg.apiKey).indexOf('__') === 0) { fb.demo = true; fb.error = '尚未設定 Firebase（config.js），目前是離線示範模式。'; evalHost(); render(); return; }
+  if (typeof firebase === 'undefined') { fb.demo = true; fb.error = 'Firebase SDK 沒有載入，請檢查網路。'; evalHost(); render(); return; }
+  try {
+    firebase.initializeApp(cfg);
+    fb.auth = firebase.auth();
+    fb.db = firebase.firestore();
+    fb.ok = true;
+  } catch (e) { fb.demo = true; fb.error = 'Firebase 初始化失敗：' + e.message; evalHost(); render(); return; }
+  fb.auth.onAuthStateChanged(async (u) => {
+    fb.user = u;
+    if (!u) {
+      try { await fb.auth.signInAnonymously(); } catch (e) { fb.error = '匿名登入失敗：' + (e.code || e.message) + '。請在 Firebase 啟用匿名登入。'; render(); }
+      return;
+    }
+    fb.error = null;
+    evalHost();
+    subscribeAll();
+    render();
+  });
+}
+
+async function hostLogin() {
+  if (!fb.ok) { toast('尚未連接 Firebase'); return; }
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    const res = await fb.auth.signInWithPopup(provider);
+    const u = res.user;
+    const ref = fb.db.doc('game/config');
+    const snap = await ref.get();
+    if (!snap.exists) { await ref.set({ hosts: [u.uid], claimedAt: Date.now() }); toast('你已成為這場遊戲的主持人'); }
+    else if (!(snap.data().hosts || []).includes(u.uid)) { toast('這個 Google 帳號不是主持人'); }
+  } catch (e) {
+    if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user')) {
+      try { await fb.auth.signInWithRedirect(provider); } catch (e2) { toast('登入失敗：' + (e2.code || e2.message)); }
+    } else toast('登入失敗：' + ((e && e.code) || (e && e.message) || e));
+  }
+}
+async function hostLogout() {
+  if (!fb.ok) return;
+  pending = null; clearStash(); ui.preview = false;
+  try { await fb.auth.signOut(); } catch (e) { /* onAuthStateChanged signs in anonymously again */ }
+}
+
+async function publish() {
+  if (!pending || publishing) return;
+  if (!fb.ok || !host) { toast(fb.demo ? '示範模式無法更新' : '沒有主持人權限'); return; }
+  publishing = true; render();
+  const next = clone(pending);
+  next.v = (STATE.v || 0) + 1;
+  next.updatedAt = Date.now();
+  try {
+    await fb.db.doc('game/state').set(next);
+    pending = null; clearStash();
+    toast('已更新給所有人');
+  } catch (e) { toast('更新失敗：' + ((e && e.code) || (e && e.message) || e)); }
+  publishing = false; render();
+}
+
+async function resetGame() {
+  if (!fb.ok || !host) return;
+  const fresh = clone(DEFAULT_STATE);
+  fresh.v = (STATE.v || 0) + 1;
+  fresh.teams = S().teams; fresh.players = S().players; fresh.assign = S().assign; fresh.boxCount = S().boxCount;
+  fresh.qm = {}; fresh.teams.forEach((t) => { fresh.qm[t] = fresh.teams.length === 3 ? 4 : 3; });
+  try {
+    await fb.db.doc('game/state').set(fresh);
+    const qs = await fb.db.collection('players').get();
+    const batch = fb.db.batch(); qs.forEach((d) => batch.delete(d.ref)); await batch.commit();
+    pending = null; clearStash(); ui.resetArmed = false;
+    toast('已重設，玩家名單也清空了');
+  } catch (e) { toast('重設失敗：' + ((e && e.code) || e)); }
+  render();
+}
+
+/* ---------- timer ---------- */
+function timerText(s) {
+  const el = Math.floor((Date.now() - s.soupStart) / 1000);
+  const rem = 1800 - el;
+  const t = Math.abs(rem);
+  const mm = String(Math.floor(t / 60)).padStart(2, '0');
+  const ss = String(t % 60).padStart(2, '0');
+  return (rem < 0 ? '−' : '') + mm + ':' + ss + '<small>' + (rem < 0 ? '已超過 30 分' : '剩餘') + '・已進行 ' + Math.floor(el / 60) + ' 分</small>';
+}
+function tick() {
+  const s = S();
+  const el = $('#timer');
+  if (el && s.soupStart) {
+    el.innerHTML = timerText(s);
+    el.classList.toggle('over', Date.now() - s.soupStart > 1800000);
+  }
+}
+setInterval(tick, 1000);
+
+/* ============================================================
+   Views
+   ============================================================ */
+
+function teamBtns(act, extra, skip) {
+  return S().teams.filter((t) => t !== skip).map((t) =>
+    '<button class="btn sm" data-act="' + act + '" data-team="' + esc(t) + '" ' + (extra || '') + '>' + esc(t) + '組</button>').join('');
+}
+function teamSelect(id) {
+  return '<select id="' + id + '">' + S().teams.map((t) => '<option value="' + esc(t) + '">' + esc(t) + '組</option>').join('') + '</select>';
+}
+function hostSee(s, phase) {
+  if (!host || s.phase >= phase) return '';
+  return '<div class="hostnote">玩家目前還看不到這一頁。進入「' + esc(phaseName(phase)) + '」後才會顯示。</div>';
+}
+
+/* ---------- header ---------- */
+function header(s) {
+  let label = phaseName(s.phase);
+  if (s.phase === 2) label += s.round > 5 ? '・揭牌' : '・第 ' + s.round + ' 輪';
+  const tabs = TABS.filter((t) => !t.host || host).map((t) => {
+    const un = unlocked(t, s);
+    const cls = ['tab', ui.tab === t.id ? 'on' : '', un ? '' : 'lock', t.host ? 'hostonly' : '', host ? 'host-see' : ''].join(' ');
+    const attrs = (un || host) ? 'data-act="tab" data-id="' + t.id + '"' : 'disabled aria-disabled="true"';
+    return '<button class="' + cls + '" ' + attrs + '>' + esc(t.label) + (un ? '' : '<span class="lk" aria-label="尚未開放">🔒</span>') + '</button>';
+  }).join('');
+  return '<header class="top"><div class="top-in">' +
+    '<div class="brand"><span class="t">《小花》</span><span class="s">' + esc(CONTENT.subtitle) + '</span>' + (host ? '<span class="badge-host">主持人</span>' : '') + '</div>' +
+    '<span class="hr">' + (host ? '' : '<button class="btn sm teamtag" data-act="pickteam">' + (myTeam() ? esc(myTeam()) + '組・換組' : '選擇組別') + '</button>') +
+    '<span class="stamp">' + esc(label) + '<span class="v">v' + (s.v || 0) + (pending ? '＋' : '') + '</span></span></span>' +
+    '<nav class="tabs" aria-label="分頁">' + tabs + '</nav></div></header>' +
+    (s.note ? '<div class="note"><div class="note-in"><b>公告</b><span>' + esc(s.note) + '</span></div></div>' : '') +
+    (fb.error ? '<div class="note warn"><div class="note-in"><b>連線</b><span>' + esc(fb.error) + '</span></div></div>' : '');
+}
+
+function footer(realHost) {
+  let h = '<footer class="foot"><span class="live ' + (fb.live ? 'on' : '') + '">' + (fb.live ? '即時同步中' : (fb.demo ? '離線示範模式' : '連線中…')) + '</span>';
+  if (realHost) h += '<span class="who">主持人' + (fb.user && fb.user.email ? '・' + esc(fb.user.email) : '') + '</span><button class="btn sm ghost" data-act="hostlogout">登出</button>';
+  else if (fb.ok && !forcePlayer()) h += '<span class="who"></span><button class="btn sm ghost" data-act="hostlogin">主持人登入</button>';
+  return h + '</footer>';
+}
+
+/* ---------- landing (phase 0) ---------- */
+function landing() {
+  return '<div class="landing"><div class="kind">公　告</div>' +
+    '<div class="big">小花</div><div class="sub">' + esc(CONTENT.subtitle) + '</div>' +
+    '<p class="wait">主持人準備中，請把這一頁留著。<br>開場後內容會自動出現。</p></div>';
+}
+
+/* ---------- 選組 ---------- */
+function viewPick(s) {
+  const mine = myTeam();
+  const chars = CONTENT.characters.filter((c) => s.teams.includes(c.id));
+  let h = '<section class="sec pick"><div class="eyebrow">分組</div><h2 class="sec-title">你是哪一組？</h2>';
+  h += '<p class="empty">選好之後，你會看到自己的人物卡，還有你們組抽到的線索。別組的內容要等他們公開才看得到。</p>';
+  if (s.players > 0) h += '<p class="empty">共 ' + s.players + ' 人、' + s.teams.length + ' 組，每組約 ' + Math.floor(s.players / s.teams.length) + '～' + Math.ceil(s.players / s.teams.length) + ' 人。</p>';
+  if (s.assign === 'number') {
+    h += '<div class="pick-num"><label for="pick-num">你帶來的禮物是幾號箱？</label><div class="row"><input type="number" id="pick-num" min="1" max="' + (s.players || 60) + '" inputmode="numeric" placeholder="箱號" autocomplete="off"><button class="btn sea" data-act="joinnum">確認</button></div><p class="empty">組別依箱號自動分配，人數會平均。</p></div>';
+  } else {
+    const counts = teamCounts(); const cap = teamCapacity();
+    h += '<div class="pick-grid">' + chars.map((c) => {
+      const n = counts[c.id] || 0;
+      const full = !!(cap && n >= cap && mine !== c.id);
+      return '<button class="pick-card' + (mine === c.id ? ' on' : '') + (full ? ' full' : '') + '" data-act="join" data-team="' + esc(c.id) + '"' + (full ? ' aria-disabled="true"' : '') + '>' +
+        '<span class="nm">' + esc(c.name) + '</span><span class="age">' + c.age + ' 歲</span><span class="who">' + esc(c.who || '') + '</span>' +
+        (fb.live ? '<span class="cnt">' + (full ? '已滿・' : '') + n + ' 人' + (cap ? '／' + cap : '') + '</span>' : '') +
+        (mine === c.id ? '<span class="cur">目前的組</span>' : '') + '</button>';
+    }).join('') + '</div>';
+    h += '<p class="empty" style="margin-top:10px">' + (cap ? '每組最多 ' + cap + ' 人，滿了請選別組。' : '請照主持人分的組來選，人數不平均時主持人會請你換組。') + '</p>';
+  }
+  h += '<p style="margin-top:16px">' + (mine ? '<button class="btn sm" data-act="pickcancel">先不換</button>' : '<button class="btn sm" data-act="pickskip">先不選，看看內容</button>') + '</p>';
+  return h + '</section>';
+}
+
+/* ---------- 開場 ---------- */
+function viewOpen(s) {
+  if (s.phase < 1 && !host) return landing();
+  let h = hostSee(s, 1);
+  h += '<section class="sec"><div class="eyebrow">開場</div><h2 class="sec-title">白沙村</h2><div class="prose">' + blocks(CONTENT.opening, { letter: true }) + '</div></section>';
+  h += '<section class="sec"><h2 class="sec-title">不在場的人</h2>' + table([['人物', '說明']].concat(CONTENT.missing)) + '</section>';
+  h += '<section class="sec"><h2 class="sec-title">規則</h2><div class="prose">' + blocks(CONTENT.rulesOpen) + '</div></section>';
+  return h;
+}
+
+/* ---------- 人物 ---------- */
+function charCard(c, full) {
+  return '<article class="char' + (c.optional ? ' opt' : '') + (full ? '' : ' other') + '"><div class="nm">' + esc(c.name) + '<span class="age">' + c.age + ' 歲</span></div>' +
+    '<div class="who">' + esc(c.who || '') + '</div>' + (c.rel ? '<div class="rel">' + esc(c.rel) + '</div>' : '') +
+    (full ? '<div class="prose">' + blocks(c.blocks) + '</div>' : '<div class="empty">這一組知道的事，由他們自己決定要不要說。</div>') + '</article>';
+}
+
+function viewChars(s) {
+  let h = hostSee(s, 1);
+  const chars = CONTENT.characters.filter((c) => s.teams.includes(c.id));
+  h += '<section class="sec"><div class="eyebrow">人物</div><h2 class="sec-title">跟阿田最親的人</h2>';
+  if (host) {
+    h += '<p class="empty">每一組代表一位人物。玩家只看得到自己那一組的人物卡，別組的卡只顯示身分。</p>';
+    h += '<div class="hctl"><span class="lb">組別</span>' +
+      ['小雯', '阿凱'].map((t) => '<button class="btn sm ' + (s.teams.includes(t) ? 'on' : '') + '" data-act="team" data-team="' + t + '">' + (s.teams.includes(t) ? '✓ ' : '') + t + '</button>').join('') +
+      '<span class="empty" style="margin-left:6px">目前 ' + s.teams.length + ' 組（3 組去掉小雯，5 組加阿凱）</span></div>';
+    h += '<div class="hctl"><span class="lb">分組方式</span>' +
+      '<button class="btn sm ' + (s.assign !== 'number' ? 'on' : '') + '" data-act="assign" data-m="free">玩家自己選</button>' +
+      '<button class="btn sm ' + (s.assign === 'number' ? 'on' : '') + '" data-act="assign" data-m="number">依禮物箱號自動分組</button>' +
+      '<span class="lb" style="margin-left:8px">人數</span><button class="btn sm" data-act="players" data-d="-1">−</button><span class="val">' + (s.players || '未設定') + '</span><button class="btn sm" data-act="players" data-d="1">＋</button></div>';
+    if (fb.live) {
+      const counts = teamCounts();
+      h += '<div class="hctl"><span class="lb">已選組</span><span class="empty">' + s.teams.map((t) => esc(t) + '組 ' + (counts[t] || 0) + ' 人').join('、') + '，共 ' + Object.keys(fb.players).length + ' 支手機</span></div>';
+    }
+    if (s.assign === 'number' && s.players > 0) {
+      h += '<div class="tblwrap"><table class="tbl"><thead><tr><th>組</th><th>禮物箱號</th></tr></thead><tbody>' + s.teams.map((t, i) => {
+        const nums = []; for (let n = i + 1; n <= s.players; n += s.teams.length) nums.push(n);
+        return '<tr><td>' + esc(t) + '組</td><td>' + nums.join('、') + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    }
+    h += '<div class="chars" style="margin-top:14px">' + chars.map((c) => charCard(c, true)).join('') + '</div>';
+  } else {
+    const mine = myTeam();
+    if (mine) {
+      const c = chars.find((x) => x.id === mine);
+      h += '<p class="empty">你們是 ' + esc(mine) + '組。這張卡只有你們組看得到，可以講給別組聽，也可以不講。</p>';
+      h += '<div class="chars" style="margin-top:14px">' + (c ? charCard(c, true) : '') + '</div>';
+      h += '<h3 class="sec-title" style="margin-top:26px;font-size:17px">其他組</h3><div class="chars">' + chars.filter((x) => x.id !== mine).map((x) => charCard(x, false)).join('') + '</div>';
+    } else {
+      h += '<p class="empty">還沒有選組別。選了之後才會看到自己的人物卡。</p><p><button class="btn sea" data-act="pickteam">選擇組別</button></p>';
+      h += '<div class="chars" style="margin-top:14px">' + chars.map((c) => charCard(c, false)).join('') + '</div>';
+    }
+  }
+  return h + '</section>';
+}
+
+/* ---------- 搜查 ---------- */
+function slotHtml(c, s) {
+  const st = s.slots[c.code];
+  let cls = 'slot', by = '';
+  if (!st) cls += ' down';
+  else if (st.by === '桌') { cls += ' table'; by = '桌上公開'; }
+  else { cls += ' drawn' + (st.pub ? ' pub' : ''); by = st.by + '組'; }
+  if (host) cls += ' can';
+  if (ui.sel === c.code) cls += ' sel';
+  const attrs = host ? ' data-act="sel" data-code="' + c.code + '" role="button" tabindex="0"' : '';
+  return '<span class="' + cls + '"' + attrs + '>' + esc(c.code) + (by ? '<span class="by">' + esc(by) + '</span>' : '') + '</span>';
+}
+
+function cardHtml(c, st, mine) {
+  const holder = st.by === '桌' ? '桌上公開' : st.by + '組持有' + (st.pub ? '・已公開' : (mine && st.by === mine ? '・只有你們組看得到' : ''));
+  const text = c.type === 'clue' ? c.text : typeText[c.type];
+  return '<div class="card ' + c.type + '"><div class="card-tag"><span class="code">' + esc(c.code) + '</span><span class="chip ' + c.type + '">' + typeLabel[c.type] + '</span><span>' + esc(holder) + '</span></div>' +
+    '<div class="card-text">' + esc(text) + '</div></div>';
+}
+
+function locHtml(loc, s) {
+  const remaining = loc.cards.filter((c) => !s.slots[c.code]).length;
+  let h = '<div class="loc"><div class="loc-head"><span class="nm">' + esc(loc.name) + '</span><span class="rem">剩 ' + remaining + ' 張</span></div>';
+  h += '<div class="slots">' + loc.cards.map((c) => slotHtml(c, s)).join('') + '</div>';
+  const mine = host ? null : myTeam();
+  const visible = loc.cards.filter((c) => { const st = s.slots[c.code]; return st && (st.pub || (mine && st.by === mine)); });
+  if (visible.length) h += '<div class="cards">' + visible.map((c) => cardHtml(c, s.slots[c.code], mine)).join('') + '</div>';
+  if (host) {
+    h += '<div class="hctl"><span class="lb">抽下一張給</span>' + teamBtns('draw', 'data-loc="' + loc.id + '"') +
+      '<button class="btn sm" data-act="flip" data-loc="' + loc.id + '" title="翻開剩下的第一張線索卡，放在桌上給全場看">揭牌</button></div>';
+    const selCard = loc.cards.find((c) => c.code === ui.sel);
+    if (selCard) {
+      const st = s.slots[selCard.code];
+      if (!st) {
+        h += '<div class="hctl"><span class="lb">' + esc(selCard.code) + '</span><span class="empty">尚未抽出（' + typeLabel[selCard.type] + '）。用上面的按鈕依順序抽卡。</span></div>';
+      } else {
+        h += '<div class="hctl"><span class="lb">' + esc(selCard.code) + '・' + typeLabel[selCard.type] + '</span>' +
+          '<button class="btn sm ' + (st.pub ? 'on' : '') + '" data-act="pub" data-code="' + selCard.code + '">' + (st.pub ? '已公開・按此收回' : '公開內容給全場') + '</button>' +
+          (st.by !== '桌' ? '<span class="lb">改給</span>' + teamBtns('give', 'data-code="' + selCard.code + '"', st.by) : '') +
+          '<button class="btn sm danger" data-act="undraw" data-code="' + selCard.code + '">取消抽卡</button></div>';
+      }
+    }
+  }
+  return h + '</div>';
+}
+
+function viewSearch(s) {
+  let h = hostSee(s, 2);
+  const meta = s.round > 5 ? '五輪結束・揭牌' : '第 ' + s.round + ' 輪／共 5 輪';
+  h += '<section class="sec"><div class="sec-head"><div><div class="eyebrow">第一階段</div><h2 class="sec-title">搜查</h2></div><span class="meta">' + meta + '</span></div>';
+  h += '<div class="legend"><span><i class="l-down"></i>還在牌堆</span><span><i class="l-drawn"></i>已被抽走</span><span><i class="l-pub"></i>內容已公開</span><span><i class="l-table"></i>揭牌・桌上公開</span></div>';
+  h += '<div class="man"><details><summary>搜查規則</summary><div class="bd"><div class="prose">' + blocks(CONTENT.searchRules) + '</div></div></details></div>';
+  h += CONTENT.locations.map((l) => locHtml(l, s)).join('');
+  return h + '</section>';
+}
+
+/* ---------- 海龜湯 ---------- */
+function ansClass(a) { const f = ANSWERS.find((x) => x[0] === a); return f ? f[1] : 'na'; }
+
+function viewSoup(s) {
+  let h = hostSee(s, 3);
+  const timer = s.soupStart ? '<div class="timer" id="timer">' + timerText(s) + '</div>' : '<div class="timer" id="timer">30:00<small>尚未開始</small></div>';
+  h += '<section class="sec"><div class="sec-head"><div><div class="eyebrow">第二階段</div><h2 class="sec-title">海龜湯</h2></div></div>' + timer;
+  if (host) h += '<div class="hctl"><span class="lb">計時</span><button class="btn sm" data-act="timer" data-m="start">' + (s.soupStart ? '重新開始' : '開始 30 分鐘') + '</button>' + (s.soupStart ? '<button class="btn sm" data-act="timer" data-m="stop">停止</button>' : '') + '</div>';
+  h += '<p class="empty" style="margin-top:10px">問題兩個：小花是誰？他去了哪裡？主持人只回答「是」「不是」「沒有關係」「不知道」。</p>';
+  h += '<div class="man"><details><summary>海龜湯規則</summary><div class="bd">' + table([['項目', '規則']].concat(CONTENT.soupRules)) + '</div></details></div></section>';
+
+  h += '<section class="sec"><h2 class="sec-title">問號額度</h2><div class="qm-grid">' + s.teams.map((t) =>
+    '<div class="qm"><div class="n">' + (s.qm[t] == null ? 0 : s.qm[t]) + '</div><div class="t">' + esc(t) + '組</div>' +
+    (host ? '<div class="ctl"><button class="btn sm" data-act="qm" data-team="' + esc(t) + '" data-d="-1">−</button><button class="btn sm" data-act="qm" data-team="' + esc(t) + '" data-d="1">＋</button></div>' : '') + '</div>').join('') + '</div>';
+  if (host) h += '<div class="hctl"><span class="lb">額度</span><button class="btn sm" data-act="qmreset">重設為基本額度（' + (s.teams.length === 3 ? 4 : 3) + '）</button><span class="empty">抽到問號卡時會自動 +1。</span></div>';
+  h += '</section>';
+
+  h += '<section class="sec"><h2 class="sec-title">提示</h2><div class="hints">' + CONTENT.hints.map((x, i) => {
+    const on = i < s.hints;
+    return '<div class="hint ' + (on ? 'on' : 'off') + '"><span class="when">第 ' + x.min + ' 分鐘</span><span class="tx">' + (on ? esc(x.text) : '尚未公布') + '</span></div>';
+  }).join('') + '</div>';
+  if (host) h += '<div class="hctl"><span class="lb">提示</span><button class="btn sm" data-act="hint" data-d="1" ' + (s.hints >= CONTENT.hints.length ? 'disabled' : '') + '>公布下一則</button><button class="btn sm" data-act="hint" data-d="-1" ' + (s.hints <= 0 ? 'disabled' : '') + '>收回上一則</button></div>';
+  h += '</section>';
+
+  h += '<section class="sec"><h2 class="sec-title">問答紀錄</h2>';
+  h += s.qa.length ? '<div class="qa">' + s.qa.map((x, i) =>
+    '<div class="qa-row"><span class="i">' + (i + 1) + '・' + esc(x.t) + '組</span><span class="q">' + esc(x.q) + '</span><span class="ans ' + ansClass(x.a) + '">' + esc(x.a) + '</span></div>').join('') + '</div>'
+    : '<div class="empty">還沒有人提問。</div>';
+  if (host) {
+    h += '<div class="hctl"><span class="lb">新增</span>' + teamSelect('qa-team') + '<input type="text" id="qa-q" placeholder="問題（例：小花是人嗎？）" autocomplete="off">' +
+      ANSWERS.map((a) => '<button class="btn sm" data-act="qaadd" data-a="' + a[0] + '">' + a[0] + '</button>').join('') +
+      (s.qa.length ? '<button class="btn sm danger" data-act="qadel">刪除最後一則</button>' : '') + '</div>';
+  }
+  h += '</section>';
+
+  h += '<section class="sec"><h2 class="sec-title">正式答題</h2>';
+  h += s.attempts.length ? '<div class="qa">' + s.attempts.map((x, i) =>
+    '<div class="qa-row"><span class="i">' + (i + 1) + '</span><span class="q">' + esc(x.t) + '組答題' + (x.place ? '：他去了' + esc(x.place) : '') + '</span><span class="ans ' + (x.r === '對' ? 'win' : x.r === '差一點' ? 'unk' : 'no') + '">' + esc(x.r) + '</span></div>').join('') + '</div>'
+    : '<div class="empty">還沒有組別正式答題。</div>';
+  if (host) {
+    h += '<div class="hctl"><span class="lb">判定</span>' + teamSelect('at-team') +
+      '<button class="btn sm" data-act="attempt" data-r="不對">不對</button><button class="btn sm" data-act="attempt" data-r="差一點">差一點</button>' +
+      '<button class="btn sm sea" data-act="attempt" data-r="對" data-place="沖繩">答對・沖繩</button><button class="btn sm sea" data-act="attempt" data-r="對" data-place="花蓮">答對・花蓮</button>' +
+      (s.attempts.length ? '<button class="btn sm danger" data-act="atdel">刪除最後一則</button>' : '') + '</div>';
+  }
+  return h + '</section>';
+}
+
+/* ---------- 答案 ---------- */
+function viewAnswer(s) {
+  let h = hostSee(s, 4);
+  h += '<section class="sec"><div class="eyebrow">第三階段</div><h2 class="sec-title">答案</h2>';
+  if (s.winner) {
+    h += '<div class="banner"><div class="h">' + (s.winner === '投票' ? '沒有組別答對，由全場投票決定' : esc(s.winner) + '組答對了') + '</div>' +
+      (s.place ? '<div class="d">他去了哪裡——' + esc(s.place) + '。</div>' : '<div class="d">還沒說出他去了哪裡。</div>') + '</div>';
+  } else {
+    h += '<div class="empty">尚未有組別答對。</div>';
+  }
+  if (host) {
+    h += '<div class="hctl"><span class="lb">答對組</span>' + teamBtns('winner') + '<button class="btn sm" data-act="winner" data-team="投票">全場投票</button><button class="btn sm danger" data-act="winner" data-team="">清除</button></div>';
+    h += '<div class="hctl"><span class="lb">地點</span><button class="btn sm ' + (s.place === '沖繩' ? 'on' : '') + '" data-act="place" data-place="沖繩">沖繩</button><button class="btn sm ' + (s.place === '花蓮' ? 'on' : '') + '" data-act="place" data-place="花蓮">花蓮</button></div>';
+  }
+  h += '</section>';
+
+  h += '<section class="sec"><h2 class="sec-title">真相</h2>';
+  h += s.truth ? '<div class="prose">' + blocks(CONTENT.truth, { strip: true, place: s.place }) + '</div>' : '<div class="locked">真相尚未公布</div>';
+  if (host) h += '<div class="hctl"><button class="btn sm ' + (s.truth ? 'on' : '') + '" data-act="truth">' + (s.truth ? '已公布・按此收回' : '公布真相') + '</button></div>';
+  h += '</section>';
+
+  h += '<section class="sec"><h2 class="sec-title">結局</h2>';
+  if (s.ending) {
+    const e = CONTENT.endings[s.ending];
+    h += '<div class="ending"><div class="h">兩個月後・' + esc(e.place) + '</div><div class="prose">' + blocks(e.blocks, { strip: true }) + '</div></div>';
+  } else h += '<div class="locked">結局尚未公布</div>';
+  if (host) h += '<div class="hctl"><span class="lb">結局</span><button class="btn sm ' + (s.ending === 'A' ? 'on' : '') + '" data-act="ending" data-e="A">Ａ 沖繩</button><button class="btn sm ' + (s.ending === 'B' ? 'on' : '') + '" data-act="ending" data-e="B">Ｂ 花蓮</button><button class="btn sm danger" data-act="ending" data-e="">隱藏</button></div>';
+  h += '</section>';
+
+  h += '<section class="sec"><h2 class="sec-title">二十年的報告</h2>';
+  h += s.report ? '<div class="report"><div class="prose">' + blocks(CONTENT.report) + '</div></div>' : '<div class="locked">附錄Ｂ・尚未公布</div>';
+  if (host) h += '<div class="hctl"><button class="btn sm ' + (s.report ? 'on' : '') + '" data-act="report">' + (s.report ? '已公布・按此收回' : '公布二十年的報告') + '</button></div>';
+  return h + '</section>';
+}
+
+/* ---------- 開箱 ---------- */
+function viewBoxes(s) {
+  let h = hostSee(s, 5);
+  h += '<section class="sec"><div class="eyebrow">第四階段</div><h2 class="sec-title">開箱・阿田的東西</h2><div class="prose">' + blocks(CONTENT.boxOpen) + '</div>';
+  h += '<div class="man" style="margin-top:12px"><details><summary>開箱流程</summary><div class="bd">' + table([['步驟', '動作']].concat(CONTENT.boxSteps)) + '</div></details></div>';
+  const boxes = [];
+  for (let n = 1; n <= s.boxCount; n++) {
+    const who = s.boxes[String(n)];
+    const cls = 'box' + (who ? ' open' : '') + (host ? ' can' : '') + (ui.box === String(n) ? ' sel' : '');
+    boxes.push('<div class="' + cls + '"' + (host ? ' data-act="boxsel" data-n="' + n + '" role="button" tabindex="0"' : '') + '><span class="n">' + n + '</span>' + (who ? '<span class="w">' + esc(who) + '</span>' : '') + '</div>');
+  }
+  h += '<div class="boxes">' + boxes.join('') + '</div>';
+  if (host) {
+    h += '<div class="hctl"><span class="lb">箱子數</span><button class="btn sm" data-act="boxcount" data-d="-1">−</button><span class="val">' + s.boxCount + '</span><button class="btn sm" data-act="boxcount" data-d="1">＋</button><span class="empty">點一個箱子，填上拿到的人。</span></div>';
+    if (ui.box) h += '<div class="hctl"><span class="lb">' + ui.box + ' 號箱</span><input type="text" id="box-name" value="' + esc(s.boxes[ui.box] || '') + '" placeholder="拿到的人（例：小明・美玉組）" autocomplete="off"><button class="btn sm sea" data-act="boxsave" data-n="' + ui.box + '">儲存</button><button class="btn sm danger" data-act="boxclear" data-n="' + ui.box + '">清除</button></div>';
+  }
+  if (s.ending) h += '<div class="closing">明年這個時候，去' + esc(CONTENT.endings[s.ending].place) + '看小龜。</div>';
+  return h + '</section>';
+}
+
+/* ---------- 主持手冊 ---------- */
+function viewManual() {
+  let h = '<section class="sec"><div class="eyebrow">主持人專用</div><h2 class="sec-title">主持手冊</h2><p class="empty">這一頁只有主持人看得到。玩家的頁面沒有這個分頁。</p>';
+  h += '<div class="hctl"><span class="lb">整場重設</span>' + (ui.resetArmed
+    ? '<button class="btn sm danger" data-act="resetgo">確定重設：清空進度與玩家名單</button><button class="btn sm" data-act="reset">取消</button>'
+    : '<button class="btn sm" data-act="reset">重設遊戲…</button><span class="empty">新的一場開始前用。組數、人數、分組方式會保留。</span>') + '</div>';
+  h += '<div class="man" style="margin-top:14px">';
+  h += CONTENT.manual.map((m) => {
+    let body;
+    if (m.key === '6-3') {
+      const rows = CONTENT.qa.map((x) => [x.q, x.a, x.n]);
+      body = '<input class="filter" id="man-filter" type="text" placeholder="搜尋問題…" value="' + esc(ui.filter) + '" autocomplete="off"><div id="man-qa">' + table([['問題', '答', '備註']].concat(rows)) + '</div>';
+    } else body = '<div class="prose">' + blocks(m.blocks) + '</div>';
+    return '<details' + (m.key === '6-3' ? ' open' : '') + '><summary><span class="k">' + esc(m.key) + '</span>' + esc(m.title) + '</summary><div class="bd">' + body + '</div></details>';
+  }).join('');
+  return h + '</div></section>';
+}
+
+/* ---------- host bar ---------- */
+function hostbar(s) {
+  let h = '<div class="hostbar"><div class="hostbar-in">' +
+    '<span class="grp"><button class="btn sm" data-act="phase" data-d="-1" ' + (s.phase <= 0 ? 'disabled' : '') + ' aria-label="上一階段">◀</button><span class="val">' + esc(phaseName(s.phase)) + '</span><button class="btn sm" data-act="phase" data-d="1" ' + (s.phase >= 5 ? 'disabled' : '') + ' aria-label="下一階段">▶</button></span>';
+  if (s.phase === 2) h += '<span class="grp"><span class="lb">輪</span><button class="btn sm" data-act="round" data-d="-1" ' + (s.round <= 1 ? 'disabled' : '') + '>−</button><span class="val">' + (s.round > 5 ? '揭牌' : s.round) + '</span><button class="btn sm" data-act="round" data-d="1" ' + (s.round > 5 ? 'disabled' : '') + '>＋</button></span>';
+  h += '<button class="btn sm ' + (s.autoPublic ? 'on' : '') + '" data-act="autopub" title="開啟後，抽到的卡會直接公開內容給全場">' + (s.autoPublic ? '✓ ' : '') + '抽到即公開</button>';
+  h += '<button class="btn sm ' + (ui.noteOpen ? 'on' : '') + '" data-act="notetoggle">公告</button>';
+  h += '<button class="btn sm" data-act="preview" title="用玩家看到的樣子預覽這一頁（含尚未發布的變更）">玩家視角</button>';
+  h += '<button class="btn sm ' + (ui.shareOpen ? 'on' : '') + '" data-act="share">分享給玩家</button>';
+  h += '<span class="pub">' + (pending ? '<span class="dirty">有未送出的變更</span><button class="btn sm" data-act="discard">放棄</button>' : '') +
+    '<button class="btn primary" data-act="publish" ' + ((!pending || publishing || !fb.ok) ? 'disabled' : '') + '>' + (publishing ? '更新中…' : '更新給所有人') + '</button></span></div>';
+  if (ui.noteOpen) h += '<div class="hostbar-in"><div class="hctl" style="flex:1;margin-top:6px"><span class="lb">公告</span><input type="text" id="note-input" value="' + esc(s.note) + '" placeholder="顯示在所有人頁面頂端的一句話" autocomplete="off"><button class="btn sm sea" data-act="notesave">套用</button><button class="btn sm danger" data-act="noteclear">清除</button></div></div>';
+  if (fb.demo) h += '<div class="hostbar-in"><span class="dirty">離線示範模式：可以操作看看，但變更不會送給任何人。</span></div>';
+  return h + '</div>';
+}
+
+/* ---------- render ---------- */
+function render() {
+  const realHost = host;
+  if (ui.preview && realHost) host = false;   // render exactly what a player sees
+  try { renderInner(); } finally { host = realHost; }
+  root.insertAdjacentHTML('beforeend', footer(realHost));
+  if (realHost && ui.preview) {
+    root.insertAdjacentHTML('beforeend', '<button class="btn primary previewbar" data-act="preview">玩家視角預覽中' + (pending ? '（含未發布的變更）' : '') + '・返回主持人</button>');
+  }
+}
+
+function renderInner() {
+  const s = S();
+  let tab = TABS.find((t) => t.id === ui.tab);
+  if (!tab || (!unlocked(tab, s) && !host)) { ui.tab = DEFAULT_TAB[s.phase] || 'open'; tab = TABS.find((t) => t.id === ui.tab); }
+  let body;
+  switch (tab.id) {
+    case 'open': body = viewOpen(s); break;
+    case 'chars': body = viewChars(s); break;
+    case 'search': body = viewSearch(s); break;
+    case 'soup': body = viewSoup(s); break;
+    case 'answer': body = viewAnswer(s); break;
+    case 'boxes': body = viewBoxes(s); break;
+    case 'manual': body = viewManual(s); break;
+    default: body = '';
+  }
+  if (!host && (ui.picking || (!myTeam() && !ui.skippedPick))) body = viewPick(s);
+  if (host && ui.shareOpen) body = sharePanel() + body;
+  root.innerHTML = header(s) + '<main class="wrap">' + body + '</main>' + (host ? hostbar(s) : '');
+  if (ui.filter && $('#man-qa')) applyFilter();
+}
+
+/* ---------- share panel (host) ---------- */
+function shareRow(label, url, hint, primary) {
+  return '<div class="lbl">' + label + '</div><div class="url"><input type="text" readonly value="' + esc(url) + '" aria-label="' + label + '"><button class="btn sm ' + (primary ? 'sea' : '') + '" data-act="copylink" data-url="' + esc(url) + '">複製</button></div><p class="hint">' + hint + '</p>';
+}
+function sharePanel() {
+  const url = SITE_URL;
+  return '<section class="sec"><div class="eyebrow">分享</div><h2 class="sec-title">把頁面給玩家</h2><div class="share">' +
+    '<div class="qr" id="qr" role="img" aria-label="玩家連結 QR code">' + (CONTENT.qrSvg || '<span class="hint" style="color:#333">' + esc(url) + '</span>') + '</div><div>' +
+    shareRow('玩家連結', url, '玩家掃 QR code 或開連結，不用登入、不用帳號。一進來先選組別，之後你每次「更新給所有人」，他們的畫面立刻跟著變。', true) +
+    shareRow('投影／第二台裝置', url + '#player', '在電視或第二台裝置開這個連結，即使已用主持人帳號登入，也只顯示玩家看到的內容。') +
+    '<div class="lbl">主持人</div><p class="hint">頁面最下方的「主持人登入」用 Google 帳號登入。第一個登入的帳號就是主持人。</p>' +
+    '</div></div><p style="margin-top:14px"><button class="btn sm" data-act="share">關閉</button></p></section>';
+}
+
+function applyFilter() {
+  const q = ui.filter.trim();
+  document.querySelectorAll('#man-qa tbody tr').forEach((tr) => { tr.hidden = !!q && !tr.textContent.includes(q); });
+}
+
+/* ---------- actions ---------- */
+function act(d) {
+  switch (d.act) {
+    case 'tab': ui.tab = d.id; ui.sel = null; ui.box = null; saveTab(); render(); break;
+    case 'preview': ui.preview = !ui.preview; ui.sel = null; ui.box = null; ui.noteOpen = false; ui.picking = false; render(); window.scrollTo(0, 0); break;
+    case 'share': ui.shareOpen = !ui.shareOpen; render(); if (ui.shareOpen) window.scrollTo(0, 0); break;
+    case 'copylink': {
+      const url = d.url || SITE_URL;
+      const done = () => toast('已複製連結');
+      const fail = () => {
+        const inp = Array.from(root.querySelectorAll('.share input')).find((i) => i.value === url);
+        if (inp) { inp.focus(); inp.select(); }
+        toast('無法自動複製，請長按或全選連結後複製');
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, fail); else fail();
+      break;
+    }
+    case 'pickteam': ui.picking = true; render(); window.scrollTo(0, 0); break;
+    case 'pickcancel': ui.picking = false; render(); break;
+    case 'pickskip': ui.skippedPick = true; ui.picking = false; render(); break;
+    case 'join': {
+      const cap = teamCapacity(); const n = (teamCounts()[d.team] || 0);
+      if (cap && n >= cap && myTeam() !== d.team) { toast(d.team + '組已經滿了，請選別組'); return; }
+      joinTeam(d.team); ui.picking = false; ui.skippedPick = false; toast('你們是 ' + d.team + '組'); render(); window.scrollTo(0, 0);
+      break;
+    }
+    case 'joinnum': {
+      const n = parseInt($('#pick-num') ? $('#pick-num').value : '', 10);
+      if (!n || n < 1) { toast('請輸入禮物箱號'); return; }
+      const s = S(); const t = s.teams[(n - 1) % s.teams.length];
+      joinTeam(t, n); ui.picking = false; ui.skippedPick = false; toast(n + ' 號箱・你們是 ' + t + '組'); render(); window.scrollTo(0, 0);
+      break;
+    }
+    case 'hostlogin': hostLogin(); break;
+    case 'hostlogout': hostLogout(); break;
+    case 'reset': ui.resetArmed = !ui.resetArmed; render(); break;
+    case 'resetgo': resetGame(); break;
+    case 'assign': edit((p) => { p.assign = d.m; }); break;
+    case 'players': edit((p) => { p.players = clamp((p.players || 0) + Number(d.d), 0, 60); }); break;
+    case 'phase': edit((p) => { p.phase = clamp(p.phase + Number(d.d), 0, 5); }); break;
+    case 'round': edit((p) => { p.round = clamp(p.round + Number(d.d), 1, 6); }); break;
+    case 'autopub': edit((p) => { p.autoPublic = !p.autoPublic; }); break;
+    case 'team': edit((p) => {
+      if (p.teams.includes(d.team)) { if (p.teams.length <= 2) { toast('至少要有兩組'); return false; } p.teams = p.teams.filter((t) => t !== d.team); }
+      else { p.teams = TEAM_ORDER.filter((t) => p.teams.includes(t) || t === d.team); if (p.qm[d.team] == null) p.qm[d.team] = 3; }
+    }); break;
+    case 'draw': edit((p) => {
+      const c = findLoc(d.loc).cards.find((c) => !p.slots[c.code]);
+      if (!c) { toast('這個地點的卡已經抽完了'); return false; }
+      p.slots[c.code] = { by: d.team, pub: !!p.autoPublic };
+      if (c.type === 'qmark') p.qm[d.team] = (p.qm[d.team] || 0) + 1;
+      ui.sel = c.code;
+    }); break;
+    case 'flip': edit((p) => {
+      const c = findLoc(d.loc).cards.find((c) => !p.slots[c.code] && c.type === 'clue');
+      if (!c) { toast('這個地點沒有可以翻的線索卡了'); return false; }
+      p.slots[c.code] = { by: '桌', pub: true };
+      ui.sel = c.code;
+    }); break;
+    case 'sel': ui.sel = ui.sel === d.code ? null : d.code; render(); break;
+    case 'pub': edit((p) => { const st = p.slots[d.code]; if (st) st.pub = !st.pub; }); break;
+    case 'undraw': edit((p) => {
+      const st = p.slots[d.code]; const c = findCard(d.code);
+      if (st && c && c.type === 'qmark' && st.by !== '桌') p.qm[st.by] = Math.max(0, (p.qm[st.by] || 0) - 1);
+      delete p.slots[d.code]; ui.sel = null;
+    }); break;
+    case 'give': edit((p) => {
+      const st = p.slots[d.code]; const c = findCard(d.code);
+      if (!st || !c) return false;
+      if (c.type === 'qmark') { if (st.by !== '桌') p.qm[st.by] = Math.max(0, (p.qm[st.by] || 0) - 1); p.qm[d.team] = (p.qm[d.team] || 0) + 1; }
+      st.by = d.team;
+    }); break;
+    case 'qm': edit((p) => { p.qm[d.team] = Math.max(0, (p.qm[d.team] || 0) + Number(d.d)); }); break;
+    case 'qmreset': edit((p) => { const base = p.teams.length === 3 ? 4 : 3; p.teams.forEach((t) => { p.qm[t] = base; }); }); break;
+    case 'hint': edit((p) => { p.hints = clamp(p.hints + Number(d.d), 0, CONTENT.hints.length); }); break;
+    case 'timer': edit((p) => { p.soupStart = d.m === 'start' ? Date.now() : null; }); break;
+    case 'qaadd': {
+      const team = $('#qa-team') ? $('#qa-team').value : S().teams[0];
+      const q = ($('#qa-q') ? $('#qa-q').value : '').trim();
+      if (!q) { toast('請先輸入問題'); return; }
+      edit((p) => { p.qa.push({ t: team, q: q, a: d.a }); });
+      break;
+    }
+    case 'qadel': edit((p) => { p.qa.pop(); }); break;
+    case 'attempt': {
+      const team = $('#at-team') ? $('#at-team').value : S().teams[0];
+      edit((p) => { p.attempts.push({ t: team, r: d.r, place: d.place || null }); if (d.r === '對') { p.winner = team; p.place = d.place; } });
+      break;
+    }
+    case 'atdel': edit((p) => { p.attempts.pop(); }); break;
+    case 'winner': edit((p) => { p.winner = d.team || null; if (!d.team) p.place = null; }); break;
+    case 'place': edit((p) => { p.place = d.place; }); break;
+    case 'truth': edit((p) => { p.truth = !p.truth; }); break;
+    case 'ending': edit((p) => { p.ending = d.e || null; if (d.e && !p.place) p.place = CONTENT.endings[d.e].place; }); break;
+    case 'report': edit((p) => { p.report = !p.report; }); break;
+    case 'boxcount': edit((p) => { p.boxCount = clamp(p.boxCount + Number(d.d), 1, 60); }); break;
+    case 'boxsel': ui.box = ui.box === d.n ? null : d.n; render(); if (ui.box && $('#box-name')) $('#box-name').focus(); break;
+    case 'boxsave': {
+      const v = ($('#box-name') ? $('#box-name').value : '').trim();
+      ui.box = null;
+      edit((p) => { if (v) p.boxes[d.n] = v; else delete p.boxes[d.n]; });
+      break;
+    }
+    case 'boxclear': ui.box = null; edit((p) => { delete p.boxes[d.n]; }); break;
+    case 'notetoggle': ui.noteOpen = !ui.noteOpen; render(); if (ui.noteOpen && $('#note-input')) $('#note-input').focus(); break;
+    case 'notesave': { const v = ($('#note-input') ? $('#note-input').value : '').trim(); ui.noteOpen = false; edit((p) => { p.note = v; }); break; }
+    case 'noteclear': ui.noteOpen = false; edit((p) => { p.note = ''; }); break;
+    case 'publish': publish(); break;
+    case 'discard': pending = null; clearStash(); render(); break;
+    default: break;
+  }
+}
+
+root.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  act(el.dataset);
+});
+root.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest('[data-act][role="button"]');
+  if (el) { e.preventDefault(); act(el.dataset); }
+});
+root.addEventListener('input', (e) => {
+  if (e.target.id === 'man-filter') { ui.filter = e.target.value; applyFilter(); }
+});
+root.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.id === 'qa-q') { e.preventDefault(); toast('請按右邊的答案按鈕送出'); }
+  if (e.key === 'Enter' && e.target.id === 'box-name') { e.preventDefault(); act({ act: 'boxsave', n: ui.box }); }
+  if (e.key === 'Enter' && e.target.id === 'note-input') { e.preventDefault(); act({ act: 'notesave' }); }
+  if (e.key === 'Enter' && e.target.id === 'pick-num') { e.preventDefault(); act({ act: 'joinnum' }); }
+});
+
+/* ---------- boot ---------- */
+(function boot() {
+  try { ui.tab = sessionStorage.getItem('xh_tab'); } catch (e) { ui.tab = null; }
+  render();
+  initFirebase();
+})();
+
+</script>
+</body>
+</html>
