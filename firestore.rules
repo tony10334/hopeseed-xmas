@@ -29,5 +29,13 @@ service cloud.firestore {
       allow read: if signedIn();
       allow write: if signedIn() && (request.auth.uid == uid || isHost());
     }
+
+    // 共同主持人申請：用 Google 登入的人可以留下自己的申請，只有主持人看得到並處理
+    match /requests/{uid} {
+      allow read: if isHost();
+      allow create, update: if notAnonymous() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email', 'name', 'at']);
+      allow delete: if isHost() || (signedIn() && request.auth.uid == uid);
+    }
   }
 }

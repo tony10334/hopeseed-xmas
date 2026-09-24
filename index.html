@@ -251,6 +251,10 @@ p{margin:0}
 .hctl .val{font:700 14px var(--sans);padding:0 4px;font-variant-numeric:tabular-nums}
 .hctl input[type=text],.hctl select{font:inherit;font-size:14px;padding:6px 12px;border:2px solid var(--line);border-radius:var(--pill);background:var(--surf);color:var(--ink);min-width:0}
 .hctl input[type=text]{flex:1 1 180px}
+.hctl.col{flex-direction:column;align-items:stretch;gap:8px}
+.hosts{display:grid;gap:6px}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surf);border-radius:var(--pill);padding:6px 14px;font-size:13.5px;flex-wrap:wrap}
+.hrow .acts{display:inline-flex;gap:6px}
 .btn{border:2px solid var(--line);background:var(--surf);color:var(--ink);border-radius:var(--pill);padding:6px 14px;font-size:13.5px;cursor:pointer;line-height:1.4;white-space:nowrap;font-weight:500}
 .btn:hover{border-color:var(--accent)}
 .btn:disabled{opacity:.4;cursor:default}
@@ -347,7 +351,7 @@ let STATE = DEFAULT_STATE;   // replaced by the live Firestore document
 let pending = null;          // host's unpublished edits
 let host = false;
 let publishing = false;
-const fb = { ok: false, db: null, auth: null, user: null, hosts: null, players: {}, live: false, error: null, demo: false };
+const fb = { ok: false, db: null, auth: null, user: null, hosts: null, config: null, requests: {}, reqUnsub: null, players: {}, live: false, error: null, demo: false };
 const ui = { tab: null, sel: null, box: null, noteOpen: false, filter: '', preview: false, picking: false, skippedPick: false, shareOpen: false, resetArmed: false };
 const root = document.getElementById('root');
 
@@ -460,6 +464,35 @@ function evalHost() {
   const u = fb.user;
   host = !!(u && !u.isAnonymous && fb.hosts && fb.hosts.includes(u.uid)) && !forcePlayer();
   if (fb.demo) host = /^#host\b/.test(location.hash || '') && !forcePlayer();
+  if (fb.ok && host && !fb.reqUnsub) subscribeRequests();
+  if (!host && fb.reqUnsub) { fb.reqUnsub(); fb.reqUnsub = null; fb.requests = {}; }
+}
+
+/* co-host requests: only hosts may read them (rules) */
+function subscribeRequests() {
+  fb.reqUnsub = fb.db.collection('requests').onSnapshot((qs) => {
+    const r = {}; qs.forEach((d) => { r[d.id] = d.data(); }); fb.requests = r; render();
+  }, () => { fb.requests = {}; });
+}
+async function approveHost(uid) {
+  const r = fb.requests[uid] || {};
+  const FV = firebase.firestore.FieldValue;
+  const upd = { hosts: FV.arrayUnion(uid) };
+  upd['hostInfo.' + uid] = { email: r.email || '', name: r.name || '', at: Date.now() };
+  try { await fb.db.doc('game/config').update(upd); await fb.db.doc('requests/' + uid).delete(); toast('已加入為主持人'); }
+  catch (e) { toast('失敗：' + ((e && e.code) || (e && e.message) || e)); }
+}
+async function removeHost(uid) {
+  if (fb.user && uid === fb.user.uid) { toast('不能移除自己'); return; }
+  const FV = firebase.firestore.FieldValue;
+  const upd = { hosts: FV.arrayRemove(uid) };
+  upd['hostInfo.' + uid] = FV.delete();
+  try { await fb.db.doc('game/config').update(upd); toast('已移除主持人'); }
+  catch (e) { toast('失敗：' + ((e && e.code) || (e && e.message) || e)); }
+}
+async function rejectRequest(uid) {
+  try { await fb.db.doc('requests/' + uid).delete(); }
+  catch (e) { toast('失敗：' + ((e && e.code) || (e && e.message) || e)); }
 }
 
 let subscribed = false;
@@ -473,9 +506,10 @@ function subscribeAll() {
     render();
   }, (err) => { fb.error = '讀取遊戲狀態失敗：' + (err.code || err.message); render(); });
   fb.db.doc('game/config').onSnapshot((snap) => {
-    fb.hosts = snap.exists ? (snap.data().hosts || []) : [];
+    fb.config = snap.exists ? snap.data() : null;
+    fb.hosts = fb.config ? (fb.config.hosts || []) : [];
     evalHost(); render();
-  }, (err) => { fb.hosts = []; evalHost(); render(); });
+  }, (err) => { fb.config = null; fb.hosts = []; evalHost(); render(); });
   fb.db.collection('players').onSnapshot((qs) => {
     const p = {}; qs.forEach((d) => { p[d.id] = d.data(); }); fb.players = p; render();
   }, () => { /* counts stay empty */ });
@@ -510,10 +544,17 @@ async function hostLogin() {
   try {
     const res = await fb.auth.signInWithPopup(provider);
     const u = res.user;
+    const info = { email: u.email || '', name: u.displayName || '', at: Date.now() };
     const ref = fb.db.doc('game/config');
     const snap = await ref.get();
-    if (!snap.exists) { await ref.set({ hosts: [u.uid], claimedAt: Date.now() }); toast('你已成為這場遊戲的主持人'); }
-    else if (!(snap.data().hosts || []).includes(u.uid)) { toast('這個 Google 帳號不是主持人'); }
+    if (!snap.exists) {
+      const hostInfo = {}; hostInfo[u.uid] = info;
+      await ref.set({ hosts: [u.uid], hostInfo: hostInfo, claimedAt: Date.now() });
+      toast('你已成為這場遊戲的主持人');
+    } else if (!(snap.data().hosts || []).includes(u.uid)) {
+      await fb.db.doc('requests/' + u.uid).set(info);
+      toast('已送出申請，請主持人在「主持手冊」分頁核准');
+    }
   } catch (e) {
     if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user')) {
       try { await fb.auth.signInWithRedirect(provider); } catch (e2) { toast('登入失敗：' + (e2.code || e2.message)); }
@@ -614,6 +655,7 @@ function header(s) {
 function footer(realHost) {
   let h = '<footer class="foot"><span class="live ' + (fb.live ? 'on' : '') + '">' + (fb.live ? '即時同步中' : (fb.demo ? '離線示範模式' : '連線中…')) + '</span>';
   if (realHost) h += '<span class="who">主持人' + (fb.user && fb.user.email ? '・' + esc(fb.user.email) : '') + '</span><button class="btn sm ghost" data-act="hostlogout">登出</button>';
+  else if (fb.ok && fb.user && !fb.user.isAnonymous && !forcePlayer()) h += '<span class="who">已登入 ' + esc(fb.user.email || '') + '・等待主持人核准</span><button class="btn sm ghost" data-act="hostlogout">登出</button>';
   else if (fb.ok && !forcePlayer()) h += '<span class="who"></span><button class="btn sm ghost" data-act="hostlogin">主持人登入</button>';
   return h + '</footer>';
 }
@@ -871,6 +913,7 @@ function viewManual() {
   h += '<div class="hctl"><span class="lb">整場重設</span>' + (ui.resetArmed
     ? '<button class="btn sm danger" data-act="resetgo">確定重設：清空進度與玩家名單</button><button class="btn sm" data-act="reset">取消</button>'
     : '<button class="btn sm" data-act="reset">重設遊戲…</button><span class="empty">新的一場開始前用。組數、人數、分組方式會保留。</span>') + '</div>';
+  h += hostsBlock();
   h += '<div class="man" style="margin-top:14px">';
   h += CONTENT.manual.map((m) => {
     let body;
@@ -881,6 +924,24 @@ function viewManual() {
     return '<details' + (m.key === '6-3' ? ' open' : '') + '><summary><span class="k">' + esc(m.key) + '</span>' + esc(m.title) + '</summary><div class="bd">' + body + '</div></details>';
   }).join('');
   return h + '</div></section>';
+}
+
+/* ---------- co-hosts (host only) ---------- */
+function hostsBlock() {
+  if (!fb.ok) return '';
+  const info = (fb.config && fb.config.hostInfo) || {};
+  const me = fb.user ? fb.user.uid : null;
+  const label = (uid, r) => esc((r && (r.email || r.name)) || uid);
+  let h = '<div class="hctl col"><div><span class="lb">共同主持人</span><span class="empty">朋友在網站最下方按「主持人登入」用 Google 登入後，會出現在這裡等你核准。</span></div>';
+  h += '<div class="hosts">' + (fb.hosts || []).map((uid) =>
+    '<div class="hrow"><span>' + label(uid, info[uid]) + (uid === me ? '（你）' : '') + '</span>' +
+    (uid === me ? '' : '<button class="btn sm danger" data-act="hostremove" data-uid="' + esc(uid) + '">移除</button>') + '</div>').join('') + '</div>';
+  const reqs = Object.keys(fb.requests);
+  if (reqs.length) {
+    h += '<div><span class="lb">等待核准</span></div><div class="hosts">' + reqs.map((uid) =>
+      '<div class="hrow"><span>' + label(uid, fb.requests[uid]) + '</span><span class="acts"><button class="btn sm sea" data-act="hostapprove" data-uid="' + esc(uid) + '">加入為主持人</button><button class="btn sm" data-act="hostreject" data-uid="' + esc(uid) + '">拒絕</button></span></div>').join('') + '</div>';
+  } else h += '<div class="empty">目前沒有待核准的申請。</div>';
+  return h + '</div>';
 }
 
 /* ---------- host bar ---------- */
@@ -985,6 +1046,9 @@ function act(d) {
     }
     case 'hostlogin': hostLogin(); break;
     case 'hostlogout': hostLogout(); break;
+    case 'hostapprove': approveHost(d.uid); break;
+    case 'hostremove': removeHost(d.uid); break;
+    case 'hostreject': rejectRequest(d.uid); break;
     case 'reset': ui.resetArmed = !ui.resetArmed; render(); break;
     case 'resetgo': resetGame(); break;
     case 'assign': edit((p) => { p.assign = d.m; }); break;
