@@ -920,7 +920,6 @@ function viewAnswer(s) {
   if (s.ending) {
     const e = CONTENT.endings[s.ending];
     h += '<div class="ending"><div class="h">兩個月後・' + esc(e.place) + '</div><div class="prose">' + blocks(e.blocks, { strip: true }) + '</div></div>';
-    h += '<div class="closing">明年這個時候，去' + esc(e.place) + '看小龜。</div>';
   } else h += '<div class="locked">結局尚未公布</div>';
   h += '</section>';
   h += '<section class="sec"><h2 class="sec-title">二十年的報告</h2>' + (s.report ? '<div class="report"><div class="prose">' + blocks(CONTENT.report) + '</div></div>' : '<div class="locked">附錄Ｂ・尚未公布</div>') + '</section>';
