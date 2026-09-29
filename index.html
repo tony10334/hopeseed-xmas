@@ -183,6 +183,7 @@ p{margin:0}
 .loc.person .nm{background:var(--ink);color:var(--surf)}
 .meet{font-size:13px;color:var(--muted);margin-top:8px}
 .card.say{border-left-color:var(--ink-2)}
+.card.undrawn{box-shadow:none;border:2px dashed var(--line);border-left:6px solid var(--line);background:none}
 .chip.say{background:var(--surf-3);color:var(--ink-2)}
 
 /* ---------- locations ---------- */
@@ -704,10 +705,12 @@ function hostSee(s, phase) {
 function questionsHtml(s, opt) {
   opt = opt || {};
   return '<ol class="qs">' + CONTENT.questions.map((q) => {
-    const c = s.checks ? s.checks[String(q.n)] : undefined;
-    const mark = opt.marks && c !== undefined && c !== null ? '<span class="ans ' + (c ? 'yes' : 'no') + '">' + (c ? '對' : '不對') + '</span>' : '';
-    const key = opt.keys ? '<div class="key">' + esc(q.key) + '<span class="acc">' + esc(q.accept) + '</span></div>' : '';
-    return '<li><div class="qrow"><span class="q">' + esc(q.q) + '</span>' + mark + '</div>' + key + '</li>';
+    let key = '';
+    if (opt.keys) {
+      const ans = q.n === 2 && s.place ? '他去了' + s.place + '。' : q.key;
+      key = '<div class="key">' + esc(ans) + (opt.accept ? '<span class="acc">可接受的說法：' + esc(q.accept) + '</span>' : '') + '</div>';
+    }
+    return '<li><div class="qrow"><span class="q">' + esc(q.q) + '</span></div>' + key + '</li>';
   }).join('') + '</ol>';
 }
 
@@ -805,7 +808,7 @@ function viewOpen(s) {
   if (host) h += hostSettings(s);
   if (!host && myTeam()) h += '<div class="callout"><span>你們是 ' + esc(teamLabel(myTeam())) + '。要弄清楚的六件事在這一頁下方，拿到的卡在「搜查」分頁。</span></div>';
   h += '<section class="sec"><div class="eyebrow">開場</div><h2 class="sec-title">白沙村</h2><div class="prose">' + blocks(CONTENT.opening, { letter: true }) + '</div></section>';
-  h += '<section class="sec"><h2 class="sec-title">要弄清楚的六件事</h2>' + questionsHtml(s, { marks: true }) + '</section>';
+  h += '<section class="sec"><h2 class="sec-title">要弄清楚的六件事</h2>' + questionsHtml(s) + '</section>';
   h += '<section class="sec"><h2 class="sec-title">不在場的人</h2>' + table([['人物', '說明']].concat(CONTENT.missing)) + '</section>';
   h += '<section class="sec"><h2 class="sec-title">村裡的人</h2>' + table([['人物', '是誰', '在哪裡遇得到']].concat(CONTENT.villagers)) + '</section>';
   h += '<section class="sec"><h2 class="sec-title">規則</h2><div class="prose">' + blocks(CONTENT.rulesOpen) + '</div></section>';
@@ -826,9 +829,11 @@ function slotHtml(c, s) {
 }
 
 function cardHtml(c, st, mine) {
-  const holder = st.by === '桌' ? '桌上公開' : teamLabel(st.by) + '持有' + (st.pub ? '・已公開' : (mine && st.by === mine ? '・只有你們組看得到' : ''));
+  const holder = !st ? '還在牌堆・尚未抽出'
+    : st.by === '桌' ? '桌上公開'
+    : teamLabel(st.by) + '持有' + (st.pub ? '・已公開' : (mine && st.by === mine ? '・只有你們組看得到' : (host ? '・未公開，只有該組和你看得到' : '')));
   const text = c.type === 'clue' || c.type === 'say' ? c.text : typeText[c.type];
-  return '<div class="card ' + c.type + '"><div class="card-tag"><span class="code">' + esc(c.code) + '</span><span class="chip ' + c.type + '">' + typeLabel[c.type] + '</span><span>' + esc(holder) + '</span></div>' +
+  return '<div class="card ' + c.type + (st ? '' : ' undrawn') + '"><div class="card-tag"><span class="code">' + esc(c.code) + '</span><span class="chip ' + c.type + '">' + typeLabel[c.type] + '</span><span>' + esc(holder) + '</span></div>' +
     '<div class="card-text">' + esc(text) + '</div></div>';
 }
 
@@ -838,7 +843,11 @@ function deckHtml(deck, s, isPlace) {
   if (deck.meet) h += '<p class="meet">' + esc(deck.meet) + '</p>';
   h += '<div class="slots">' + deck.cards.map((c) => slotHtml(c, s)).join('') + '</div>';
   const mine = host ? null : myTeam();
-  const visible = deck.cards.filter((c) => { const st = s.slots[c.code]; return st && (st.pub || (mine && st.by === mine)); });
+  const visible = deck.cards.filter((c) => {
+    const st = s.slots[c.code];
+    if (host) return !!st || !!ui.showAll;            // the host reads what has been drawn, or everything
+    return st && (st.pub || (mine && st.by === mine));
+  });
   if (visible.length) h += '<div class="cards">' + visible.map((c) => cardHtml(c, s.slots[c.code], mine)).join('') + '</div>';
   if (host) {
     h += '<div class="hctl"><span class="lb">' + (isPlace ? '抽下一張給' : '下一張證詞給') + '</span>' + teamBtns('draw', 'data-loc="' + deck.id + '"') +
@@ -865,6 +874,7 @@ function viewSearch(s) {
   h += '<section class="sec"><div class="sec-head"><div><div class="eyebrow">第一階段</div><h2 class="sec-title">搜查</h2></div><span class="meta">' + meta + '</span></div>';
   h += '<div class="legend"><span><i class="l-down"></i>還在牌堆</span><span><i class="l-drawn"></i>已被抽走</span><span><i class="l-pub"></i>內容已公開</span><span><i class="l-table"></i>揭牌・桌上公開</span></div>';
   h += '<div class="man"><details><summary>規則</summary><div class="bd"><div class="prose">' + blocks(CONTENT.searchRules) + '</div></div></details></div>';
+  if (host) h += '<div class="hctl"><span class="lb">主持人檢視</span><button class="btn sm ' + (ui.showAll ? 'on' : '') + '" data-act="showall">' + (ui.showAll ? '✓ 顯示全部卡片內容' : '顯示全部卡片內容（含還沒抽的）') + '</button><span class="empty">已抽出的卡你一定看得到內容。這個開關只影響你的畫面，玩家看不到。</span></div>';
   h += CONTENT.locations.map((l) => deckHtml(l, s, true)).join('');
   if (CONTENT.people.length) h += '<h3 class="sub-title">村民</h3>' + CONTENT.people.map((p) => deckHtml(p, s, false)).join('');
   return h + '</section>';
@@ -880,7 +890,7 @@ function viewSoup(s) {
   if (host) h += '<div class="hctl"><span class="lb">計時</span><button class="btn sm" data-act="timer" data-m="start">' + (s.soupStart ? '重新開始' : '開始 30 分鐘') + '</button>' + (s.soupStart ? '<button class="btn sm" data-act="timer" data-m="stop">停止</button>' : '') + '</div>';
   h += '<p class="empty" style="margin-top:10px">村長只回答「是」「不是」「沒有關係」「不知道」。輪到你們時，可以改成正式答題：六題一口氣講完。</p>';
   h += '<div class="man"><details><summary>規則</summary><div class="bd">' + table([['項目', '規則']].concat(CONTENT.soupRules)) + '</div></details></div>';
-  h += '<h3 class="sub-title">六題</h3>' + questionsHtml(s, { marks: true }) + '</section>';
+  h += '<h3 class="sub-title">六題</h3>' + questionsHtml(s) + '</section>';
 
   h += '<section class="sec"><h2 class="sec-title">問號額度</h2><div class="qm-grid">' + s.teams.map((t) =>
     '<div class="qm"><div class="n">' + (s.qm[t] == null ? 0 : s.qm[t]) + '</div><div class="t">' + esc(teamLabel(t)) + '</div>' +
@@ -911,28 +921,19 @@ function viewSoup(s) {
 /* ---------- 答案 ---------- */
 function viewAnswer(s) {
   let h = hostSee(s, 4);
-  const revealed = s.truth && s.ending && s.report;
+  const revealed = !!(s.truth && s.ending && s.report);
   h += '<section class="sec"><div class="sec-head"><div><div class="eyebrow">第三階段</div><h2 class="sec-title">答案</h2></div>' + (host ? '<span class="live-note">這一頁的操作會立刻同步給所有人</span>' : '') + '</div>';
-  if (s.winner) {
-    h += '<div class="banner"><div class="h">' + (s.winner === '投票' ? '沒有組別六題全對，由全場投票決定' : esc(teamLabel(s.winner)) + '答對了') + '</div>' +
-      (s.place ? '<div class="d">他去了哪裡——' + esc(s.place) + '。</div>' : '<div class="d">還沒說出他去了哪裡。</div>') + '</div>';
-  } else {
-    h += '<div class="empty">' + (host ? '答題時逐題勾對錯；六題全對後選答對組和地點，再一鍵公布。' : '主持人還沒公布答案。') + '</div>';
-  }
-  h += questionsHtml(s, { marks: true, keys: host });
   if (host) {
-    h += '<div class="hctl"><span class="lb">逐題判定</span>' + CONTENT.questions.map((q) => {
-      const c = s.checks ? s.checks[String(q.n)] : undefined;
-      const cls = c === true ? 'on' : (c === false ? 'danger' : '');
-      return '<button class="btn sm ' + cls + '" data-act="check" data-n="' + q.n + '">' + q.n + '・' + (c === true ? '對' : c === false ? '不對' : '未判') + '</button>';
-    }).join('') + '<button class="btn sm" data-act="checkclear">清除判定</button></div>';
-    h += '<div class="hctl"><span class="lb">答對組</span>' + teamBtnsOn('winner', s.winner) + '<button class="btn sm ' + (s.winner === '投票' ? 'on' : '') + '" data-act="winner" data-team="投票">全場投票</button><button class="btn sm danger" data-act="winner" data-team="">清除</button></div>';
-    h += '<div class="hctl"><span class="lb">地點</span><button class="btn sm ' + (s.place === '沖繩' ? 'on' : '') + '" data-act="place" data-place="沖繩">沖繩</button><button class="btn sm ' + (s.place === '花蓮' ? 'on' : '') + '" data-act="place" data-place="花蓮">花蓮</button></div>';
-    h += '<div class="hctl"><span class="lb">公布</span>' + (revealed
-      ? '<button class="btn sm danger" data-act="hideall">全部收回</button><span class="empty">真相、結局、報告都已公布。</span>'
-      : '<button class="btn sm primary" data-act="revealall" ' + (s.place ? '' : 'disabled') + '>一鍵公布真相、結局、報告</button><span class="empty">' + (s.place ? '會同時把階段切到「答案」，玩家頁面立刻顯示三段內容。' : '先選地點。') + '</span>') + '</div>';
+    h += '<div class="hctl"><span class="lb">公布答案</span>' + (revealed
+      ? '<span class="val">已公布・' + esc(s.place || '') + '</span><button class="btn sm danger" data-act="hideall">全部收回</button>'
+      : '<button class="btn sm primary" data-act="revealall" data-place="沖繩">公布・他去了沖繩</button><button class="btn sm primary" data-act="revealall" data-place="花蓮">公布・他去了花蓮</button><span class="empty">按下去，玩家會立刻看到六題解答、真相、結局和報告，階段也會切到「答案」。</span>') + '</div>';
+  } else if (!revealed) {
+    h += '<div class="empty">主持人還沒公布答案。</div>';
   }
   h += '</section>';
+  h += '<section class="sec"><h2 class="sec-title">六題解答</h2>' + ((s.truth || host)
+    ? (host && !s.truth ? '<p class="empty">玩家還看不到解答，這是給你對照用的。</p>' : '') + questionsHtml(s, { keys: true, accept: host })
+    : questionsHtml(s) + '<div class="locked" style="margin-top:12px">解答尚未公布</div>') + '</section>';
   h += '<section class="sec"><h2 class="sec-title">真相</h2>' + (s.truth ? '<div class="prose">' + blocks(CONTENT.truth, { strip: true, place: s.place }) + '</div>' : '<div class="locked">真相尚未公布</div>') + '</section>';
   h += '<section class="sec"><h2 class="sec-title">結局</h2>';
   if (s.ending) {
@@ -1137,16 +1138,9 @@ function act(d) {
       break;
     }
     case 'qadel': immediate((p) => { const x = p.qa.pop(); if (x && p.qm[x.t] != null) p.qm[x.t] += 1; }); break;
-    case 'check': immediate((p) => {
-      p.checks = p.checks || {};
-      const k = String(d.n); const c = p.checks[k];
-      if (c === undefined || c === null) p.checks[k] = true; else if (c === true) p.checks[k] = false; else delete p.checks[k];
-    }); break;
-    case 'checkclear': immediate((p) => { p.checks = {}; }); break;
-    case 'winner': immediate((p) => { p.winner = d.team || null; if (!d.team) p.place = null; }); break;
-    case 'place': immediate((p) => { p.place = d.place; }); break;
-    case 'revealall': immediate((p) => { if (!p.place) return false; p.truth = true; p.ending = p.place === '沖繩' ? 'A' : 'B'; p.report = true; if (p.phase < 4) p.phase = 4; }); break;
-    case 'hideall': immediate((p) => { p.truth = false; p.ending = null; p.report = false; }); break;
+    case 'revealall': immediate((p) => { if (!d.place) return false; p.place = d.place; p.truth = true; p.ending = d.place === '沖繩' ? 'A' : 'B'; p.report = true; if (p.phase < 4) p.phase = 4; }); break;
+    case 'hideall': immediate((p) => { p.truth = false; p.ending = null; p.report = false; p.place = null; }); break;
+    case 'showall': ui.showAll = !ui.showAll; render(); break;
     case 'notetoggle': ui.noteOpen = !ui.noteOpen; render(); if (ui.noteOpen && $('#note-input')) $('#note-input').focus(); break;
     case 'notesave': { const v = ($('#note-input') ? $('#note-input').value : '').trim(); ui.noteOpen = false; edit((p) => { p.note = v; }); break; }
     case 'noteclear': ui.noteOpen = false; edit((p) => { p.note = ''; }); break;
