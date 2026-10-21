@@ -641,7 +641,7 @@ async function publish() {
 async function resetGame() {
   if (!fb.ok || !host) return;
   const fresh = clone(DEFAULT_STATE);
-  fresh.v = (STATE.v || 0) + 1;
+  fresh.v = 1;   // a reset starts the version count over
   fresh.teams = S().teams.filter((t) => TEAM_ORDER.includes(t)); if (fresh.teams.length < 2) fresh.teams = DEFAULT_STATE.teams.slice();
   fresh.players = S().players; fresh.assign = S().assign;
   fresh.rounds = S().rounds || 6;
@@ -651,7 +651,7 @@ async function resetGame() {
     const qs = await fb.db.collection('players').get();
     const batch = fb.db.batch(); qs.forEach((d) => batch.delete(d.ref)); await batch.commit();
     pending = null; clearStash(); ui.resetArmed = false;
-    toast('已重設，玩家名單也清空了');
+    toast('已重設為 v1，玩家名單也清空了');
   } catch (e) { toast('重設失敗：' + ((e && e.code) || e)); }
   render();
 }
