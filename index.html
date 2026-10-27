@@ -83,7 +83,7 @@ p{margin:0}
 .band-in{max-width:720px;margin:0 auto;padding:14px 16px 16px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px 12px}
 .brand{display:flex;align-items:center;gap:8px;min-width:0}
 .brand .flower{background:#fbf7ee;border-radius:50%;padding:2px;width:26px;height:26px}
-.brand .t{font:400 22px/1 var(--round);letter-spacing:.08em}
+.brand .t{font:400 24px/1 var(--round);letter-spacing:.08em}
 .badge-host{font:700 12px/1 var(--sans);letter-spacing:.08em;color:var(--pill-ink);background:var(--pill-bg);padding:5px 10px;border-radius:var(--pill)}
 .hr{justify-self:end}
 .teamtag{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border:0;border-radius:var(--pill);background:var(--pill-bg);color:var(--pill-ink);font:700 14px/1 var(--sans);cursor:pointer}
@@ -98,8 +98,8 @@ p{margin:0}
 .tab{flex:1 0 auto;min-height:40px;border:0;background:none;padding:0 10px;font-size:15px;color:#fff;cursor:pointer;white-space:nowrap;border-radius:var(--pill);display:inline-flex;align-items:center;justify-content:center;gap:4px}
 .tab:hover{background:rgba(255,255,255,.12)}
 .tab.on{background:var(--pill-bg);color:var(--pill-ink);font-weight:700}
-.tab.lock{color:#fff}
 .tab .lk .ic{width:14px;height:14px}
+.tab .dot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--post);margin:-10px 0 0 1px;flex:none}
 .note{background:var(--surf);border-bottom:1px solid var(--line)}
 .note.warn{background:var(--red-soft)}
 .note.warn .note-k{color:var(--red-ink);border-color:var(--red-ink)}
@@ -233,6 +233,18 @@ details[open]>summary::after{transform:rotate(-135deg)}
 
 /* ---------- 搜查: envelopes and postmarks ---------- */
 .search-intro{padding:2px 4px 10px}
+.round-track{background:var(--surf);border-radius:var(--r-sm);box-shadow:0 0 0 1px var(--line-2),0 6px 14px -10px rgba(28,52,40,.35);padding:12px 14px;margin:0 0 12px}
+.rt-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.rt-head b{font:400 19px/1.3 var(--round)}
+.rt-head span{margin-left:auto;font-size:14px;color:var(--ink-2)}
+.round-track .muted{margin-top:6px}
+.rt-teams{display:flex;gap:6px;margin-top:10px}
+.rt{flex:1 1 0;min-height:40px;border-radius:10px;border:1.5px dashed var(--line);display:flex;align-items:center;justify-content:center;gap:2px;font-size:15px;color:var(--muted)}
+.rt.on{border:1.5px solid var(--post);background:var(--post-soft);color:var(--post-ink);font-weight:700}
+.rt.unsent{border-color:var(--red);background:var(--red-soft);color:var(--red-ink)}
+.rt .ic{width:15px;height:15px}
+.rt small{font-size:11px;font-weight:500}
+.round-track .btn{width:100%;margin-top:10px}
 .search-intro details.rules{margin-top:8px}
 .legend{display:flex;gap:6px 12px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);margin:2px 0 4px}
 .legend .lg-red{color:var(--red-ink)}
@@ -241,19 +253,20 @@ details[open]>summary::after{transform:rotate(-135deg)}
 .env{position:relative;background:var(--surf);border-radius:8px;padding:22px 14px 14px;margin-bottom:12px;box-shadow:0 0 0 1px var(--line-2),0 6px 14px -10px rgba(28,52,40,.35);overflow:hidden}
 .env::before{content:"";position:absolute;left:0;right:0;top:0;height:7px;background:var(--stripe)}
 .env-head{display:flex;align-items:baseline;gap:10px}
-.env-head h3{font:400 20px/1.3 var(--round);letter-spacing:.04em}
+.env-head h2{font:400 20px/1.3 var(--round);letter-spacing:.04em}
 .env-head .rem{margin-left:auto;color:var(--muted);font-size:13.5px}
 .meet{font-size:13.5px;color:var(--muted);margin-top:4px}
 .pms{display:grid;grid-template-columns:repeat(7,minmax(0,64px));gap:6px;margin-top:14px}
 .pm{aspect-ratio:1;width:100%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0;border:2px solid var(--post-ink);background:var(--surf);color:var(--post-ink);font-family:var(--sans);text-align:center;line-height:1.05}
 .pm b{font-size:12.5px;font-weight:700}
-.pm i{font-style:normal;font-size:11px;font-weight:500;opacity:.9}
+.pm i{font-style:normal;font-size:11px;font-weight:500}
 .pm.drawn,.pm.pub,.pm.table{box-shadow:inset 0 0 0 2px var(--surf),inset 0 0 0 3.5px currentColor;transform:rotate(-7deg)}
 .pms>.pm:nth-child(even).drawn,.pms>.pm:nth-child(even).pub,.pms>.pm:nth-child(even).table{transform:rotate(6deg)}
 .pm.down{border:2px dashed var(--line);color:var(--muted);background:none}
 .pm.down b{font-size:15px;font-weight:500}
 .pm.pub{background:var(--post);border-color:var(--post);color:#fff;box-shadow:inset 0 0 0 2px var(--post),inset 0 0 0 3.5px rgba(255,255,255,.75)}
 .pm.table{color:var(--ink-2);border-color:var(--ink-2);background:var(--surf-2)}
+.pm.mine{background:var(--post-soft)}
 .pm.unsent{color:var(--red-ink);border-color:var(--red)}
 .pm.pub.unsent{background:var(--red);border-color:var(--red);color:#fff;box-shadow:inset 0 0 0 2px var(--red),inset 0 0 0 3.5px rgba(255,255,255,.75)}
 .pm.down.unsent{border-color:var(--red);color:var(--red-ink)}
@@ -268,6 +281,8 @@ button.pm:active{filter:brightness(.95)}
 .letter-row{padding:12px 2px;border-bottom:1px solid var(--line-2)}
 .letter-row:last-child{border-bottom:0;padding-bottom:2px}
 .letter-row.undrawn{opacity:.6}
+.letter-row.new{animation:arrive 2.4s ease-out;margin:0 -14px;padding-left:16px;padding-right:16px}
+@keyframes arrive{0%,35%{background:var(--post-soft)}100%{background:transparent}}
 .lr-tag{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
 .lr-tag .code{font-weight:700;color:var(--post-ink)}
 .lr-tag .holder{color:var(--muted)}
@@ -275,7 +290,7 @@ button.pm:active{filter:brightness(.95)}
 .chip{display:inline-block;border-radius:var(--pill);padding:2px 9px;font-size:12px;font-weight:700;line-height:1.5}
 .chip.clue{background:var(--post-soft);color:var(--post-ink)}
 .chip.say{background:var(--surf-3);color:var(--ink-2)}
-.chip.ticket{background:var(--red-soft);color:var(--red-ink)}
+.chip.ticket{background:none;color:var(--ink-2);box-shadow:inset 0 0 0 1.5px var(--line)}
 .chip.qmark{background:var(--surf-3);color:var(--ink-2)}
 
 /* ---------- bottom sheet ---------- */
@@ -296,6 +311,9 @@ button.pm:active{filter:brightness(.95)}
 .team-btn:active{background:var(--post);color:#fff;transform:scale(.97)}
 .team-btn:disabled{cursor:default}
 .team-btn.on{background:var(--post);border-color:var(--post);color:#fff;opacity:1}
+.team-btn.done{background:var(--surf);border-style:dashed;color:var(--ink-2)}
+.team-btn small{display:flex;align-items:center;justify-content:center;gap:2px;font-size:12.5px;font-weight:500;margin-top:3px;color:var(--muted)}
+.team-btn small .ic{width:13px;height:13px}
 .team-grid.sm .team-btn{min-height:48px;font-size:15.5px}
 @keyframes rise{from{transform:translateY(100%)}to{transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -306,6 +324,7 @@ button.pm:active{filter:brightness(.95)}
 .timer small{display:block;font:500 14px var(--sans);color:var(--muted);margin-top:10px;letter-spacing:0}
 .timer.over{background:var(--red-soft);color:var(--red-ink)}
 .timer.over small{color:var(--red-ink)}
+.timer.paused{color:var(--muted)}
 .stamps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .stamp-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
 .stamp{width:100%;aspect-ratio:4/5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--post-soft);border:6px dotted var(--surf);outline:1.5px solid var(--post-line);outline-offset:-10px;color:var(--post-ink)}
@@ -328,8 +347,16 @@ button.pm:active{filter:brightness(.95)}
 .seg.teams button.on{background:var(--post);border-color:var(--post);color:#fff;box-shadow:none}
 .seg.teams button.on small{color:#fff}
 .ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ans-btn{min-height:56px;border-radius:14px;border:2px solid transparent;font:700 18px/1 var(--sans);cursor:pointer;transition:transform .1s}
+.ans-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:56px;border-radius:14px;border:2px solid transparent;font:700 18px/1 var(--sans);cursor:pointer;transition:transform .1s}
 .ans-btn:active{transform:scale(.97)}
+.ans-btn small{display:block;font-size:12px;font-weight:500;margin-top:5px}
+.ans-btn.hint{outline:3px solid var(--ink);outline-offset:3px}
+.suggest{display:grid;gap:6px}
+.suggest:empty{display:none}
+.sug{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;text-align:left;min-height:48px;padding:8px 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surf);color:var(--ink);cursor:pointer}
+.sug:hover{border-color:var(--post-line)}
+.sug .sq{font-family:var(--hand);font-size:16.5px;line-height:1.45}
+.sug .sn{grid-column:1/-1;font-size:12.5px;color:var(--muted)}
 .ans-btn.yes{background:var(--post);color:#fff}
 .ans-btn.no{background:var(--ink);color:var(--surf)}
 .ans-btn.na{background:var(--surf);border-color:var(--line);color:var(--ink)}
@@ -376,7 +403,10 @@ button.pm:active{filter:brightness(.95)}
 .slip-state{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.35}
 .slip-k{font-weight:700;font-size:15px;color:var(--red-ink);display:inline-flex;align-items:center;gap:4px}
 .slip-k.ok{color:var(--post-ink)}
+.slip-k.neutral{color:var(--ink)}
 .slip-k .ic{width:17px;height:17px}
+.slip-line{display:flex;align-items:center;gap:10px}
+.linkbtn{border:0;background:none;color:var(--ink-2);font:500 14px var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:40px;margin:-10px 0;padding:0 6px}
 .slip-list{font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .slip-marks{display:flex;gap:4px;align-items:center;margin-top:4px;overflow:hidden}
 .pm.mini{width:34px;height:34px;flex:none;font-size:11px;font-weight:700;font-style:normal;transform:rotate(-7deg);box-shadow:inset 0 0 0 1.5px var(--surf-2),inset 0 0 0 2.5px currentColor}
@@ -456,10 +486,11 @@ const LAST_PHASE = 4;
 const DEFAULT_STATE = JSON.parse(document.getElementById('state').textContent);
 let STATE = DEFAULT_STATE;   // replaced by the live Firestore document
 let pending = null;          // host's unpublished edits
+let pendingBase = null;      // the live state those edits started from (for merging another host's update)
 let host = false;
 let publishing = false;
 const fb = { ok: false, db: null, auth: null, user: null, hosts: null, config: null, requests: {}, reqUnsub: null, players: {}, live: false, error: null, demo: false };
-const ui = { tab: null, sel: null, sheet: null, flash: null, moreOpen: false, qaTeam: null, qaDraft: '', noteOpen: false, filter: '', preview: false, picking: false, skippedPick: false, shareOpen: false, resetArmed: false, showAll: false };
+const ui = { tab: null, sel: null, sheet: null, flash: null, revealArmed: null, timerArmed: false, discarded: null, qaHint: null, unseen: [], moreOpen: false, qaTeam: null, qaDraft: '', noteOpen: false, filter: '', preview: false, picking: false, skippedPick: false, shareOpen: false, resetArmed: false, showAll: false };
 const root = document.getElementById('root');
 
 /* ---------- this device's team ---------- */
@@ -497,6 +528,7 @@ const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&':
 const clone = (o) => (typeof structuredClone === 'function' ? structuredClone(o) : JSON.parse(JSON.stringify(o)));
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const S = () => pending || STATE;
+const same = (a, b) => JSON.stringify(a == null ? null : a) === JSON.stringify(b == null ? null : b);
 const phaseName = (n) => (CONTENT.phases[n] || CONTENT.phases[0]).name;
 const allDecks = () => CONTENT.locations.concat(CONTENT.people);
 const findLoc = (id) => allDecks().find((l) => l.id === id);
@@ -507,7 +539,9 @@ const typeText = { ticket: '箱子券・開箱時可以開一個箱子。', qmar
 function edit(fn) {
   const p = clone(S());
   if (fn(p) === false) { render(); return; }
+  if (!pending) pendingBase = clone(STATE);
   pending = p;
+  ui.discarded = null;
   stash();
   render();
 }
@@ -518,7 +552,7 @@ async function immediate(fn) {
   if (!fb.ok || !host) { edit(fn); return; }
   const next = clone(STATE);
   if (fn(next) === false) { render(); return; }
-  if (pending) fn(pending);
+  if (pending) { fn(pending); if (pendingBase) fn(pendingBase); }
   next.v = (STATE.v || 0) + 1;
   next.updatedAt = Date.now();
   render();
@@ -526,14 +560,45 @@ async function immediate(fn) {
   catch (e) { toast('更新失敗：' + ((e && e.code) || (e && e.message) || e)); }
 }
 
-function stash() { try { sessionStorage.setItem('xh_pending', JSON.stringify({ base: STATE.v || 0, p: pending })); } catch (e) { /* no storage */ } }
-function clearStash() { try { sessionStorage.removeItem('xh_pending'); } catch (e) { /* no storage */ } }
+/* Merge the host's unsent batch onto newer live state (another host published meanwhile).
+   Cards merge one by one and 問號 counts add up per team; when both hosts changed the same
+   card, or the same setting, the live value stays. */
+function rebase(base, mine, theirs) {
+  const out = clone(theirs), lost = [];
+  let remote = false;
+  const put = (o, k, v) => { if (v === undefined) delete o[k]; else o[k] = clone(v); };
+  new Set(Object.keys(base).concat(Object.keys(mine), Object.keys(theirs))).forEach((k) => {
+    if (k === 'v' || k === 'updatedAt') return;
+    if (k === 'slots' || k === 'qm') {
+      const b = base[k] || {}, m = mine[k] || {}, t = theirs[k] || {};
+      out[k] = clone(t);
+      new Set(Object.keys(b).concat(Object.keys(m), Object.keys(t))).forEach((c) => {
+        const theyChanged = !same(t[c], b[c]) && !same(t[c], m[c]);
+        if (theyChanged) remote = true;
+        if (same(m[c], b[c]) || same(t[c], m[c])) return;
+        if (k === 'qm') { out.qm[c] = Math.max(0, (t[c] || 0) + (m[c] || 0) - (b[c] || 0)); return; }
+        if (theyChanged) { lost.push(c); return; }
+        put(out.slots, c, m[c]);
+      });
+      return;
+    }
+    const theyChanged = !same(theirs[k], base[k]) && !same(theirs[k], mine[k]);
+    if (theyChanged) remote = true;
+    else if (!same(mine[k], base[k])) put(out, k, mine[k]);
+  });
+  return { p: out, lost: lost, remote: remote };
+}
+
+function stash() { try { sessionStorage.setItem('xh_pending', JSON.stringify({ base: STATE.v || 0, b: pendingBase, p: pending })); } catch (e) { /* no storage */ } }
+function clearStash() { pendingBase = null; try { sessionStorage.removeItem('xh_pending'); } catch (e) { /* no storage */ } }
 function restoreStash() {
   try {
     const raw = sessionStorage.getItem('xh_pending');
     if (!raw) return;
     const o = JSON.parse(raw);
-    if (o && o.base === (STATE.v || 0) && o.p) pending = o.p; else sessionStorage.removeItem('xh_pending');
+    if (o && o.p && o.b) { pending = rebase(o.b, o.p, STATE).p; pendingBase = clone(STATE); }
+    else if (o && o.base === (STATE.v || 0) && o.p) { pending = o.p; pendingBase = clone(STATE); }
+    else sessionStorage.removeItem('xh_pending');
   } catch (e) { /* ignore */ }
 }
 function saveTab() { try { sessionStorage.setItem('xh_tab', ui.tab); } catch (e) { /* ignore */ } }
@@ -541,7 +606,7 @@ function saveTab() { try { sessionStorage.setItem('xh_tab', ui.tab); } catch (e)
 let toastTimer = null;
 function toast(msg) {
   let el = $('.toast');
-  if (!el) { el = document.createElement('div'); el.className = 'toast'; document.body.appendChild(el); }
+  if (!el) { el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); document.body.appendChild(el); }
   el.textContent = msg;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.remove(), 3200);
@@ -587,6 +652,25 @@ function blocks(bs, opt) {
   return out;
 }
 
+/* ---------- new cards (players) ---------- */
+function noticeCards(prev, next) {
+  const mine = myTeam();
+  const got = [], opened = [];
+  const was = prev.slots || {};
+  Object.keys(next.slots || {}).forEach((code) => {
+    const st = next.slots[code], old = was[code];
+    if (mine && st.by === mine) { if (!(old && old.by === mine)) got.push(code); }
+    else if (st.pub && !(old && old.pub)) opened.push(code);
+  });
+  const fresh = got.concat(opened);
+  if (!fresh.length) return '';
+  if (ui.tab === 'search' && !ui.picking) ui.flash = fresh;
+  else ui.unseen = Array.from(new Set(ui.unseen.concat(fresh)));
+  if (got.length) { try { if (navigator.vibrate) navigator.vibrate(80); } catch (e) { /* not supported */ } }
+  return got.length ? '你們組拿到新卡：' + got.join('、') + (opened.length ? '・另有 ' + opened.length + ' 張新公開' : '')
+    : '新公開的卡：' + opened.join('、');
+}
+
 /* ---------- Firebase ---------- */
 function evalHost() {
   const u = fb.user;
@@ -628,17 +712,25 @@ function subscribeAll() {
   if (subscribed) return;
   subscribed = true;
   fb.db.doc('game/state').onSnapshot((snap) => {
-    const prevPhase = STATE.phase;
+    const prev = STATE, prevPhase = STATE.phase;
     STATE = snap.exists ? Object.assign({}, DEFAULT_STATE, snap.data()) : DEFAULT_STATE;
     if (!Array.isArray(STATE.teams) || !STATE.teams.length || !STATE.teams.every((t) => TEAM_ORDER.includes(t))) {
       // state written by an older version: show default teams until the host resets
       STATE = Object.assign({}, STATE, { teams: DEFAULT_STATE.teams, qm: DEFAULT_STATE.qm });
     }
+    const cardMsg = fb.live && !host ? noticeCards(prev, STATE) : '';
     if (fb.live && !host && STATE.phase !== prevPhase) {
       // the host moved the game on: take players to that phase's page
       ui.tab = DEFAULT_TAB[STATE.phase] || 'open'; ui.picking = false; saveTab();
       toast('進入「' + phaseName(STATE.phase) + '」');
       window.scrollTo(0, 0);
+    } else if (cardMsg) toast(cardMsg);
+    if (host && pending && pendingBase && (STATE.v || 0) !== (pendingBase.v || 0)) {
+      // another host (or this phone's own write) changed the live state: keep the unsent batch on top of it
+      const r = rebase(pendingBase, pending, STATE);
+      pending = r.p; pendingBase = clone(STATE); stash();
+      if (r.lost.length) toast('另一位主持人剛改了 ' + r.lost.join('、') + '，以對方的為準，你對這幾張的改動取消了');
+      else if (r.remote) toast('另一位主持人剛送出更新，已併入你還沒送出的變更');
     }
     fb.live = true;
     if (!pending) restoreStash();
@@ -743,13 +835,15 @@ async function resetGame() {
 }
 
 /* ---------- timer ---------- */
+// elapsed time of the 問村長 timer; a paused timer stops counting at soupPause
+function soupElapsedMs(s) { return s.soupStart ? (s.soupPause || Date.now()) - s.soupStart : 0; }
 function timerText(s) {
-  const el = Math.floor((Date.now() - s.soupStart) / 1000);
+  const el = Math.floor(soupElapsedMs(s) / 1000);
   const rem = 1800 - el;
   const t = Math.abs(rem);
   const mm = String(Math.floor(t / 60)).padStart(2, '0');
   const ss = String(t % 60).padStart(2, '0');
-  return (rem < 0 ? '−' : '') + mm + ':' + ss + '<small>' + (rem < 0 ? '已超過 30 分' : '剩餘') + '・已進行 ' + Math.floor(el / 60) + ' 分</small>';
+  return (rem < 0 ? '−' : '') + mm + ':' + ss + '<small>' + (s.soupPause ? '已暫停・' : '') + (rem < 0 ? '已超過 30 分' : '剩餘') + '・已進行 ' + Math.floor(el / 60) + ' 分</small>';
 }
 let hintReminded = {}, hintTimerBase = null;
 function tick() {
@@ -757,12 +851,13 @@ function tick() {
   const el = $('#timer');
   if (el && s.soupStart) {
     el.innerHTML = timerText(s);
-    el.classList.toggle('over', Date.now() - s.soupStart > 1800000);
+    el.classList.toggle('over', soupElapsedMs(s) > 1800000);
+    el.classList.toggle('paused', !!s.soupPause);
   }
   // remind the host when a hint's minute mark passes
-  if (host && s.soupStart) {
+  if (host && s.soupStart && !s.soupPause) {
     if (hintTimerBase !== s.soupStart) { hintTimerBase = s.soupStart; hintReminded = {}; }
-    const min = Math.floor((Date.now() - s.soupStart) / 60000);
+    const min = Math.floor(soupElapsedMs(s) / 60000);
     CONTENT.hints.forEach((h, i) => {
       if (min >= h.min && s.hints <= i && !hintReminded[i]) { hintReminded[i] = true; toast('第 ' + h.min + ' 分鐘到了，可以公布提示 ' + (i + 1) + '：' + h.text); }
     });
@@ -798,7 +893,6 @@ const phaseTitle = (n) => phaseName(n).split('　').pop();
 const phaseStage = (n) => { const p = phaseName(n).split('　'); return p.length > 1 ? p[0] : ''; };
 
 /* ---------- send state (host) ---------- */
-const same = (a, b) => JSON.stringify(a == null ? null : a) === JSON.stringify(b == null ? null : b);
 function unsent(code) { return !!(host && pending && !same(pending.slots[code], STATE.slots[code])); }
 function pendingList() {
   if (!pending) return [];
@@ -845,7 +939,7 @@ function header(s) {
     const un = unlocked(t, s);
     const cls = ['tab', ui.tab === t.id ? 'on' : '', un ? '' : 'lock', t.host ? 'hostonly' : ''].join(' ');
     const attrs = (un || host) ? 'data-act="tab" data-id="' + t.id + '"' : 'disabled aria-disabled="true"';
-    return '<button class="' + cls + '" ' + attrs + (ui.tab === t.id ? ' aria-current="page"' : '') + '>' + esc(t.label) + (un ? '' : '<span class="lk" aria-label="尚未開放">' + icon('lock') + '</span>') + '</button>';
+    return '<button class="' + cls + '" ' + attrs + (ui.tab === t.id ? ' aria-current="page"' : '') + '>' + esc(t.label) + (un ? '' : '<span class="lk" aria-label="尚未開放">' + icon('lock') + '</span>') + (t.id === 'search' && ui.unseen.length && ui.tab !== 'search' ? '<span class="dot" role="img" aria-label="有新卡"></span>' : '') + '</button>';
   }).join('');
   return '<header class="top"><div class="band"><div class="band-in">' +
     '<div class="brand">' + FLOWER + '<span class="t">小花</span>' + (host ? '<span class="badge-host">主持人</span>' : '') + '</div>' +
@@ -942,6 +1036,34 @@ function viewOpen(s) {
 }
 
 /* ---------- 搜查 ---------- */
+const flashed = (code) => [].concat(ui.flash || []).includes(code);
+
+/* who has drawn in the current round (host) */
+function roundDraws(s) {
+  const n = {};
+  s.teams.forEach((t) => { n[t] = { n: 0, unsent: false }; });
+  Object.keys(s.slots).forEach((code) => {
+    const st = s.slots[code];
+    if (st && st.r === s.round && n[st.by]) { n[st.by].n += 1; if (unsent(code)) n[st.by].unsent = true; }
+  });
+  return n;
+}
+function roundTrack(s) {
+  if (s.round > s.rounds) {
+    return '<div class="round-track"><div class="rt-head"><b>揭牌</b><span>' + s.rounds + ' 輪搜完了</span></div><p class="muted">在每個信封按「抽下一張給…」，用最下面的「揭牌，翻到桌上」翻一張給全場看。</p></div>';
+  }
+  const n = roundDraws(s);
+  const left = s.teams.filter((t) => !n[t].n);
+  let h = '<div class="round-track"><div class="rt-head"><b>第 ' + s.round + ' 輪</b><span>' + (left.length ? '還沒抽：' + left.map(teamShort).join('、') : '每組都抽過了') + '</span></div>';
+  h += '<div class="rt-teams">' + s.teams.map((t) => {
+    const x = n[t];
+    const cls = 'rt' + (x.n ? ' on' : '') + (x.unsent ? ' unsent' : '');
+    const say = teamLabel(t) + (x.n ? '本輪已抽' + (x.n > 1 ? ' ' + x.n + ' 張' : '') + (x.unsent ? '・還沒送出' : '') : '本輪還沒抽');
+    return '<span class="' + cls + '" role="img" aria-label="' + esc(say) + '">' + (x.n ? icon('check') : '') + esc(t) + (x.n > 1 ? '<small>×' + x.n + '</small>' : '') + '</span>';
+  }).join('') + '</div>';
+  if (!left.length) h += '<button class="btn primary" data-act="round" data-d="1">' + (s.round >= s.rounds ? '進入揭牌' : '進入第 ' + (s.round + 1) + ' 輪') + '</button>';
+  return h + '</div>';
+}
 function slotHtml(c, s) {
   const st = s.slots[c.code];
   const num = c.code.split('-').pop();
@@ -953,11 +1075,12 @@ function slotHtml(c, s) {
   } else {
     if (st.by === '桌') { cls += ' table'; inner = '<b>桌上</b><i>' + esc(c.code) + '</i>'; }
     else { cls += st.pub ? ' pub' : ' drawn'; inner = '<b>' + esc(teamShort(st.by)) + '</b><i>' + esc(c.code) + '</i>'; }
+    if (!host && st.by === myTeam()) cls += ' mine';
     if (unsent(c.code)) cls += ' unsent';
-    if (ui.flash === c.code) cls += ' landed';
+    if (flashed(c.code)) cls += ' landed';
   }
   if (!host) return '<span class="' + cls + '">' + inner + '</span>';
-  const label = c.code + '・' + (st ? (st.by === '桌' ? '桌上公開' : teamLabel(st.by)) : '還在牌堆');
+  const label = c.code + '・' + (st ? (st.by === '桌' ? '桌上公開' : teamLabel(st.by) + (st.pub ? '・已公開' : '')) : '還在牌堆') + (cls.includes('unsent') ? '・還沒送出' : '');
   return '<button class="' + cls + '" data-act="sel" data-code="' + esc(c.code) + '" aria-label="' + esc(label) + '">' + inner + '</button>';
 }
 
@@ -965,13 +1088,13 @@ function letterRow(c, st, mine) {
   const holder = st.by === '桌' ? '桌上公開'
     : teamLabel(st.by) + (st.pub ? '・已公開' : (mine && st.by === mine ? '・只有你們組看得到' : (host ? '・只有該組和你看得到' : '')));
   const text = c.type === 'clue' || c.type === 'say' ? c.text : typeText[c.type];
-  return '<div class="letter-row ' + c.type + '"><div class="lr-tag"><span class="code">' + esc(c.code) + '</span><span class="chip ' + c.type + '">' + typeLabel[c.type] + '</span><span class="holder">' + esc(holder) + '</span></div>' +
+  return '<div class="letter-row ' + c.type + (flashed(c.code) ? ' new' : '') + '"><div class="lr-tag"><span class="code">' + esc(c.code) + '</span><span class="chip ' + c.type + '">' + typeLabel[c.type] + '</span><span class="holder">' + esc(holder) + '</span></div>' +
     '<p class="lr-text">' + esc(text) + '</p></div>';
 }
 
 function deckHtml(deck, s) {
   const remaining = deck.cards.filter((c) => !s.slots[c.code]).length;
-  let h = '<section class="env"><div class="env-head"><h3>' + esc(deck.name) + '</h3><span class="rem">剩 ' + remaining + ' 張</span></div>';
+  let h = '<section class="env"><div class="env-head"><h2>' + esc(deck.name) + '</h2><span class="rem">剩 ' + remaining + ' 張</span></div>';
   if (deck.meet) h += '<p class="meet">' + esc(deck.meet) + '</p>';
   h += '<div class="pms">' + deck.cards.map((c) => slotHtml(c, s)).join('') + '</div>';
   if (host) {
@@ -996,7 +1119,8 @@ function deckHtml(deck, s) {
 
 function viewSearch(s) {
   let h = hostSee(s, 2);
-  h += '<div class="search-intro"><div class="legend"><span><i class="pm down"></i>牌堆</span><span><i class="pm drawn"></i>已抽</span><span><i class="pm pub"></i>已公開</span><span><i class="pm table"></i>桌上</span>' + (host ? '<span class="lg-red"><i class="pm drawn unsent"></i>未送出</span>' : '') + '</div>';
+  if (host) h += roundTrack(s);
+  h += '<div class="search-intro"><div class="legend"><span><i class="pm down"></i>牌堆</span>' + (!host && myTeam() ? '<span><i class="pm drawn mine"></i>你們組</span>' : '') + '<span><i class="pm drawn"></i>已抽</span><span><i class="pm pub"></i>已公開</span><span><i class="pm table"></i>桌上</span>' + (host ? '<span class="lg-red"><i class="pm drawn unsent"></i>未送出</span>' : '') + '</div>';
   h += '<details class="rules"><summary>' + (host ? '說明與搜查規則' : '搜查規則') + '</summary>';
   if (host) h += '<p class="muted">點郵戳可以看內容、公開、改給別組或取消。</p><button class="switch ' + (ui.showAll ? 'on' : '') + '" data-act="showall" role="switch" aria-checked="' + (ui.showAll ? 'true' : 'false') + '"><span class="knob"></span>在信封裡列出全部卡片內容</button>';
   h += '<div class="prose">' + blocks(CONTENT.searchRules) + '</div></details></div>';
@@ -1017,7 +1141,11 @@ function drawSheet(s, locId) {
   const next = deck.cards.find((c) => !s.slots[c.code]);
   if (!next) return sheetWrap(deck.name, '這一疊已經抽完了', '');
   const canFlip = deck.cards.some((c) => !s.slots[c.code] && (c.type === 'clue' || c.type === 'say'));
-  let body = '<div class="team-grid">' + s.teams.map((t) => '<button class="team-btn" data-act="draw" data-loc="' + esc(deck.id) + '" data-team="' + esc(t) + '">' + esc(teamLabel(t)) + '</button>').join('') + '</div>';
+  const rd = s.round <= s.rounds ? roundDraws(s) : null;
+  let body = '<div class="team-grid">' + s.teams.map((t) => {
+    const done = rd && rd[t].n;
+    return '<button class="team-btn' + (done ? ' done' : '') + '" data-act="draw" data-loc="' + esc(deck.id) + '" data-team="' + esc(t) + '">' + esc(teamLabel(t)) + (done ? '<small>' + icon('check') + '本輪已抽</small>' : '') + '</button>';
+  }).join('') + '</div>';
   if (s.autoPublic) body += '<p class="muted">「抽到即公開」開著：這張會直接公開給全場。</p>';
   body += '<div class="sheet-foot"><button class="btn" data-act="flip" data-loc="' + esc(deck.id) + '"' + (canFlip ? '' : ' disabled') + ' title="翻開剩下的第一張物證卡或證詞卡，放在桌上給全場看">揭牌，翻到桌上</button></div>';
   return sheetWrap(next.code + ' 給哪一組？', esc(deck.name) + '・下一張是' + typeLabel[next.type], body);
@@ -1048,9 +1176,9 @@ function cardSheet(s, code) {
 function ansClass(a) { const f = ANSWERS.find((x) => x[0] === a); return f ? f[1] : 'na'; }
 
 function viewSoup(s) {
-  const timer = s.soupStart ? '<div class="timer" id="timer">' + timerText(s) + '</div>' : '<div class="timer" id="timer">30:00<small>尚未開始</small></div>';
+  const timer = s.soupStart ? '<div class="timer' + (s.soupPause ? ' paused' : '') + '" id="timer">' + timerText(s) + '</div>' : '<div class="timer" id="timer">30:00<small>尚未開始</small></div>';
   let top = '<section class="sec">' + secHead('問村長', host ? '<span class="live-note">這一頁的操作會立刻同步</span>' : '') + timer;
-  if (host) top += '<div class="row-btns"><button class="btn ' + (s.soupStart ? '' : 'primary') + '" data-act="timer" data-m="start">' + (s.soupStart ? '重新開始' : '開始 30 分鐘') + '</button>' + (s.soupStart ? '<button class="btn" data-act="timer" data-m="stop">停止</button>' : '') + '</div>';
+  if (host) top += timerControls(s);
   top += '<p class="muted">村長只回答「是」「不是」「沒有關係」「不知道」。輪到你們時，可以改成正式答題：六題一口氣講完。</p>';
   top += '<details class="rules"><summary>問村長規則</summary>' + table([['項目', '規則']].concat(CONTENT.soupRules)) + '</details></section>';
 
@@ -1082,13 +1210,43 @@ function viewSoup(s) {
   return hostSee(s, 3) + (host ? top + qa + quota + hints + six : top + quota + hints + qa + six);
 }
 
+function timerControls(s) {
+  if (!s.soupStart) return '<div class="row-btns"><button class="btn primary" data-act="timer" data-m="start">開始 30 分鐘</button></div>';
+  if (ui.timerArmed) return '<div class="row-btns confirm"><button class="btn danger" data-act="timer" data-m="start">確定從 30:00 重來</button><button class="btn" data-act="timer" data-m="restartno">取消</button></div>';
+  return '<div class="row-btns">' + (s.soupPause
+    ? '<button class="btn primary" data-act="timer" data-m="resume">繼續計時</button>'
+    : '<button class="btn" data-act="timer" data-m="pause">暫停</button>') +
+    '<button class="btn ghost" data-act="timer" data-m="restartask">重新開始…</button></div>';
+}
+
+/* the village chief's answer table, searched from what the host types */
+const normQ = (x) => String(x || '').replace(/[\s？?，,。！!「」、：:]/g, '');
+function qaMatches(q) {
+  const n = normQ(q);
+  if (n.length < 2) return [];
+  const grams = []; for (let i = 0; i < n.length - 1; i++) grams.push(n.slice(i, i + 2));
+  const need = Math.max(1, Math.ceil(grams.length * 0.5));
+  return CONTENT.qa.map((r, i) => {
+    const t = normQ(r.q);
+    const score = (t.includes(n) ? 100 : 0) + grams.filter((g) => t.includes(g)).length;
+    return { i, r, score };
+  }).filter((x) => x.score >= need).sort((a, b) => b.score - a.score).slice(0, 4);
+}
+function suggestHtml(q) {
+  if (normQ(q).length < 2) return '';
+  const m = qaMatches(q);
+  if (!m.length) return '<p class="muted">問答表裡沒有像這樣的題目，請自己判斷。</p>';
+  return '<div class="sheet-lb">問答表裡的類似題目（點一下帶入）</div>' + m.map(({ i, r }) =>
+    '<button class="sug" data-act="qapick" data-i="' + i + '"><span class="sq">' + esc(r.q) + '</span><span class="ans ' + ansClass(r.a) + '">' + esc(r.a) + '</span>' + (r.n ? '<span class="sn">' + esc(r.n) + '</span>' : '') + '</button>').join('');
+}
+
 function qaForm(s) {
   const cur = s.teams.includes(ui.qaTeam) ? ui.qaTeam : s.teams[0];
   let h = '<div class="qa-form"><div class="sheet-lb">哪一組問</div><div class="seg teams">' + s.teams.map((t) =>
     '<button class="' + (t === cur ? 'on' : '') + '" data-act="qateam" data-team="' + esc(t) + '" aria-pressed="' + (t === cur ? 'true' : 'false') + '">' + esc(teamShort(t)) + '<small>' + (s.qm[t] == null ? 0 : s.qm[t]) + ' 個問號</small></button>').join('') + '</div>';
-  h += '<label class="sheet-lb" for="qa-q">問題</label><input type="text" id="qa-q" class="input" placeholder="例：小花是人嗎？" autocomplete="off" value="' + esc(ui.qaDraft || '') + '">';
+  h += '<label class="sheet-lb" for="qa-q">問題</label><input type="text" id="qa-q" class="input" placeholder="例：小花是人嗎？" autocomplete="off" value="' + esc(ui.qaDraft || '') + '"><div class="suggest" id="qa-suggest">' + (ui.qaHint ? '' : suggestHtml(ui.qaDraft)) + '</div>';
   h += '<div class="sheet-lb">村長回答（按下就記錄，' + esc(teamShort(cur)) + '扣 1 個問號）</div><div class="ans-grid">' +
-    ANSWERS.map((a) => '<button class="ans-btn ' + a[1] + '" data-act="qaadd" data-a="' + a[0] + '">' + a[0] + '</button>').join('') + '</div></div>';
+    ANSWERS.map((a) => '<button class="ans-btn ' + a[1] + (ui.qaHint === a[0] ? ' hint' : '') + '" data-act="qaadd" data-a="' + a[0] + '">' + a[0] + (ui.qaHint === a[0] ? '<small>問答表的答案</small>' : '') + '</button>').join('') + '</div></div>';
   return h;
 }
 
@@ -1100,7 +1258,9 @@ function viewAnswer(s) {
     h += '<section class="sec host">' + secHead('公布答案', '<span class="live-note">按下立刻同步</span>');
     h += revealed
       ? '<p class="lead">已公布・他去了' + esc(s.place || '') + '。</p><div class="danger-zone"><button class="btn danger" data-act="hideall">全部收回</button></div>'
-      : '<p class="muted">按下去，玩家會立刻看到六題解答、真相、結局和報告，階段也會切到「答案」。</p><div class="reveal-btns"><button class="btn primary big" data-act="revealall" data-place="沖繩">他去了沖繩</button><button class="btn primary big" data-act="revealall" data-place="花蓮">他去了花蓮</button></div>';
+      : ui.revealArmed
+        ? '<p class="lead">確定公布「他去了' + esc(ui.revealArmed) + '」？所有人的手機會立刻看到六題解答、真相、結局和報告。</p><div class="reveal-btns"><button class="btn primary big" data-act="revealall" data-place="' + esc(ui.revealArmed) + '">確定公布：他去了' + esc(ui.revealArmed) + '</button><button class="btn big" data-act="revealcancel">取消</button></div>'
+        : '<p class="muted">選答對組說的地方。按一下會先請你確認，再按一次才會送給所有人，階段也會切到「答案」。</p><div class="reveal-btns"><button class="btn primary big" data-act="revealask" data-place="沖繩">他去了沖繩</button><button class="btn primary big" data-act="revealask" data-place="花蓮">他去了花蓮</button></div>';
     h += '</section>';
   } else if (!revealed) {
     h += '<section class="sec">' + secHead('答案') + '<p class="muted">主持人還沒公布答案。</p></section>';
@@ -1187,8 +1347,9 @@ function hostbar(s) {
   }
   h += '<div class="slip-send ' + (list.length ? 'dirty' : 'clean') + '">';
   if (list.length) {
-    h += '<div class="slip-state"><span class="slip-k">還沒送出・' + list.length + ' 項</span><span class="slip-marks">' + list.slice(0, 7).map((x) => x.includes('-') ? '<i class="pm mini drawn unsent">' + esc(x) + '</i>' : '<i class="mini-tag">' + esc(x) + '</i>').join('') + (list.length > 7 ? '<i class="mini-tag">…</i>' : '') + '</span></div>' +
-      '<button class="btn ghost sm" data-act="discard">放棄</button>';
+    h += '<div class="slip-state"><span class="slip-line"><span class="slip-k">還沒送出・' + list.length + ' 項</span><button class="linkbtn" data-act="discard">放棄</button></span><span class="slip-marks">' + list.slice(0, 7).map((x) => x.includes('-') ? '<i class="pm mini drawn unsent">' + esc(x) + '</i>' : '<i class="mini-tag">' + esc(x) + '</i>').join('') + (list.length > 7 ? '<i class="mini-tag">…</i>' : '') + '</span></div>';
+  } else if (ui.discarded) {
+    h += '<div class="slip-state"><span class="slip-k neutral">已放棄 ' + ui.discarded.n + ' 項</span><span class="slip-list">沒有送給玩家</span></div><button class="btn sm" data-act="undodiscard">' + icon('undo') + '復原</button>';
   } else {
     h += '<div class="slip-state"><span class="slip-k ok">' + icon('check') + '已全部送出</span><span class="slip-list">v' + (STATE.v || 0) + '・玩家看到的就是現在這樣</span></div>';
   }
@@ -1249,7 +1410,7 @@ function applyFilter() {
 /* ---------- actions ---------- */
 function act(d) {
   switch (d.act) {
-    case 'tab': ui.tab = d.id; ui.sel = null; ui.sheet = null; saveTab(); render(); window.scrollTo(0, 0); break;
+    case 'tab': if (d.id === 'search' && ui.unseen.length) { ui.flash = ui.unseen; ui.unseen = []; } ui.tab = d.id; ui.sel = null; ui.sheet = null; ui.revealArmed = null; ui.timerArmed = false; saveTab(); render(); window.scrollTo(0, 0); break;
     case 'preview': ui.preview = !ui.preview; ui.sel = null; ui.sheet = null; ui.noteOpen = false; ui.moreOpen = false; ui.picking = false; render(); window.scrollTo(0, 0); break;
     case 'share': ui.shareOpen = !ui.shareOpen; ui.moreOpen = false; render(); if (ui.shareOpen) window.scrollTo(0, 0); break;
     case 'more': ui.moreOpen = !ui.moreOpen; if (!ui.moreOpen) ui.noteOpen = false; render(); break;
@@ -1305,7 +1466,7 @@ function act(d) {
     case 'draw': edit((p) => {
       const c = findLoc(d.loc).cards.find((c) => !p.slots[c.code]);
       if (!c) { toast('這一疊已經抽完了'); return false; }
-      p.slots[c.code] = { by: d.team, pub: !!p.autoPublic };
+      p.slots[c.code] = { by: d.team, pub: !!p.autoPublic, r: p.round };
       if (c.type === 'qmark') p.qm[d.team] = (p.qm[d.team] || 0) + 1;
       ui.sheet = null; ui.sel = null; ui.flash = c.code;
       toast(c.code + ' 給' + teamLabel(d.team) + '・按「更新給所有人」送出');
@@ -1332,26 +1493,47 @@ function act(d) {
     case 'qm': immediate((p) => { p.qm[d.team] = Math.max(0, (p.qm[d.team] || 0) + Number(d.d)); }); break;
     case 'qmreset': immediate((p) => { p.teams.forEach((t) => { p.qm[t] = BASE_QM; }); }); break;
     case 'hint': immediate((p) => { p.hints = clamp(p.hints + Number(d.d), 0, CONTENT.hints.length); }); break;
-    case 'timer': immediate((p) => { p.soupStart = d.m === 'start' ? Date.now() : null; }); break;
+    case 'timer':
+      if (d.m === 'restartask' || d.m === 'restartno') { ui.timerArmed = d.m === 'restartask'; render(); break; }
+      ui.timerArmed = false;
+      {
+        const now = Date.now();
+        immediate((p) => {
+          if (d.m === 'start') { p.soupStart = now; p.soupPause = null; }
+          else if (d.m === 'pause') { if (!p.soupStart || p.soupPause) return false; p.soupPause = now; }
+          else if (d.m === 'resume') { if (!p.soupPause) return false; p.soupStart += now - p.soupPause; p.soupPause = null; }
+        });
+      }
+      break;
     case 'qateam': ui.qaTeam = d.team; render(); break;
+    case 'qapick': { const r = CONTENT.qa[Number(d.i)]; if (!r) return; ui.qaDraft = r.q; ui.qaHint = r.a; render(); break; }
     case 'qaadd': {
       const teams = S().teams;
       const team = teams.includes(ui.qaTeam) ? ui.qaTeam : teams[0];
       const q = ($('#qa-q') ? $('#qa-q').value : (ui.qaDraft || '')).trim();
       if (!q) { toast('請先輸入問題'); if ($('#qa-q')) $('#qa-q').focus(); return; }
-      ui.qaDraft = '';
+      ui.qaDraft = ''; ui.qaHint = null;
       immediate((p) => { p.qa.push({ t: team, q: q, a: d.a }); p.qm[team] = Math.max(0, (p.qm[team] || 0) - 1); });
       break;
     }
     case 'qadel': immediate((p) => { const x = p.qa.pop(); if (x && p.qm[x.t] != null) p.qm[x.t] += 1; }); break;
-    case 'revealall': immediate((p) => { if (!d.place) return false; p.place = d.place; p.truth = true; p.ending = d.place === '沖繩' ? 'A' : 'B'; p.report = true; if (p.phase < 4) p.phase = 4; }); break;
+    case 'revealask': ui.revealArmed = d.place; render(); break;
+    case 'revealcancel': ui.revealArmed = null; render(); break;
+    case 'revealall': ui.revealArmed = null; immediate((p) => { if (!d.place) return false; p.place = d.place; p.truth = true; p.ending = d.place === '沖繩' ? 'A' : 'B'; p.report = true; if (p.phase < 4) p.phase = 4; }); break;
     case 'hideall': immediate((p) => { p.truth = false; p.ending = null; p.report = false; p.place = null; }); break;
     case 'showall': ui.showAll = !ui.showAll; render(); break;
     case 'notetoggle': ui.noteOpen = !ui.noteOpen; render(); if (ui.noteOpen && $('#note-input')) $('#note-input').focus(); break;
     case 'notesave': { const v = ($('#note-input') ? $('#note-input').value : '').trim(); ui.noteOpen = false; edit((p) => { p.note = v; }); break; }
     case 'noteclear': ui.noteOpen = false; edit((p) => { p.note = ''; }); break;
     case 'publish': ui.moreOpen = false; publish(); break;
-    case 'discard': pending = null; clearStash(); ui.sel = null; render(); break;
+    case 'discard': {
+      const at = Date.now();
+      ui.discarded = { p: pending, b: pendingBase, n: pendingList().length, at: at };
+      pending = null; clearStash(); ui.sel = null; render();
+      setTimeout(() => { if (ui.discarded && ui.discarded.at === at) { ui.discarded = null; render(); } }, 8000);
+      break;
+    }
+    case 'undodiscard': if (ui.discarded) { const x = ui.discarded; pending = x.b ? rebase(x.b, x.p, STATE).p : x.p; pendingBase = clone(STATE); ui.discarded = null; stash(); render(); } break;
     default: break;
   }
 }
@@ -1368,7 +1550,12 @@ root.addEventListener('keydown', (e) => {
 });
 root.addEventListener('input', (e) => {
   if (e.target.id === 'man-filter') { ui.filter = e.target.value; applyFilter(); }
-  if (e.target.id === 'qa-q') ui.qaDraft = e.target.value;
+  if (e.target.id === 'qa-q') {
+    // update the suggestions in place so the phone keyboard stays open
+    ui.qaDraft = e.target.value; ui.qaHint = null;
+    const box = $('#qa-suggest'); if (box) box.innerHTML = suggestHtml(ui.qaDraft);
+    root.querySelectorAll('.ans-btn.hint').forEach((b) => { b.classList.remove('hint'); const sm = b.querySelector('small'); if (sm) sm.remove(); });
+  }
 });
 root.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && e.target.id === 'qa-q') { e.preventDefault(); toast('請按下面的答案按鈕記錄'); }
